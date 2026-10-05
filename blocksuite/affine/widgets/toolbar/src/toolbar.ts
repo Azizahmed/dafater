@@ -174,7 +174,11 @@ export class AffineToolbarWidget extends WidgetComponent {
     const surfaceBounds = getCommonBoundWithRotation(elements);
 
     const getBoundingClientRect = () => {
-      const { x: offsetX, y: offsetY } = this.getBoundingClientRect();
+      // Measured from the widgets container: the host is an empty inline
+      // box, which sits at the container's right edge in RTL.
+      const { x: offsetX, y: offsetY } = (
+        this.offsetParent ?? this
+      ).getBoundingClientRect();
       const [x, y, w, h] = gfx.viewport.toViewBound(surfaceBounds).toXYWH();
       const rect = new DOMRect(x + offsetX, y + offsetY, w, h);
       return rect;

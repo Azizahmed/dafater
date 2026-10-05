@@ -15,6 +15,10 @@ export const shortcutRow = style({
 });
 export const shortcutKeyContainer = style({
   display: 'flex',
+  // Key combos read as one left-to-right unit (Ctrl, Shift, then the key),
+  // and bidi mirroring must not flip bracket keys in RTL.
+  direction: 'ltr',
+  unicodeBidi: 'isolate',
 });
 export const shortcutKey = style({
   minWidth: '24px',

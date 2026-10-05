@@ -68,14 +68,26 @@ export class WorkspaceShareSetting extends Entity {
     private readonly store: WorkspaceShareSettingStore
   ) {
     super();
-    this.configLiveQuery.start();
+    if (this.isServerWorkspace) {
+      this.configLiveQuery.start();
+    }
+  }
+
+  /**
+   * Local workspaces live only on this device: there are no server-side share
+   * settings to fetch (requesting them only produced access errors).
+   */
+  private get isServerWorkspace() {
+    return this.workspaceService.workspace.flavour !== 'local';
   }
 
   revalidate = () => {
+    if (!this.isServerWorkspace) return;
     this.configLiveQuery.revalidate();
   };
 
   revalidateInviteLink = () => {
+    if (!this.isServerWorkspace) return;
     this.ensureInviteLinkStarted();
     this.inviteLinkLiveQuery.revalidate();
   };

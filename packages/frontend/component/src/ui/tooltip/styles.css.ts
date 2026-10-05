@@ -40,6 +40,10 @@ export const shortcut = style({
   display: 'flex',
   alignItems: 'center',
   gap: 2,
+  // Key combos read as one left-to-right unit (Ctrl, Shift, then the key),
+  // and bidi mirroring must not flip bracket keys in RTL.
+  direction: 'ltr',
+  unicodeBidi: 'isolate',
 });
 export const command = style({
   background: cssVarV2('tooltips/secondaryBackground'),

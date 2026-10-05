@@ -29,6 +29,22 @@ import { defaultPreview, Triangle } from './cards.js';
 import type { Template } from './template-type.js';
 import { cloneDeep } from './utils.js';
 
+/** Display names of the built-in categories; the English name is the id. */
+const CATEGORY_LABELS: Record<string, () => string> = {
+  Arrows: () => t('Arrows'),
+  'Cheeky Piggies': () => t('Cheeky Piggies'),
+  'Contorted Stickers': () => t('Contorted Stickers'),
+  Paper: () => t('Paper'),
+  Brainstorming: () => t('Brainstorming'),
+  Marketing: () => t('Marketing'),
+  Presentation: () => t('Presentation'),
+  'Project Management': () => t('Project Management'),
+};
+
+function categoryLabel(category: string) {
+  return CATEGORY_LABELS[category]?.() ?? category;
+}
+
 function toSvgPreviewDataUrl(svg: string) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
@@ -80,7 +96,9 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
       display: flex;
       padding: 6px 8px;
       gap: 4px;
-      overflow-x: scroll;
+      overflow-x: auto;
+      scroll-padding-inline: 8px;
+      scroll-snap-type: x proximity;
 
       flex-shrink: 0;
     }
@@ -96,6 +114,7 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
       width: fit-content;
       padding: 4px 9px;
       cursor: pointer;
+      scroll-snap-align: start;
     }
 
     .category-entry.selected,
@@ -415,7 +434,7 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
                   this._updateTemplates();
                 }}
               >
-                ${cate}
+                ${categoryLabel(cate)}
               </div>`;
             }
           )}

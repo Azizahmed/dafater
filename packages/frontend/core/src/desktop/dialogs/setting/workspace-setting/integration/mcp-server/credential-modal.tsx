@@ -16,6 +16,7 @@ export const McpCredentialModal = ({
   mode,
   revealed,
   config,
+  command,
   workspaceName,
   readWriteAvailable,
   onCreate,
@@ -24,6 +25,7 @@ export const McpCredentialModal = ({
   mode: 'create' | 'reveal' | null;
   revealed: RevealedCredential | null;
   config: string;
+  command: string;
   workspaceName?: string;
   readWriteAvailable: boolean;
   onCreate: (
@@ -197,6 +199,18 @@ export const McpCredentialModal = ({
             </Button>
           </div>
           <pre className={styles.preArea}>{config}</pre>
+          <div className={styles.description}>
+            {t['com.affine.integration.mcp-server.reveal.config-hint']()}
+          </div>
+          <div className={styles.codeHeader}>
+            <span>
+              {t['com.affine.integration.mcp-server.reveal.claude-code']()}
+            </span>
+            <Button onClick={() => copy(command)}>
+              {t['com.affine.integration.mcp-server.action.copy-command']()}
+            </Button>
+          </div>
+          <pre className={styles.preArea}>{command}</pre>
           <div className={styles.modalActions}>
             <Button variant="primary" onClick={onClose}>
               {t['com.affine.integration.mcp-server.action.done']()}

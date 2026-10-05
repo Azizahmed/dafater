@@ -17,9 +17,19 @@ const THEME_SANS = `"Inter", "Source Sans 3", Poppins, var(--arabase-arabic-font
 const THEME_SERIF = `"Source Serif 4", "Noto Serif", var(--arabase-arabic-serif-font), serif, "Cambria"`;
 const SYSTEM = `"Helvetica Neue", Tahoma, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
 
+/**
+ * Latin code fonts of the theme. Arabic in code takes the Arabic font of the
+ * choice, placed before the generic `monospace`: system monospace fonts draw
+ * Arabic letters unjoined and widely spaced.
+ */
+const THEME_CODE = `"IBM Plex Mono", "Space Mono", Consolas, Menlo, Monaco, Courier`;
+const THEME_MONO = `"Source Code Pro", "IBM Plex Mono", "Roboto Mono", "Noto Sans Mono", "Noto Sans CJK"`;
+
 interface FontStacks {
   sans: string;
   serif: string;
+  /** Arabic glyphs only (code keeps its Latin monospace). */
+  arabic: string;
 }
 
 export const FONT_STACKS: Record<FontChoice, FontStacks> = {
@@ -27,14 +37,20 @@ export const FONT_STACKS: Record<FontChoice, FontStacks> = {
   thmanyah: {
     sans: `"Thmanyah Sans", ${THEME_SANS}`,
     serif: `"Thmanyah Serif", ${THEME_SERIF}`,
+    arabic: `"Thmanyah Sans Arabic", var(--arabase-arabic-font)`,
   },
   // Inter for Latin, Noto for Arabic (bundled fallback when not installed).
   noto: {
     sans: `"Inter", "Noto Sans Arabic", "Arabase Noto Sans Arabic", ${THEME_SANS}`,
     serif: `"Source Serif 4", "Noto Naskh Arabic", ${THEME_SERIF}`,
+    arabic: `"Noto Sans Arabic", "Arabase Noto Sans Arabic", var(--arabase-arabic-font)`,
   },
   // Inter for Latin, the operating system's Arabic font.
-  system: { sans: THEME_SANS, serif: THEME_SERIF },
+  system: {
+    sans: THEME_SANS,
+    serif: THEME_SERIF,
+    arabic: 'var(--arabase-arabic-font)',
+  },
 };
 
 export const FONT_CHOICES = Object.keys(FONT_STACKS) as FontChoice[];
@@ -44,9 +60,10 @@ function isFontChoice(value: unknown): value is FontChoice {
 }
 
 export function fontCss(choice: FontChoice): string {
-  const { sans, serif } = FONT_STACKS[choice];
+  const { sans, serif, arabic } = FONT_STACKS[choice];
   const vars = (system: string) =>
-    `--affine-font-family:${sans}, ${system};--affine-font-sans-family:${sans}, ${system};--affine-font-serif-family:${serif}, ${system};`;
+    `--affine-font-family:${sans}, ${system};--affine-font-sans-family:${sans}, ${system};--affine-font-serif-family:${serif}, ${system};` +
+    `--affine-font-code-family:${THEME_CODE}, ${arabic}, monospace, ${system};--affine-font-mono-family:${THEME_MONO}, ${arabic}, ${system};`;
   return (
     `:root:root{${vars(`apple-system, BlinkMacSystemFont, ${SYSTEM}`)}}` +
     `@media print{:root:root{${vars(SYSTEM)}}}`

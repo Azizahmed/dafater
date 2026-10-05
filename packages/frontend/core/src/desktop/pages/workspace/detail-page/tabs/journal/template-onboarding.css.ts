@@ -51,6 +51,11 @@ const animation = (tl: Timeline) => ({
   animationFillMode: tl.fill,
 });
 
+const paperRtl = {
+  from: 'translate(-100px, 100px) rotate(-50deg)',
+  to: 'translate(-22px, 42px) rotate(8.71deg)',
+};
+
 export const container = style({
   paddingTop: 8,
   paddingLeft: 16,
@@ -71,7 +76,8 @@ export const container = style({
 });
 
 export const card = style({
-  padding: '12px 0px 14px 12px',
+  padding: '12px 0px 14px',
+  paddingInlineStart: 12,
   width: '100%',
   height: 124,
   borderRadius: 12,
@@ -105,7 +111,7 @@ export const title = style({
 export const close = style({
   position: 'absolute',
   top: 12,
-  right: 12,
+  insetInlineEnd: 12,
 });
 
 export const menu = style({
@@ -119,7 +125,7 @@ export const paper = style({
   alignItems: 'center',
   justifyContent: 'center',
   position: 'absolute',
-  right: 0,
+  insetInlineEnd: 0,
   bottom: 0,
   transformOrigin: '0% 100%',
   transform: timeline.paper.keyframes.from.transform,
@@ -129,6 +135,19 @@ export const paper = style({
     '&[data-animation-played="true"]': {
       animation: 'none',
       transform: timeline.paper.keyframes.to.transform,
+    },
+    // The paper sits in the inline-end corner: mirrored in RTL.
+    '&:dir(rtl)': {
+      transformOrigin: '100% 100%',
+      transform: paperRtl.from,
+      animationName: keyframes({
+        from: { transform: paperRtl.from },
+        to: { transform: paperRtl.to },
+      }),
+    },
+    '&[data-animation-played="true"]:dir(rtl)': {
+      animation: 'none',
+      transform: paperRtl.to,
     },
   },
 });

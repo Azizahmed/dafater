@@ -10,11 +10,28 @@ export const EDITOR_BIDI_CSS = `
   letter-spacing: normal;
 }
 
+/* Arabic has no italic: fonts without an italic face (Thmanyah, most Arabic
+   system fonts) would be slanted synthetically, which reads as broken. */
+:is(affine-paragraph, affine-list):dir(rtl) {
+  font-synthesis-style: none;
+}
+/* Nested left-to-right blocks keep the default. */
+:is(affine-paragraph, affine-list):dir(ltr) {
+  font-synthesis-style: auto;
+}
+
 /* Inline code and links keep their own direction inside a paragraph of the
    opposite direction, e.g. \`npm install -g\` or a URL inside Arabic text,
    so their punctuation is not reordered. */
 :is(affine-paragraph, affine-list, affine-table) :is(code, affine-link a) {
   unicode-bidi: plaintext;
+}
+
+/* Code lines are left-to-right: each highlighted token (an Arabic string,
+   a comment) is its own run, so the punctuation between tokens is not
+   pulled into the Arabic text and reordered. */
+affine-code affine-code-unit v-text {
+  unicode-bidi: isolate;
 }
 
 /* Table cells are not blocks: each cell follows its own first strong

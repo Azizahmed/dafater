@@ -422,7 +422,7 @@ export const popViewOptions = (
           <div style="font-size: 14px;">
             ${t('{count} shown', { count: view.properties$.value.length })}
           </div>
-          ${ArrowRightSmallIcon()}
+          <div class="affine-menu-forward-arrow">${ArrowRightSmallIcon()}</div>
         `,
         select: () => {
           navigate('properties');
@@ -449,7 +449,9 @@ export const popViewOptions = (
                     : t('{count} active', { count: filterCount })
               }
             </div>
-            ${ArrowRightSmallIcon()}
+            <div class="affine-menu-forward-arrow">
+              ${ArrowRightSmallIcon()}
+            </div>
           `,
           select: () => {
             navigate('filter');
@@ -477,7 +479,9 @@ export const popViewOptions = (
                     : t('{count} active', { count: sortCount })
               }
             </div>
-            ${ArrowRightSmallIcon()}
+            <div class="affine-menu-forward-arrow">
+              ${ArrowRightSmallIcon()}
+            </div>
           `,
           select: () => {
             navigate('sort');
@@ -498,7 +502,9 @@ export const popViewOptions = (
             <div style="font-size: 14px;">
               ${groupTrait.property$.value?.name$.value ?? ''}
             </div>
-            ${ArrowRightSmallIcon()}
+            <div class="affine-menu-forward-arrow">
+              ${ArrowRightSmallIcon()}
+            </div>
           `,
           select: () => {
             const hasGroup = !!groupTrait.property$.value;

@@ -1,4 +1,4 @@
-import { notify } from '@affine/component';
+import { mirrorInRtl, notify } from '@affine/component';
 import { SettingRow } from '@affine/component/setting-components';
 import { ConfirmModal } from '@affine/component/ui/modal';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
@@ -113,7 +113,7 @@ export const DeleteLeaveWorkspace = ({
         onClick={onLeaveOrDelete}
         data-testid="delete-workspace-button"
       >
-        <ArrowRightSmallIcon />
+        <ArrowRightSmallIcon className={mirrorInRtl} />
       </SettingRow>
       {isOwner ? (
         <WorkspaceDeleteModal

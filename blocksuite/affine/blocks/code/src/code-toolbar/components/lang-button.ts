@@ -159,7 +159,7 @@ export class LanguageListButton extends WithDisposable(
 
   override render() {
     const textStyles = styleMap({
-      fontFamily: 'Inter',
+      fontFamily: 'var(--affine-font-family)',
       fontSize: 'var(--affine-font-xs)',
       fontStyle: 'normal',
       fontWeight: '500',

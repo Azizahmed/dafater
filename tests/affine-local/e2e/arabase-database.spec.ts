@@ -68,7 +68,7 @@ test.describe('database in the Arabic UI', () => {
     );
     await expect(
       database.locator('.data-view-table-group-add-row')
-    ).toContainText('سجل جديد');
+    ).toContainText('صف جديد');
 
     // New columns are named in Arabic.
     await expect(
@@ -82,7 +82,7 @@ test.describe('database in the Arabic UI', () => {
     // The column menu is translated, with the visual sides swapped in RTL.
     await database.locator('affine-database-header-column').nth(1).click();
     const menu = page.locator('affine-menu').last();
-    await expect(menu).toContainText('إخفاء في العرض');
+    await expect(menu).toContainText('إخفاء من العرض');
     await expect(menu).toContainText('إدراج عمود يمينًا');
     await expect(menu).toContainText('ترتيب تصاعدي');
   });

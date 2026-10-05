@@ -167,6 +167,10 @@ export const keybinding = style({
   display: 'flex',
   fontSize: cssVar('fontXs'),
   columnGap: 2,
+  // Key combos read as one left-to-right unit (Ctrl, Shift, then the key),
+  // and bidi mirroring must not flip bracket keys in RTL.
+  direction: 'ltr',
+  unicodeBidi: 'isolate',
 });
 
 export const keybindingFragment = style({
@@ -179,7 +183,8 @@ export const keybindingFragment = style({
   backgroundColor: cssVar('backgroundTertiaryColor'),
   minWidth: 24,
   height: 20,
-  textTransform: 'uppercase',
+  // Ctrl, Shift, K: the casing used by the other shortcut labels.
+  textTransform: 'capitalize',
 });
 
 export const itemTitle = style({

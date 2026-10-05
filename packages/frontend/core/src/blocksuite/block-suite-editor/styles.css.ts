@@ -21,6 +21,11 @@ export const affineEdgelessDocViewport = style({
 
 export const docContainer = style({
   display: 'block',
+  // Editor popovers (database view settings, filters…) are mounted inside the
+  // editor host, an isolated stacking context: it must paint above the
+  // siblings that follow it (backlinks panel, starter bar). A flex item takes
+  // a z-index without becoming a containing block.
+  zIndex: 1,
   selectors: ['generating', 'finished', 'error'].reduce<
     NonNullable<StyleRule['selectors']>
   >((rules, state) => {

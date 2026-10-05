@@ -239,7 +239,9 @@ export const AFFINE_FLAGS = {
       'com.affine.settings.workspace.experimental-features.enable-table-virtual-scroll.name',
     description:
       'com.affine.settings.workspace.experimental-features.enable-table-virtual-scroll.description',
-    configurable: isCanaryBuild,
+    // Dafater: the virtual-scroll table lays cells out with physical `left`
+    // offsets and has no RTL support; keep the standard (RTL-ready) table.
+    configurable: false,
     defaultState: false,
   },
   enable_setting_subpage_animation: {

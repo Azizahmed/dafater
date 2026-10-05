@@ -8,7 +8,6 @@ import {
   McpAccessMode as GraphqlMcpAccessMode,
   mcpCredentialsQuery,
   revokeMcpCredentialMutation,
-  rotateMcpCredentialMutation,
 } from '@affine/graphql';
 import { McpAccessMode, PrismaClient } from '@prisma/client';
 import type { TestFn } from 'ava';
@@ -74,45 +73,119 @@ test('disabled copilot hides its server feature and rejects every API transport'
       )
     );
     await app.GET('/api/copilot/unsplash/photos').expect(403);
+  } finally {
+    await server.updateConfig(null, [
+      { module: 'copilot', key: 'enabled', clear: true },
+    ]);
+  }
+});
+
+test('MCP stays available when copilot is disabled', async t => {
+  const { app } = t.context;
+  const server = app.get(ServerService);
+  await app.signupV1();
+  const workspace = await createWorkspace(app);
+
+  await server.updateConfig(null, [
+    { module: 'copilot', key: 'enabled', value: false },
+  ]);
+  try {
     await app
       .POST(`/api/workspaces/${workspace.id}/mcp`)
       .send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} })
-      .expect(403);
-    await t.throwsAsync(
-      app.gql({
-        query: mcpCredentialsQuery,
-        variables: { workspaceId: workspace.id },
-      })
-    );
-    await t.throwsAsync(
-      app.gql({
-        query: createMcpCredentialMutation,
-        variables: {
-          input: {
-            workspaceId: workspace.id,
-            name: 'disabled',
-            accessMode: GraphqlMcpAccessMode.READ_ONLY,
-            expirationDays: 90,
-          },
-        },
-      })
-    );
-    await t.throwsAsync(
-      app.gql({
-        query: rotateMcpCredentialMutation,
-        variables: {
-          id: randomUUID(),
+      .expect(401);
+    const { createMcpCredential } = await app.gql({
+      query: createMcpCredentialMutation,
+      variables: {
+        input: {
           workspaceId: workspace.id,
+          name: 'Claude Code',
+          accessMode: GraphqlMcpAccessMode.READ_WRITE,
           expirationDays: 90,
         },
-      })
+      },
+    });
+    const { mcpCredentials } = await app.gql({
+      query: mcpCredentialsQuery,
+      variables: { workspaceId: workspace.id },
+    });
+    t.is(mcpCredentials.length, 1);
+
+    const tools = await app
+      .POST(`/api/workspaces/${workspace.id}/mcp`)
+      .set('Authorization', `Bearer ${createMcpCredential.token}`)
+      .send({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+      .expect(200);
+    t.deepEqual(
+      tools.body.result.tools.map((tool: { name: string }) => tool.name),
+      [
+        'read_document',
+        'doc_search',
+        'list_documents',
+        'create_document',
+        'update_document',
+        'update_document_meta',
+      ]
     );
-    await t.throwsAsync(
-      app.gql({
-        query: revokeMcpCredentialMutation,
-        variables: { id: randomUUID(), workspaceId: workspace.id },
+
+    const created = await app
+      .POST(`/api/workspaces/${workspace.id}/mcp`)
+      .set('Authorization', `Bearer ${createMcpCredential.token}`)
+      .send({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'tools/call',
+        params: {
+          name: 'create_document',
+          arguments: { title: 'ملاحظات MCP', content: 'مرحبًا من MCP' },
+        },
       })
-    );
+      .expect(200);
+    t.falsy(created.body.result.isError);
+    const { docId } = JSON.parse(created.body.result.content[0].text);
+    t.truthy(docId);
+
+    const read = await app
+      .POST(`/api/workspaces/${workspace.id}/mcp`)
+      .set('Authorization', `Bearer ${createMcpCredential.token}`)
+      .send({
+        jsonrpc: '2.0',
+        id: 3,
+        method: 'tools/call',
+        params: { name: 'read_document', arguments: { docId } },
+      })
+      .expect(200);
+    t.falsy(read.body.result.isError);
+    t.true(read.body.result.content[0].text.includes('مرحبًا من MCP'));
+
+    const listed = await app
+      .POST(`/api/workspaces/${workspace.id}/mcp`)
+      .set('Authorization', `Bearer ${createMcpCredential.token}`)
+      .send({
+        jsonrpc: '2.0',
+        id: 4,
+        method: 'tools/call',
+        params: { name: 'list_documents', arguments: {} },
+      })
+      .expect(200);
+    t.falsy(listed.body.result.isError);
+    t.like(JSON.parse(listed.body.result.content[0].text), {
+      total: 1,
+      docs: [{ doc_id: docId, title: 'ملاحظات MCP' }],
+    });
+
+    await app.gql({
+      query: revokeMcpCredentialMutation,
+      variables: {
+        id: createMcpCredential.credential.id,
+        workspaceId: workspace.id,
+      },
+    });
+    await app
+      .POST(`/api/workspaces/${workspace.id}/mcp`)
+      .set('Authorization', `Bearer ${createMcpCredential.token}`)
+      .send({ jsonrpc: '2.0', id: 5, method: 'tools/list' })
+      .expect(401);
   } finally {
     await server.updateConfig(null, [
       { module: 'copilot', key: 'enabled', clear: true },
@@ -324,7 +397,7 @@ test('MCP credentials remain endpoint-bound through rotate, revoke and expiry', 
     (await provider.for(user.id, target.id, McpAccessMode.READ_ONLY)).tools.map(
       tool => tool.name
     ),
-    ['read_document', 'doc_search']
+    ['read_document', 'doc_search', 'list_documents']
   );
 
   const rotated = await credentials.rotate(

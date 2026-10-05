@@ -32,7 +32,8 @@ export const titleIcon = style({
 const title = style({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  fontFamily: 'Inter',
+  // The product font: it covers Arabic (Inter alone falls back to a system font).
+  fontFamily: 'var(--affine-font-family)',
 });
 
 export const noteTitle = style([

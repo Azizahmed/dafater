@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { McpAccessMode } from '@prisma/client';
+import { McpAccessMode, Prisma } from '@prisma/client';
 import z from 'zod/v3';
 
 import { DocReader, DocWriter } from '../../../core/doc';
 import { PermissionAccess } from '../../../core/permission';
+import { readAllDocIdsFromWorkspaceSnapshot } from '../../../core/utils/blocksuite';
+import { Models } from '../../../models';
 import { DocumentRetrievalService } from '../retrieval/document';
 
 type McpTextContent = {
@@ -100,7 +102,8 @@ export class WorkspaceMcpProvider {
     private readonly ac: PermissionAccess,
     private readonly reader: DocReader,
     private readonly writer: DocWriter,
-    private readonly retrieval: DocumentRetrievalService
+    private readonly retrieval: DocumentRetrievalService,
+    private readonly models: Models
   ) {}
 
   async for(
@@ -200,12 +203,63 @@ export class WorkspaceMcpProvider {
       },
     });
 
-    const tools = [readDocument, docSearch];
+    const listDocuments = defineTool({
+      name: 'list_documents',
+      title: 'List Documents',
+      description:
+        'List documents in the workspace, most recently updated first. Returns document IDs and titles for use with read_document. Trashed documents are excluded.',
+      parser: z.object({
+        limit: z.number().int().min(1).max(100).optional(),
+        offset: z.number().int().min(0).optional(),
+      }),
+      inputSchema: {
+        type: 'object',
+        properties: {
+          limit: { type: 'integer', minimum: 1, maximum: 100 },
+          offset: { type: 'integer', minimum: 0 },
+        },
+        additionalProperties: false,
+      },
+      execute: async ({ limit, offset }, options) => {
+        const root = await this.reader.getDoc(workspaceId, workspaceId);
+        const liveDocIds = root
+          ? readAllDocIdsFromWorkspaceSnapshot(root.bin)
+          : [];
+        const readable = await this.ac
+          .user(userId)
+          .workspace(workspaceId)
+          .docs(
+            liveDocIds.map(docId => ({ docId })),
+            'Doc.Read'
+          );
+        const abortedAfterPermission = abortIfNeeded(options.signal);
+        if (abortedAfterPermission) return abortedAfterPermission;
+        if (!readable.length) {
+          return toolText(JSON.stringify({ total: 0, docs: [] }));
+        }
 
-    if (
-      accessMode === McpAccessMode.READ_WRITE &&
-      (env.dev || env.namespaces.canary)
-    ) {
+        const [total, rows] = await this.models.doc.paginateDocInfoByUpdatedAt(
+          workspaceId,
+          { first: limit ?? 50, offset: offset ?? 0 },
+          Prisma.sql`"workspace_pages"."page_id" IN (${Prisma.join(readable.map(doc => doc.docId))})`
+        );
+        return toolText(
+          JSON.stringify({
+            total,
+            docs: rows.map(row => ({
+              doc_id: row.docId,
+              title: row.title ?? '',
+              mode: row.mode,
+              updated_at: row.updatedAt,
+            })),
+          })
+        );
+      },
+    });
+
+    const tools = [readDocument, docSearch, listDocuments];
+
+    if (accessMode === McpAccessMode.READ_WRITE) {
       const createDocument = defineTool({
         name: 'create_document',
         title: 'Create Document',

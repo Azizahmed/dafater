@@ -111,7 +111,9 @@ export class FilterConditionView extends SignalWatcher(ShadowlessElement) {
             items: [
               menu.action({
                 name: t(fn.label),
-                postfix: ArrowRightSmallIcon(),
+                postfix: html`<div class="affine-menu-forward-arrow">
+                  ${ArrowRightSmallIcon()}
+                </div>`,
                 select: ele => {
                   const subHandler = popMenu(popupTargetFromElement(ele), {
                     options: {

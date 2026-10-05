@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -15,7 +14,6 @@ import { McpAccessMode } from '@prisma/client';
 
 import { CurrentUser } from '../../../core/auth';
 import { PermissionAccess } from '../../../core/permission';
-import { CopilotEnabled } from '../feature';
 import { McpCredentialService } from './credential';
 
 registerEnumType(McpAccessMode, { name: 'McpAccessMode' });
@@ -90,7 +88,8 @@ class CreateMcpCredentialInput {
   expirationDays!: number;
 }
 
-@CopilotEnabled()
+// MCP clients bring their own model, so credentials do not depend on the
+// server's AI configuration.
 @Resolver()
 export class McpCredentialResolver {
   constructor(
@@ -109,7 +108,7 @@ export class McpCredentialResolver {
 
   @Query(() => Boolean)
   mcpCredentialReadWriteAvailable() {
-    return env.dev || env.namespaces.canary;
+    return true;
   }
 
   @Mutation(() => RevealedMcpCredentialType)
@@ -117,13 +116,6 @@ export class McpCredentialResolver {
     @CurrentUser() user: CurrentUser,
     @Args('input') input: CreateMcpCredentialInput
   ) {
-    if (
-      input.accessMode === McpAccessMode.READ_WRITE &&
-      !env.dev &&
-      !env.namespaces.canary
-    ) {
-      throw new BadRequestException('MCP write tools are not available');
-    }
     await this.ac
       .user(user.id)
       .workspace(input.workspaceId)

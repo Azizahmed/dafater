@@ -66,9 +66,15 @@ export const SignInStep = ({
       c => c.type === ServerDeploymentType.Selfhosted
     )
   );
-  const signInServerName = isSelfhosted
+  const serverDisplayName = isSelfhosted
     ? getSelfHostedServerName(serverName)
     : serverName;
+  // The title already names the product («Sign in to Dafater»): only a
+  // distinct server name is worth a subtitle.
+  const signInServerName =
+    serverDisplayName === t['com.affine.brand.name']()
+      ? undefined
+      : serverDisplayName;
   const authService = useService(AuthService);
   const isFirstUser = useIsFirstUserOnServer();
   const [isMutating, setIsMutating] = useState(false);
@@ -176,7 +182,7 @@ export const SignInStep = ({
             ? t['com.affine.auth.sign-up.admin.title']()
             : t['com.affine.auth.sign.in']()
         }
-        subTitle={signInServerName}
+        subTitle={isFirstUser ? serverDisplayName : signInServerName}
       />
 
       <AuthContent>

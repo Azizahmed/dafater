@@ -83,3 +83,29 @@
   font-display: swap;
   src: url(./thmanyah/thmanyahseriftext-Black.woff2) format('woff2');
 }
+
+/*
+ * Thmanyah's Arabic glyphs only, for stacks led by a Latin font (code):
+ * Latin keeps that font, Arabic letters join in the product typeface.
+ */
+@font-face {
+  font-family: 'Thmanyah Sans Arabic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./thmanyah/thmanyahsans-Regular.woff2) format('woff2');
+  unicode-range:
+    U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1,
+    U+08E3-08FF, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
+@font-face {
+  font-family: 'Thmanyah Sans Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(./thmanyah/thmanyahsans-Bold.woff2) format('woff2');
+  unicode-range:
+    U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1,
+    U+08E3-08FF, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}

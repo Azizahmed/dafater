@@ -201,6 +201,8 @@ export const NavigationPanelTreeNode = ({
   explorerIconConfig,
   onDrop,
   dropEffect,
+  // mobile-only option; keep it out of the DOM props
+  extractEmojiAsIcon: _extractEmojiAsIcon,
   ...otherProps
 }: WebNavigationPanelTreeNodeProps) => {
   const explorerIconService = useService(ExplorerIconService);

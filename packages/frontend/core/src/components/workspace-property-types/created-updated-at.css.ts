@@ -24,4 +24,10 @@ export const dateDocListInlineProperty = style({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   flexShrink: 0,
+  selectors: {
+    // Arabic relative dates are longer («قبل ثانية واحدة», «قبل 12 دقيقة»).
+    ':root:lang(ar) &': {
+      width: 96,
+    },
+  },
 });

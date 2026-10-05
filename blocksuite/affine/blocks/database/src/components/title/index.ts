@@ -57,6 +57,10 @@ export class DatabaseTitle extends SignalWatcher(
       color: var(--affine-placeholder-color);
     }
 
+    .affine-database-title[data-untitled-hidden='true']:not(:hover) .untitled {
+      visibility: hidden;
+    }
+
     .affine-database-title .text {
       user-select: none;
       opacity: 0;
@@ -150,7 +154,8 @@ export class DatabaseTitle extends SignalWatcher(
     const isEmpty = !this.text$.value;
     const untitled = t('Untitled database');
     // A database that is its doc's only content is named by the doc title;
-    // its own empty title would show a second "untitled" right under it.
+    // its own empty title would show a second "untitled" right under it, so
+    // the placeholder only shows on hover (the title stays clickable).
     const model = this.database?.model;
     const hideUntitled =
       isEmpty && !this.isFocus$.value && !!model && isDocDatabase(model);
@@ -161,13 +166,14 @@ export class DatabaseTitle extends SignalWatcher(
       'comment-highlighted': this.database?.isCommentHighlighted ?? false,
     });
     const untitledStyle = styleMap({
-      height: isEmpty && !hideUntitled ? 'auto' : 0,
-      opacity: isEmpty && !this.isFocus$.value && !hideUntitled ? 1 : 0,
+      height: isEmpty ? 'auto' : 0,
+      opacity: isEmpty && !this.isFocus$.value ? 1 : 0,
     });
     return html` <div
       class="${classList}"
       data-title-empty="${isEmpty}"
       data-title-focus="${this.isFocus$.value}"
+      data-untitled-hidden="${hideUntitled}"
     >
       <div class="text untitled" style="${untitledStyle}">${untitled}</div>
       <div class="text">${this.text$.value}</div>

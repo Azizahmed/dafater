@@ -8,6 +8,7 @@ import { isObject, merge } from 'lodash-es';
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs';
 
+import { directionalDefault } from '../../arabase/edgeless-defaults';
 import type { EditorSettingProvider } from '../provider/editor-setting-provider';
 import { EditorSettingSchema } from '../schema';
 
@@ -75,13 +76,13 @@ export class EditorSetting extends Entity {
           Object.fromEntries(
             Object.entries(EditorSettingSchema.shape).map(([key, schema]) => {
               const value = all[key];
-              const parsed = schema.safeParse(
-                value ? JSON.parse(value) : undefined
-              );
+              const parsed = value ? schema.safeParse(JSON.parse(value)) : null;
               return [
                 key,
-                // if parsing fails, return the default value
-                parsed.success ? parsed.data : schema.parse(undefined),
+                // if unset or parsing fails, return the default value
+                parsed?.success
+                  ? parsed.data
+                  : directionalDefault(key, schema.parse(undefined)),
               ];
             })
           ) as EditorSettingSchema

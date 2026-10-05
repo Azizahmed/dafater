@@ -165,6 +165,9 @@ export const preArea = style({
   fontSize: cssVar('fontXs'),
   whiteSpace: 'pre-wrap',
   wordBreak: 'break-all',
+  // Tokens, JSON and shell commands read left-to-right in the Arabic UI too
+  direction: 'ltr',
+  textAlign: 'left',
 });
 export const modalActions = style({
   display: 'flex',

@@ -21,11 +21,12 @@ import {
 } from '@blocksuite/affine/model';
 import type { Store } from '@blocksuite/affine/store';
 import { useFramework, useLiveData } from '@toeverything/infra';
+import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import { useCallback, useMemo } from 'react';
 
 import { DropdownMenu } from '../menu';
-import { menuTrigger, settingWrapper } from '../style.css';
+import { menuTrigger, physicalOrder, settingWrapper } from '../style.css';
 import {
   getFontStyleLabel,
   getFontWeightLabel,
@@ -572,7 +573,7 @@ export const ConnectorSettings = () => {
           items={alignItems}
           value={textAlignment}
           width={250}
-          className={settingWrapper}
+          className={clsx(settingWrapper, physicalOrder)}
           onChange={setTextAlignment}
         />
       </SettingRow>

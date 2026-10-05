@@ -10532,7 +10532,7 @@ export function useAFFiNEI18N(): {
       */
     ["com.affine.integration.mcp-server.name"](): string;
     /**
-      * `Enable other MCP Client to search and read the doc of Dafater.`
+      * `Let AI assistants such as Claude Code and Cursor search, read and edit the docs in this workspace.`
       */
     ["com.affine.integration.mcp-server.desc"](): string;
     /**
@@ -10691,6 +10691,22 @@ export function useAFFiNEI18N(): {
       * `MCP configuration`
       */
     ["com.affine.integration.mcp-server.reveal.config"](): string;
+    /**
+      * `Paste it into your MCP client's settings, such as .mcp.json for Claude Code or ~/.cursor/mcp.json for Cursor.`
+      */
+    ["com.affine.integration.mcp-server.reveal.config-hint"](): string;
+    /**
+      * `Claude Code command`
+      */
+    ["com.affine.integration.mcp-server.reveal.claude-code"](): string;
+    /**
+      * `Copy command`
+      */
+    ["com.affine.integration.mcp-server.action.copy-command"](): string;
+    /**
+      * `List documents`
+      */
+    ["com.affine.integration.mcp-server.capabilities.list"](): string;
     /**
       * `Rotate this credential?`
       */
@@ -11998,7 +12014,7 @@ export function useAFFiNEI18N(): {
       */
     ["com.affine.editor.slash-menu.database-full-page"](): string;
     /**
-      * `Create a database in a new doc and link to it here.`
+      * `In a new doc, linked here.`
       */
     ["com.affine.editor.slash-menu.database-full-page.description"](): string;
     /**

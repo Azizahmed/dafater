@@ -90,6 +90,14 @@ export class MenuComponent
     .affine-menu-back:dir(rtl) svg {
       transform: scaleX(-1);
     }
+
+    /* Wraps a "go forward" chevron (›): it points to the inline end. */
+    .affine-menu-forward-arrow {
+      display: flex;
+    }
+    .affine-menu-forward-arrow:dir(rtl) {
+      transform: scaleX(-1);
+    }
   `;
 
   private readonly _clickContainer = (e: MouseEvent) => {

@@ -1,7 +1,8 @@
 /**
  * Notion-style databases from the "/" menu (arabase): the "Database" group,
- * Arabic-tolerant search, inline insert with the title focused, and the
- * full-page database (a new doc linked from the current one).
+ * Arabic-tolerant search, inline insert with the title focused, the
+ * full-page database (a new doc, opened, linked from the current one), and
+ * no database items where a database cannot go (callouts).
  */
 import { test } from '@affine-test/kit/playwright';
 import { locateEditorContainer } from '@affine-test/kit/utils/editor';
@@ -88,7 +89,7 @@ async function docStructure(page: Page) {
       noteChildren: note.children.map((child: any) => ({
         flavour: child.flavour as string,
         text: (child.text?.toString() ?? '') as string,
-      })),
+      })) as { flavour: string; text: string }[],
       cards,
     };
   });
@@ -105,7 +106,7 @@ test.describe('database from the slash menu, Arabic UI', () => {
   test('Arabic queries surface the database items', async ({ page }) => {
     const items = await openSlashMenu(page, 'قاعدة');
     await expect(items.nth(0)).toHaveText('قاعدة بيانات');
-    await expect(items.nth(1)).toHaveText('قاعدة بيانات في صفحة مستقلة');
+    await expect(items.nth(1)).toHaveText('قاعدة بيانات في مستند مستقل');
     await expectItems(items, ['جدول بيانات', 'لوحة كانبان', 'تقويم']);
     await clearSlashQuery(page);
 
@@ -113,7 +114,7 @@ test.describe('database from the slash menu, Arabic UI', () => {
     for (const query of ['قاعده', 'قـاعِدة']) {
       const variant = await openSlashMenu(page, query);
       await expect(variant.nth(0)).toHaveText('قاعدة بيانات');
-      await expect(variant.nth(1)).toHaveText('قاعدة بيانات في صفحة مستقلة');
+      await expect(variant.nth(1)).toHaveText('قاعدة بيانات في مستند مستقل');
       await clearSlashQuery(page);
     }
 
@@ -122,7 +123,7 @@ test.describe('database from the slash menu, Arabic UI', () => {
       ['كانبان', 'لوحة كانبان'],
       ['لوحة', 'لوحة كانبان'],
       ['تقويم', 'تقويم'],
-      ['صفحة', 'قاعدة بيانات في صفحة مستقلة'],
+      ['صفحة', 'قاعدة بيانات في مستند مستقل'],
       ['جدول بيانات', 'جدول بيانات'],
       ['db', 'قاعدة بيانات'],
     ];
@@ -172,36 +173,95 @@ test.describe('database from the slash menu, Arabic UI', () => {
     ).toHaveText('مهام المشروع');
   });
 
-  test('full-page database: a new doc with a database, linked here', async ({
+  test('full-page database: opens a new doc with a database, linked here', async ({
     page,
   }) => {
     const url = page.url();
+    await page.keyboard.type('قبلها');
+    await page.keyboard.press('Enter');
     await openSlashMenu(page, 'قاعده');
-    await slashMenu(page).getByTestId('قاعدة بيانات في صفحة مستقلة').click();
+    await slashMenu(page).getByTestId('قاعدة بيانات في مستند مستقل').click();
 
-    const card = page.locator('affine-embed-linked-doc-block');
-    await expect(card).toHaveCount(1);
-    await expect(card).toContainText('قاعدة بيانات بدون عنوان');
-    // The writer stays in the current doc.
-    expect(page.url()).toBe(url);
-    await expect(page.locator('affine-database')).toHaveCount(0);
+    // As in Notion, the new doc opens with its (empty) title focused.
+    await expect.poll(() => page.url()).not.toBe(url);
+    const title = getBlockSuiteEditorTitle(page);
+    await expect(title).toHaveText('');
+    const database = page.locator('affine-database');
+    await expect(database).toHaveCount(1);
+    await expect(database.locator('data-view-header-views')).toContainText(
+      'عرض جدول'
+    );
+    // One title only: the database's own empty title is not shown under
+    // the doc title (only on hover, so it can still be named).
+    await page.mouse.move(0, 0);
+    await expect(
+      database.locator('affine-database-title .text.untitled')
+    ).toBeHidden();
 
-    const structure = await docStructure(page);
-    expect(structure.noteChildren.map(child => child.flavour)).not.toContain(
+    // What is typed next names the doc.
+    await page.keyboard.type('مهام المشروع');
+    await expect(title).toHaveText('مهام المشروع');
+    const linked = await docStructure(page);
+    expect(linked.noteChildren.map(child => child.flavour)).toContain(
       'affine:database'
     );
+    expect(linked.noteChildren.some(child => child.text.includes('مهام'))).toBe(
+      false
+    );
+
+    // Back in the first doc: the card replaced the "/" line, with an empty
+    // line below it to keep writing on.
+    await page.goBack();
+    await expect.poll(() => page.url()).toBe(url);
+    const card = page.locator('affine-embed-linked-doc-block');
+    await expect(card).toHaveCount(1);
+    await expect(card).toContainText('مهام المشروع');
+    const structure = await docStructure(page);
+    const children = structure.noteChildren;
+    const cardIndex = children.findIndex(
+      child => child.flavour === 'affine:embed-linked-doc'
+    );
+    expect(children[cardIndex - 1]).toEqual({
+      flavour: 'affine:paragraph',
+      text: 'قبلها',
+    });
+    expect(children[cardIndex + 1]).toEqual({
+      flavour: 'affine:paragraph',
+      text: '',
+    });
+    expect(children.some(child => child.text.includes('/'))).toBe(false);
     expect(structure.cards).toHaveLength(1);
-    expect(structure.cards[0].title).toBe('قاعدة بيانات بدون عنوان');
-    expect(structure.cards[0].flavours).toContain('affine:database');
+    expect(structure.cards[0].title).toBe('مهام المشروع');
     expect(structure.cards[0].views).toEqual([
       { mode: 'table', name: 'عرض جدول' },
     ]);
+  });
 
-    // Opening the card shows the database.
-    await card.dblclick();
-    const peek = page.getByTestId('peek-view-modal');
-    await expect(peek).toBeVisible();
-    await expect(peek.locator('affine-database')).toBeVisible();
+  test('no database items inside a callout', async ({ page }) => {
+    // Outside a callout the full menu has them.
+    await openSlashMenu(page, '');
+    await expect(slashMenu(page).getByTestId('قاعدة بيانات')).toHaveCount(1);
+    await clearSlashQuery(page);
+
+    await openSlashMenu(page, 'ملاحظة بارزة');
+    await slashMenu(page).getByTestId('ملاحظة بارزة').click();
+    await expect(page.locator('affine-callout')).toHaveCount(1);
+
+    // The full menu is open, with the database group left out.
+    const items = await openSlashMenu(page, '');
+    await expect.poll(() => items.count()).toBeGreaterThan(5);
+    for (const name of [
+      'قاعدة بيانات',
+      'قاعدة بيانات في مستند مستقل',
+      'جدول بيانات',
+      'لوحة كانبان',
+      'تقويم',
+    ]) {
+      await expect(slashMenu(page).getByTestId(name)).toHaveCount(0);
+    }
+    await page.keyboard.press('Escape');
+    await expect(page.locator('affine-database')).toHaveCount(0);
+    await expect(page.locator('affine-embed-linked-doc-block')).toHaveCount(0);
   });
 });
 

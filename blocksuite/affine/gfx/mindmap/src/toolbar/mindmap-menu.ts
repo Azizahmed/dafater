@@ -114,6 +114,10 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
     .mindmap-item > button.next {
       transition: transform 0.3s ease-in-out;
     }
+    /* Mind maps grow leftwards in RTL interfaces: mirror the style previews. */
+    :host(:dir(rtl)) .mindmap-item[data-is-active] > button > svg {
+      transform: scaleX(-1);
+    }
   `;
 
   private readonly _style$ = computed(() => {

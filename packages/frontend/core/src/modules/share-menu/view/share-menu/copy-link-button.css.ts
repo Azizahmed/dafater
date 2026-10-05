@@ -68,6 +68,10 @@ export const copyLinkShortcutStyle = style({
   opacity: 0.5,
   lineHeight: '20px',
   color: cssVarV2('text/pureWhite'),
+  // Key combos read as one left-to-right unit: ⌘ and ⌥ are neutral
+  // characters that the RTL paragraph would otherwise reorder.
+  direction: 'ltr',
+  unicodeBidi: 'isolate',
   '@container': {
     [`${copyLinkContainer} (max-width: 320px)`]: {
       display: 'none',

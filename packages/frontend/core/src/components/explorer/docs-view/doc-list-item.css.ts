@@ -264,6 +264,10 @@ export const cardPreviewContainer = style([
     flexGrow: 1,
     flexShrink: 1,
     overflow: 'hidden',
+    // The card height is not a whole number of lines: fade the last line out
+    // instead of cutting it through the middle (Arabic glyphs are tall).
+    maskImage:
+      'linear-gradient(to bottom, #000 calc(100% - 20px), transparent)',
   },
 ]);
 export const cardViewCheckbox = style({

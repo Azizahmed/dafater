@@ -1,3 +1,4 @@
+import { mirrorInRtl } from '@affine/component';
 import {
   SettingHeader,
   SettingRow,
@@ -77,7 +78,7 @@ export const WorkspaceSettingDetail = ({
           onClick={handleResetSyncStatus}
           data-testid="reset-sync-status"
         >
-          <ArrowRightSmallIcon />
+          <ArrowRightSmallIcon className={mirrorInRtl} />
         </SettingRow>
       </SettingWrapper>
     </FrameworkScope>

@@ -62,5 +62,9 @@ export const collapseIcon = style({
     [`${root}[data-collapsed="true"] &`]: {
       vars: { '--r': '0deg' },
     },
+    // Collapsed points toward the reading direction (◂ in RTL).
+    [`${root}[data-collapsed="true"] &:dir(rtl)`]: {
+      vars: { '--r': '180deg' },
+    },
   },
 });

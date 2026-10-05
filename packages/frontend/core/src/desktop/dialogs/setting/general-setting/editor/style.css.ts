@@ -8,6 +8,13 @@ export const settingWrapper = style({
   minWidth: '150px',
   maxWidth: '250px',
 });
+/**
+ * Left / center / right options keep their physical order (left on the
+ * left) in RTL, like the alignment buttons of the editors.
+ */
+export const physicalOrder = style({
+  direction: 'ltr',
+});
 export const preViewLabelWrapper = style({
   flexGrow: 1,
   display: 'flex',

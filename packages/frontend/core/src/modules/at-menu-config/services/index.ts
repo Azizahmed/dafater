@@ -281,7 +281,7 @@ export class AtMenuConfigService extends Service {
         icon: icon(),
         key: RESERVED_ITEM_KEYS.datePicker + ':' + dateString,
         name: alias
-          ? html`${alias},
+          ? html`${alias}${I18n.language?.startsWith('ar') ? '،' : ','}
               <span style="color: ${cssVarV2('text/secondary')}"
                 >${dateDisplay}</span
               >`

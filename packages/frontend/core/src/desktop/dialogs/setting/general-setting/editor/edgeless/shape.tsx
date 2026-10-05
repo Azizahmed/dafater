@@ -27,12 +27,14 @@ import {
 import type { EditorHost } from '@blocksuite/affine/std';
 import type { Store } from '@blocksuite/affine/store';
 import { useFramework, useLiveData } from '@toeverything/infra';
+import clsx from 'clsx';
 import { isEqual } from 'lodash-es';
 import { useCallback, useMemo, useState } from 'react';
 
 import { DropdownMenu } from '../menu';
 import {
   menuTrigger,
+  physicalOrder,
   preViewLabelWrapper,
   settingWrapper,
   shapeIndicator,
@@ -611,7 +613,7 @@ export const ShapeSettings = () => {
           items={alignItems}
           value={textAlignment}
           width={250}
-          className={settingWrapper}
+          className={clsx(settingWrapper, physicalOrder)}
           onChange={setTextAlignment}
         />
       </SettingRow>

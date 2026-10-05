@@ -29,7 +29,7 @@ const styles = css`
     content: '';
     position: absolute;
     top: 2px;
-    left: 2px;
+    inset-inline-start: 2px;
     width: 16px;
     height: 16px;
     background: ${unsafeCSSVarV2('toggle/foreground')};
@@ -42,8 +42,13 @@ const styles = css`
   }
 
   label.on:after {
-    left: calc(100% - 2px);
+    inset-inline-start: calc(100% - 2px);
     transform: translateX(-100%);
+  }
+
+  /* The knob moves towards the inline end: leftwards in RTL. */
+  :host(:dir(rtl)) label.on:after {
+    transform: translateX(100%);
   }
 
   label:active:after {

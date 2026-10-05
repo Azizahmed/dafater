@@ -164,13 +164,13 @@ describe('IntegrationSetting', () => {
     });
   }
 
-  test('hides MCP Server when Copilot is disabled', () => {
+  test('shows MCP Server even when Copilot is disabled', () => {
     serverFeatures.copilot = false;
     render(<IntegrationSetting />);
 
     expect(
-      screen.queryByText('com.affine.integration.mcp-server.name')
-    ).toBeNull();
+      screen.getByText('com.affine.integration.mcp-server.name')
+    ).not.toBeNull();
   });
 
   test('shows MCP Server when Copilot is enabled', () => {
@@ -179,5 +179,14 @@ describe('IntegrationSetting', () => {
     expect(
       screen.getByText('com.affine.integration.mcp-server.name')
     ).not.toBeNull();
+  });
+
+  test('hides MCP Server for local workspaces', () => {
+    workspaceState.flavour = 'local';
+    render(<IntegrationSetting />);
+
+    expect(
+      screen.queryByText('com.affine.integration.mcp-server.name')
+    ).toBeNull();
   });
 });

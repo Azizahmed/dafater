@@ -686,7 +686,11 @@ export async function readAllBlocksFromDoc({
       });
 
       if (maxSummaryLength > 0) {
-        summary += text.toString();
+        const blockText = text.toString();
+        // A space between blocks: a paragraph's last word must not merge
+        // with the next one's first word in the preview.
+        if (summary && blockText && !/\s$/.test(summary)) summary += ' ';
+        summary += blockText;
         maxSummaryLength -= text.length;
       }
     } else if (

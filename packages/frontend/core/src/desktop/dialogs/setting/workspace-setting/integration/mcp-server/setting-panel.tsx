@@ -75,14 +75,17 @@ export const McpServerSettingPanel = () => {
 
   useEffect(() => revalidate(), [revalidate]);
 
+  const serverName = `dafater_workspace_${workspaceId}`;
+  const endpoint = `${serverService.server.baseUrl}/api/workspaces/${workspaceId}/mcp`;
+
   const config = useMemo(() => {
     if (!revealed) return '';
     return JSON.stringify(
       {
         mcpServers: {
-          [`affine_workspace_${workspaceId}`]: {
-            type: 'streamable-http',
-            url: `${serverService.server.baseUrl}/api/workspaces/${workspaceId}/mcp`,
+          [serverName]: {
+            type: 'http',
+            url: endpoint,
             headers: { Authorization: `Bearer ${revealed.token}` },
           },
         },
@@ -90,7 +93,12 @@ export const McpServerSettingPanel = () => {
       null,
       2
     );
-  }, [revealed, serverService.server.baseUrl, workspaceId]);
+  }, [endpoint, revealed, serverName]);
+
+  const command = useMemo(() => {
+    if (!revealed) return '';
+    return `claude mcp add --transport http ${serverName} ${endpoint} --header "Authorization: Bearer ${revealed.token}"`;
+  }, [endpoint, revealed, serverName]);
 
   const create = useAsyncCallback(
     async (name: string, accessMode: McpAccessMode, expirationDays: number) => {
@@ -298,11 +306,13 @@ export const McpServerSettingPanel = () => {
           </div>
         </div>
         <div className={styles.capabilities}>
-          {(['read', 'keyword-search', 'semantic-search'] as const).map(key => (
-            <div className={styles.capability} key={key}>
-              {t[`com.affine.integration.mcp-server.capabilities.${key}`]()}
-            </div>
-          ))}
+          {(['read', 'list', 'keyword-search', 'semantic-search'] as const).map(
+            key => (
+              <div className={styles.capability} key={key}>
+                {t[`com.affine.integration.mcp-server.capabilities.${key}`]()}
+              </div>
+            )
+          )}
           {readWriteAvailable ? (
             <div className={styles.capability}>
               {t['com.affine.integration.mcp-server.capabilities.write']()}
@@ -315,6 +325,7 @@ export const McpServerSettingPanel = () => {
         mode={modal}
         revealed={revealed}
         config={config}
+        command={command}
         workspaceName={workspaceName}
         readWriteAvailable={readWriteAvailable}
         onCreate={create}

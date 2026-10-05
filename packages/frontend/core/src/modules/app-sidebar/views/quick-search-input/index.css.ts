@@ -31,6 +31,10 @@ export const spacer = style({
 export const shortcutHint = style({
   color: cssVarV2('text/tertiary'),
   fontSize: cssVar('fontBase'),
+  // Key combos read as one left-to-right unit (Ctrl, Shift, then the key),
+  // and bidi mirroring must not flip bracket keys in RTL.
+  direction: 'ltr',
+  unicodeBidi: 'isolate',
 });
 export const quickSearchBarEllipsisStyle = style({
   overflow: 'hidden',

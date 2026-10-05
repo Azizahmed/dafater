@@ -60,7 +60,7 @@ test.describe('editor integrations in Arabic', () => {
     await newDocWithText(page, 'فقرة للتجربة.');
     const toolbar = page.locator('affine-toolbar-widget editor-toolbar');
     const askAI = toolbar.getByTestId('ask-ai-button');
-    await expect(askAI).toContainText('اسأل الذكاء الاصطناعي');
+    await expect(askAI).toContainText('اسأل ذكاء دفاتر');
     await askAI.click();
 
     await expect(
