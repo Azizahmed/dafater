@@ -1,6 +1,7 @@
 import type { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import type { PeekViewService } from '@affine/core/modules/peek-view';
 import { I18n } from '@affine/i18n';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import type { ColorScheme } from '@blocksuite/affine/model';
 import {
@@ -219,6 +220,10 @@ export class ChatContentStreamObjects extends WithDisposable(
     .tool-group-toggle {
       transition: transform 0.23s ease;
       transform: rotate(-90deg);
+    }
+
+    .tool-group:not([open]) .tool-group-toggle:dir(rtl) {
+      transform: rotate(90deg);
     }
 
     .tool-group[open] .tool-group-toggle {
@@ -518,7 +523,9 @@ export class ChatContentStreamObjects extends WithDisposable(
           ></section-edit-tool>
         `;
       default: {
-        const name = streamObject.toolName + ' tool calling';
+        const name = t('{name} tool calling', {
+          name: streamObject.toolName,
+        });
         return html`
           <tool-call-card .name=${name} .width=${this.width}></tool-call-card>
         `;
@@ -628,7 +635,9 @@ export class ChatContentStreamObjects extends WithDisposable(
           ></section-edit-tool>
         `;
       default: {
-        const name = streamObject.toolName + ' tool result';
+        const name = t('{name} tool result', {
+          name: streamObject.toolName,
+        });
         return html`
           <tool-result-card
             .name=${name}

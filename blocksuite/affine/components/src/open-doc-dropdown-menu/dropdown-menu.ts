@@ -4,6 +4,7 @@ import {
   ToolbarContext,
 } from '@blocksuite/affine-shared/services';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
 import { computed, type ReadonlySignal } from '@preact/signals-core';
@@ -81,18 +82,18 @@ export class OpenDocDropdownMenu extends SignalWatcher(
 
     return html`
       <editor-icon-button
-        aria-label="${currentAction.label}"
-        .tooltip="${currentAction.label}"
+        aria-label="${ifDefined(currentAction.label && t(currentAction.label))}"
+        .tooltip="${currentAction.label && t(currentAction.label)}"
         @click=${() => currentAction.run?.(context)}
       >
         ${currentAction.icon}
-        <span class="label">Open</span>
+        <span class="label">${t('Open')}</span>
       </editor-icon-button>
       <editor-menu-button
-        aria-label="Open doc menu"
+        aria-label=${t('Open doc menu')}
         .contentPadding="${'8px'}"
         .button=${html`
-          <editor-icon-button aria-label="Open doc with">
+          <editor-icon-button aria-label=${t('Open doc with')}>
             ${EditorChevronDown}
           </editor-icon-button>
         `}
@@ -103,7 +104,7 @@ export class OpenDocDropdownMenu extends SignalWatcher(
             action => action.id,
             ({ label, icon, run, disabled, mode, shortcut }) => html`
               <editor-menu-action
-                aria-label=${ifDefined(label)}
+                aria-label=${ifDefined(label && t(label))}
                 ?disabled=${ifDefined(disabled)}
                 @click=${() => {
                   run?.(context);
@@ -112,7 +113,7 @@ export class OpenDocDropdownMenu extends SignalWatcher(
               >
                 ${icon}
                 <div class="label">
-                  ${label}
+                  ${label && t(label)}
                   <span class="shortcut">${shortcut}</span>
                 </div>
               </editor-menu-action>

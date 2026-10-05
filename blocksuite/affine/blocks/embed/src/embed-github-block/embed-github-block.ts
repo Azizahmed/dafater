@@ -5,6 +5,7 @@ import type {
 } from '@blocksuite/affine-model';
 import { ImageProxyService } from '@blocksuite/affine-shared/adapters';
 import { ThemeProvider } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { BlockSelection, isGfxBlockComponent } from '@blocksuite/std';
 import { html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -139,7 +140,7 @@ export class EmbedGithubBlockComponent extends EmbedBlockComponent<
       ? getGithubStatusIcon(githubType, status, statusReason)
       : nothing;
     const statusText = loading ? '' : status;
-    const titleText = loading ? 'Loading...' : title || 'GitHub';
+    const titleText = loading ? t('Loading...') : title || 'GitHub';
     const descriptionText = loading ? '' : description;
     const bannerImage =
       !loading && image
@@ -218,7 +219,7 @@ export class EmbedGithubBlockComponent extends EmbedBlockComponent<
                       <div
                         class="affine-embed-github-content-assignees-text label"
                       >
-                        Assignees
+                        ${t('Assignees')}
                       </div>
 
                       <div
@@ -228,7 +229,7 @@ export class EmbedGithubBlockComponent extends EmbedBlockComponent<
                           assignees.length === 0
                             ? html`<span
                                 class="affine-embed-github-content-assignees-text-users placeholder"
-                                >No one</span
+                                >${t('No one')}</span
                               >`
                             : repeat(
                                 assignees,

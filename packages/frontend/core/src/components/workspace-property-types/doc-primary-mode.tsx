@@ -150,7 +150,7 @@ export const DocPrimaryModeGroupHeader = ({
       ? t['com.affine.edgelessMode']()
       : groupId === 'page'
         ? t['com.affine.pageMode']()
-        : 'Default';
+        : t['com.affine.all-docs.group.default']();
 
   return (
     <PlainTextDocGroupHeader groupId={groupId} docCount={docCount}>

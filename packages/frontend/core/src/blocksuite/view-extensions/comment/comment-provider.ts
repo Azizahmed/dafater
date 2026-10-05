@@ -1,4 +1,5 @@
 import { WorkbenchService } from '@affine/core/modules/workbench';
+import { t } from '@blocksuite/affine/global/i18n';
 import { getSelectedBlocksCommand } from '@blocksuite/affine/shared/commands';
 import type { CommentProvider } from '@blocksuite/affine/shared/services';
 import { CommentProviderIdentifier } from '@blocksuite/affine/shared/services';
@@ -65,7 +66,7 @@ function getPreviewFromSelections(
     // Skip other types
   }
 
-  return previews.length > 0 ? previews.join(' ') : 'New comment';
+  return previews.length > 0 ? previews.join(' ') : t('New comment');
 }
 
 function extractTextFromSelection(

@@ -2,6 +2,7 @@ import { LoadingIcon, OpenIcon } from '@blocksuite/affine-components/icons';
 import type { EmbedLoomModel, EmbedLoomStyles } from '@blocksuite/affine-model';
 import { ImageProxyService } from '@blocksuite/affine-shared/adapters';
 import { ThemeProvider } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { BlockSelection } from '@blocksuite/std';
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -96,7 +97,7 @@ export class EmbedLoomBlockComponent extends EmbedBlockComponent<
     const imageProxyService = this.store.get(ImageProxyService);
     const { EmbedCardBannerIcon } = getEmbedCardIcons(theme);
     const titleIcon = loading ? LoadingIcon() : LoomIcon;
-    const titleText = loading ? 'Loading...' : title || 'Loom';
+    const titleText = loading ? t('Loading...') : title || 'Loom';
     const descriptionText = loading ? '' : description;
     const bannerImage =
       !loading && image

@@ -1,3 +1,4 @@
+import { useI18n } from '@affine/i18n';
 import keywords from '@blocksuite/icons/keywords/en.json';
 import * as allIcons from '@blocksuite/icons/rc';
 import { cssVarV2 } from '@toeverything/theme/v2';
@@ -67,6 +68,7 @@ export const AffineIconPicker = ({
   onSelect?: (icon: string, color: string) => void;
 }) => {
   const [filteredIcons, setFilteredIcons] = useState<Icon[]>([]);
+  const t = useI18n();
   const [keyword, setKeyword] = useState('');
   const [color, setColor] = useState<string>(cssVarV2.block.callout.icon.blue);
 
@@ -112,13 +114,13 @@ export const AffineIconPicker = ({
           onKeyDown={handleSearchKeyDown}
           className={pickerStyles.searchInput}
           preFix={
-            <div style={{ marginLeft: 10, lineHeight: 0 }}>
+            <div style={{ marginInlineStart: 10, lineHeight: 0 }}>
               <allIcons.SearchIcon
                 style={{ color: cssVarV2.icon.primary, fontSize: 16 }}
               />
             </div>
           }
-          placeholder="Filter..."
+          placeholder={t['com.affine.icon-picker.filter']()}
         />
 
         {/* Color Picker */}
@@ -168,7 +170,7 @@ export const AffineIconPicker = ({
           {recentIcons.length ? (
             <div className={pickerStyles.group}>
               <div className={pickerStyles.groupName} data-group-name="Recent">
-                Recent
+                {t['com.affine.icon-picker.recent']()}
               </div>
               <div className={pickerStyles.groupGrid}>
                 {recentIcons.map(iconName => (
@@ -189,7 +191,7 @@ export const AffineIconPicker = ({
           {/* Groups */}
           <div className={pickerStyles.group}>
             <div className={pickerStyles.groupName} data-group-name="Recent">
-              Icons
+              {t['com.affine.icon-picker.icons']()}
             </div>
             <div className={pickerStyles.groupGrid}>
               {filteredIcons.map(icon => {

@@ -12,6 +12,7 @@ import type { CopilotChatHistoryFragment } from '@affine/graphql';
 import track, { type EventArgs } from '@affine/track';
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
 import type { EditorHost } from '@blocksuite/affine/std';
@@ -84,7 +85,8 @@ export class AIChatInput extends SignalWatcher(
       gap: 4px;
       position: relative;
       border-radius: 12px;
-      padding: 8px 6px 6px 8px;
+      padding-block: 8px 6px;
+      padding-inline: 8px 6px;
       min-height: 94px;
       box-sizing: border-box;
       transition: box-shadow 0.23s ease;
@@ -97,7 +99,7 @@ export class AIChatInput extends SignalWatcher(
 
       .chat-selection-quote {
         padding: 4px 0px 8px 0px;
-        padding-left: 15px;
+        padding-inline-start: 15px;
         max-height: 56px;
         font-size: 14px;
         font-weight: 400;
@@ -113,7 +115,7 @@ export class AIChatInput extends SignalWatcher(
 
         .chat-quote-close {
           position: absolute;
-          right: 0;
+          inset-inline-end: 0;
           top: 0;
           cursor: pointer;
           display: none;
@@ -137,7 +139,7 @@ export class AIChatInput extends SignalWatcher(
         height: calc(100% - 10px);
         margin-top: 5px;
         position: absolute;
-        left: 0;
+        inset-inline-start: 0;
         top: 0;
         background: var(--affine-quote-color);
         border-radius: 18px;
@@ -173,7 +175,7 @@ export class AIChatInput extends SignalWatcher(
       }
 
       .chat-input-icon:nth-child(2) {
-        margin-left: auto;
+        margin-inline-start: auto;
       }
 
       .chat-input-icon:hover {
@@ -577,7 +579,7 @@ export class AIChatInput extends SignalWatcher(
       ${
         this.isDragOver
           ? html`<div class="chat-panel-input-drop-overlay">
-              Drop to attach
+              ${t('Drop to attach')}
             </div>`
           : nothing
       }
@@ -600,7 +602,7 @@ export class AIChatInput extends SignalWatcher(
               ${repeat(
                 getFirstTwoLines(this.chatContextValue.quote),
                 line => line,
-                line => html`<div>${line}</div>`
+                line => html`<div dir="auto">${line}</div>`
               )}
               <div
                 class="chat-quote-close"
@@ -615,7 +617,8 @@ export class AIChatInput extends SignalWatcher(
       }
       <textarea
         rows="1"
-        placeholder="What are your thoughts?"
+        dir="auto"
+        placeholder=${t('What are your thoughts?')}
         @input=${this._handleInput}
         @keydown=${this._handleKeyDown}
         @focus=${() => {

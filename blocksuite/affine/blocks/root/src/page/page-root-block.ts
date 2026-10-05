@@ -348,11 +348,14 @@ export class PageRootBlockComponent extends BlockComponent<RootBlockModel> {
       if (nearestBlock) {
         const text = nearestBlock.model.text;
         if (text) {
+          // In an RTL block the text starts on the right side.
+          const isRtl = getComputedStyle(nearestBlock).direction === 'rtl';
+          const atStart = isRtl ? side === 'right' : side === 'left';
           this.host.selection.setGroup('note', [
             this.host.selection.create(TextSelection, {
               from: {
                 blockId: nearestBlock.model.id,
-                index: side === 'left' ? 0 : text.length,
+                index: atStart ? 0 : text.length,
                 length: 0,
               },
               to: null,

@@ -166,7 +166,8 @@ export const styles = css`
   }
 
   .affine-embed-linked-doc-banner {
-    margin: 12px 12px 0px 0px;
+    margin-block: 12px 0px;
+    margin-inline: 0px 12px;
     width: 204px;
     min-width: 204px;
     max-width: 100%;
@@ -286,7 +287,7 @@ export const styles = css`
     .affine-embed-linked-doc-banner {
       width: 340px;
       height: 170px;
-      margin-left: 12px;
+      margin-inline-start: 12px;
     }
     .affine-embed-linked-doc-banner img,
     .affine-embed-linked-doc-banner object,

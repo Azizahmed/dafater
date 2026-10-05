@@ -28,5 +28,5 @@ export const filterValueMenu = style({
   top: 'calc(var(--radix-popper-anchor-height) - 18px) !important',
 });
 export const moreTagsLabel = style({
-  marginLeft: 4,
+  marginInlineStart: 4,
 });

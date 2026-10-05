@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import { css, html, LitElement, unsafeCSS } from 'lit';
@@ -76,7 +77,7 @@ export class DatabaseNumberFormatBar extends WithDisposable(LitElement) {
     .number-formatting-sample {
       font-size: var(--affine-font-xs);
       color: var(--affine-icon-color);
-      margin-left: auto;
+      margin-inline-start: auto;
     }
     .number-format-toolbar-button:hover {
       background-color: var(--affine-hover-color);
@@ -108,7 +109,7 @@ export class DatabaseNumberFormatBar extends WithDisposable(LitElement) {
         <div class="number-format-decimal-places">
           <button
             class="number-format-toolbar-button"
-            aria-label="decrease decimal places"
+            aria-label="${t('decrease decimal places')}"
             @click=${this._decrementDecimalPlaces}
           >
             ${DecreaseDecimalPlacesIcon}
@@ -116,7 +117,7 @@ export class DatabaseNumberFormatBar extends WithDisposable(LitElement) {
 
           <button
             class="number-format-toolbar-button"
-            aria-label="increase decimal places"
+            aria-label="${t('increase decimal places')}"
             @click=${this._incrementDecimalPlaces}
           >
             ${IncreaseDecimalPlacesIcon}

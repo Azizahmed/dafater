@@ -17,6 +17,7 @@ import {
   getMostCommonResolvedValue,
   getMostCommonValue,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
 import { html } from 'lit';
 
@@ -98,7 +99,7 @@ export const brushToolbarConfig = {
         return html`
           <edgeless-color-picker-button
             class="color"
-            .label="${'Color'}"
+            .label="${t('Color')}"
             .pick=${onPick}
             .color=${color}
             .theme=${theme}

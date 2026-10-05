@@ -51,6 +51,10 @@ export class ReleaseVersionType {
   changelog!: string;
 }
 
+// Dafater: the upstream release feed (affine.pro/api/worker/releases) belongs
+// to AFFiNE, so the server never checks it for "available upgrades".
+const DAFATER_RELEASE_FEED_ENABLED: boolean = false;
+
 const RELEASE_CHANNEL_MAP = new Map<Namespace, string>([
   [Namespace.Dev, 'canary'],
   [Namespace.Beta, 'beta'],
@@ -78,15 +82,7 @@ export class ServerConfigResolver {
   })
   serverConfig(): ServerConfigType {
     return {
-      name:
-        this.config.server.name ??
-        (this.selfhosted
-          ? 'AFFiNE Self-hosted'
-          : env.namespaces.canary
-            ? 'AFFiNE Canary Cloud'
-            : env.namespaces.beta
-              ? 'AFFiNE Beta Cloud'
-              : 'AFFiNE Cloud'),
+      name: this.config.server.name ?? 'Dafater',
       version: env.version,
       baseUrl: this.url.requestBaseUrl,
       type: this.selfhosted ? DeploymentType.Selfhosted : DeploymentType.Affine,
@@ -118,7 +114,8 @@ export class ServerConfigResolver {
     description: 'fetch latest available upgradable release of server',
   })
   async availableUpgrade(): Promise<ReleaseVersionType | null> {
-    if (!this.selfhosted) {
+    // Dafater has no release feed: never query AFFiNE's release worker.
+    if (!this.selfhosted || !DAFATER_RELEASE_FEED_ENABLED) {
       return null;
     }
 

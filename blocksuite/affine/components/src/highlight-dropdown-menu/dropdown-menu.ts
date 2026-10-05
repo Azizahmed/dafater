@@ -1,4 +1,5 @@
 import type { AffineTextStyleAttributes } from '@blocksuite/affine-shared/types';
+import { t } from '@blocksuite/global/i18n';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
 import { LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -19,6 +20,19 @@ const colors = [
   'purple',
   'grey',
 ] as const;
+
+// Displayed through `t()`; the CSS still capitalizes the English labels.
+const colorNames: Record<(typeof colors)[number], string> = {
+  default: 'Default',
+  red: 'Red',
+  orange: 'Orange',
+  yellow: 'Yellow',
+  green: 'Green',
+  teal: 'Teal',
+  blue: 'Blue',
+  purple: 'Purple',
+  grey: 'Grey',
+};
 
 export type HighlightType = Pick<
   AffineTextStyleAttributes,
@@ -52,7 +66,10 @@ export class HighlightDropdownMenu extends LitElement {
       <editor-menu-button
         .contentPadding="${'8px'}"
         .button=${html`
-          <editor-icon-button aria-label="highlight" .tooltip="${'Highlight'}">
+          <editor-icon-button
+            aria-label=${t('highlight')}
+            .tooltip="${t('Highlight')}"
+          >
             <affine-highlight-duotone-icon
               style=${styleMap({
                 '--color':
@@ -65,7 +82,7 @@ export class HighlightDropdownMenu extends LitElement {
         `}
       >
         <div data-size="large" data-orientation="vertical">
-          <div class="highlight-heading">Color</div>
+          <div class="highlight-heading">${t('Color')}</div>
           ${repeat(colors, color => {
             const isDefault = color === 'default';
             const value = isDefault
@@ -82,13 +99,13 @@ export class HighlightDropdownMenu extends LitElement {
                   })}
                 ></affine-text-duotone-icon>
                 <span class="label capitalize"
-                  >${isDefault ? `${color} color` : color}</span
+                  >${isDefault ? t('Default color') : t(colorNames[color])}</span
                 >
               </editor-menu-action>
             `;
           })}
 
-          <div class="highlight-heading">Background</div>
+          <div class="highlight-heading">${t('Background')}</div>
           ${repeat(colors, color => {
             const isDefault = color === 'default';
             const value = isDefault ? null : `var(${prefix}-${color})`;
@@ -105,7 +122,9 @@ export class HighlightDropdownMenu extends LitElement {
                 ></affine-text-duotone-icon>
 
                 <span class="label capitalize"
-                  >${isDefault ? `${color} background` : color}</span
+                  >${
+                    isDefault ? t('Default background') : t(colorNames[color])
+                  }</span
                 >
               </editor-menu-action>
             `;

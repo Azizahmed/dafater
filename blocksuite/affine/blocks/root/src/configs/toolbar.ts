@@ -59,6 +59,7 @@ import {
   isInsideBlockByFlavour,
 } from '@blocksuite/affine-shared/utils';
 import { tableViewMeta } from '@blocksuite/data-view/view-presets';
+import { t } from '@blocksuite/global/i18n';
 import {
   CopyIcon,
   DatabaseTableViewIcon,
@@ -119,8 +120,8 @@ const conversionsActionGroup = {
           .contentPadding="${'8px'}"
           .button=${html`
             <editor-icon-button
-              aria-label="Conversions"
-              .tooltip="${'Turn into'}"
+              aria-label=${t('Conversions')}
+              .tooltip=${t('Turn into')}
             >
               ${conversion.icon} ${EditorChevronDown}
             </editor-icon-button>
@@ -136,11 +137,11 @@ const conversionsActionGroup = {
               item => item.name,
               ({ flavour, type, name, icon }) => html`
                 <editor-menu-action
-                  aria-label=${name}
+                  aria-label=${t(name)}
                   ?data-selected=${conversion.name === name}
                   @click=${() => update(flavour, type)}
                 >
-                  ${icon}<span class="label">${name}</span>
+                  ${icon}<span class="label">${t(name)}</span>
                 </editor-menu-action>
               `
             )}
@@ -184,7 +185,7 @@ const alignActionGroup = {
         <editor-menu-button
           .contentPadding="${'8px'}"
           .button=${html`
-            <editor-icon-button aria-label="Align" .tooltip="${'Align'}">
+            <editor-icon-button aria-label=${t('Align')} .tooltip=${t('Align')}>
               ${alignment.icon} ${EditorChevronDown}
             </editor-icon-button>
           `}
@@ -195,10 +196,10 @@ const alignActionGroup = {
               item => item.name,
               ({ textAlign, name, icon }) => html`
                 <editor-menu-action
-                  aria-label=${name}
+                  aria-label=${t(name)}
                   @click=${() => update(textAlign)}
                 >
-                  ${icon}<span class="label">${name}</span>
+                  ${icon}<span class="label">${t(name)}</span>
                 </editor-menu-action>
               `
             )}
@@ -418,7 +419,7 @@ export const builtinToolbarConfig = {
 
             if (!ok) return;
 
-            toast(host, 'Copied to clipboard');
+            toast(host, t('Copied to clipboard'));
           },
         },
         {

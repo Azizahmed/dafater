@@ -28,7 +28,7 @@ export const shortcutKey = style({
   fontSize: cssVar('fontXs'),
   selectors: {
     '&:not(:last-of-type)': {
-      marginRight: '2px',
+      marginInlineEnd: '2px',
     },
   },
 });

@@ -1,3 +1,5 @@
+import { t } from '@blocksuite/affine/global/i18n';
+
 abstract class BaseAIError extends Error {
   abstract readonly type: AIErrorType;
 }
@@ -34,7 +36,7 @@ export class PaymentRequiredError extends BaseAIError {
 export class GeneralNetworkError extends BaseAIError {
   readonly type = AIErrorType.GeneralNetworkError;
 
-  constructor(message: string = 'Network error') {
+  constructor(message: string = t('Network error')) {
     super(message);
   }
 }
@@ -43,7 +45,7 @@ export class GeneralNetworkError extends BaseAIError {
 export class RequestTimeoutError extends BaseAIError {
   readonly type = AIErrorType.RequestTimeout;
 
-  constructor(message: string = 'Request timeout') {
+  constructor(message: string = t('Request timeout')) {
     super(message);
   }
 }

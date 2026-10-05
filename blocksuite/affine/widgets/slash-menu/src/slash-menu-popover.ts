@@ -17,6 +17,7 @@ import {
   isFuzzyMatch,
   substringMatchScore,
 } from '@blocksuite/affine-shared/utils';
+import { normalizeSearchText } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { ArrowDownSmallIcon } from '@blocksuite/icons/lit';
 import { autoPlacement, offset } from '@floating-ui/dom';
@@ -133,7 +134,8 @@ export class SlashMenu extends WithDisposable(LitElement) {
       return;
     }
     this._filteredItems = [];
-    const searchStr = query.toLowerCase();
+    // Arabic-tolerant: «قاعده» finds «قاعدة», «اضافة» finds «إضافة».
+    const searchStr = normalizeSearchText(query);
     if (searchStr === '' || searchStr.endsWith(' ')) {
       this._queryState = searchStr === '' ? 'off' : 'no_result';
       this._innerSlashMenuContext.searching = false;
@@ -151,7 +153,9 @@ export class SlashMenu extends WithDisposable(LitElement) {
 
       this._filteredItems = this._filteredItems.concat(
         queue.filter(({ name, searchAlias = [] }) =>
-          [name, ...searchAlias].some(str => isFuzzyMatch(str, searchStr))
+          [name, ...searchAlias].some(str =>
+            isFuzzyMatch(normalizeSearchText(str), searchStr)
+          )
         )
       );
 
@@ -171,8 +175,8 @@ export class SlashMenu extends WithDisposable(LitElement) {
 
     this._filteredItems.sort((a, b) => {
       return -(
-        substringMatchScore(a.name, searchStr) -
-        substringMatchScore(b.name, searchStr)
+        substringMatchScore(normalizeSearchText(a.name), searchStr) -
+        substringMatchScore(normalizeSearchText(b.name), searchStr)
       );
     });
 
@@ -216,6 +220,21 @@ export class SlashMenu extends WithDisposable(LitElement) {
       console.error('inlineEditor or eventSource is not found');
       return;
     }
+
+    // Text inserted without a key event (dictation, on-screen keyboards,
+    // some Arabic and other input methods) must refine the query too.
+    this._disposables.addFromEvent(
+      inlineEditor.eventSource,
+      'beforeinput',
+      () => {
+        const subscription = this.inlineEditor.slots.renderComplete.subscribe(
+          () => {
+            subscription.unsubscribe();
+            this._updateFilteredItems();
+          }
+        );
+      }
+    );
 
     /**
      * Handle arrow key
@@ -412,7 +431,9 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
         middleware: [
           offset(12),
           autoPlacement({
-            allowedPlacements: ['right-start', 'right-end'],
+            allowedPlacements: this._rtl
+              ? ['left-start', 'left-end']
+              : ['right-start', 'right-end'],
           }),
         ],
       },
@@ -446,7 +467,7 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
       ${
         tooltip &&
         html`<affine-tooltip
-          tip-position="right"
+          tip-position=${this._rtl ? 'left' : 'right'}
           .offset=${22}
           .tooltipStyle=${slashItemToolTipStyle}
           .hoverOptions=${{
@@ -505,13 +526,15 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
       }}
     >
       ${icon && html`<div class="slash-menu-item-icon">${icon}</div>`}
-      <div slot="suffix" style="transform: rotate(-90deg);">
-        ${ArrowDownSmallIcon()}
-      </div>
+      <div slot="suffix" class="sub-menu-arrow">${ArrowDownSmallIcon()}</div>
     </icon-button>`;
   };
 
   private _subMenuAbortController: AbortController | null = null;
+
+  private get _rtl() {
+    return getComputedStyle(this).direction === 'rtl';
+  }
 
   private _scrollToItem(item: SlashMenuItem) {
     const shadowRoot = this.shadowRoot;
@@ -594,7 +617,12 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
           event.stopPropagation();
         }
 
-        if (key === 'ArrowRight' && notControlShift) {
+        // Sub-menus open towards the inline end.
+        const rtl = this._rtl;
+        const openKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+        const closeKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+
+        if (key === openKey && notControlShift) {
           if (isSubMenuItem(this._activeItem)) {
             this._openSubMenu(this._activeItem);
           }
@@ -603,7 +631,7 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
           event.stopPropagation();
         }
 
-        if (key === 'ArrowLeft' && notControlShift) {
+        if (key === closeKey && notControlShift) {
           if (this.depth != 0) this.abortController.abort();
 
           event.preventDefault();

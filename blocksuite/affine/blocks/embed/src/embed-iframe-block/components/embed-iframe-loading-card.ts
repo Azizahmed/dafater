@@ -1,5 +1,6 @@
 import { LoadingIcon } from '@blocksuite/affine-components/icons';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { EmbedIcon } from '@blocksuite/icons/lit';
 import { type BlockStdScope } from '@blocksuite/std';
 import { css, html, LitElement } from 'lit';
@@ -173,7 +174,7 @@ export class EmbedIframeLoadingCard extends LitElement {
       <div class=${cardClasses} style=${cardStyle}>
         <div class="loading-content">
           <div class="loading-spinner">${LoadingIcon()}</div>
-          <div class="loading-text">Loading...</div>
+          <div class="loading-text">${t('Loading...')}</div>
         </div>
         <div class="loading-banner">
           <div class="icon-box">${EmbedIcon()}</div>

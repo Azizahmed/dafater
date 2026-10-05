@@ -1,6 +1,7 @@
 import { UserProvider } from '@blocksuite/affine-shared/services';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import type { AffineTextAttributes } from '@blocksuite/affine-shared/types';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import type { BlockStdScope } from '@blocksuite/std';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -88,7 +89,7 @@ export class AffineMention extends SignalWatcher(
       data-selected=${this.selected}
       data-type="error"
       class="affine-mention"
-      >@Unknown Member<v-text .str=${ZERO_WIDTH_FOR_EMBED_NODE}></v-text
+      >@${t('Unknown Member')}<v-text .str=${ZERO_WIDTH_FOR_EMBED_NODE}></v-text
     ></span>`;
 
     const userService = this.std.getOptional(UserProvider);
@@ -107,14 +108,16 @@ export class AffineMention extends SignalWatcher(
           data-selected=${this.selected}
           data-type="removed"
           class="affine-mention"
-          >@Inactive Member<v-text .str=${ZERO_WIDTH_FOR_EMBED_NODE}></v-text
+          >@${t('Inactive Member')}<v-text
+            .str=${ZERO_WIDTH_FOR_EMBED_NODE}
+          ></v-text
         ></span>`;
       } else {
         return html`<span
           data-selected=${this.selected}
           data-type="default"
           class="affine-mention"
-          >@${userInfo$.value.name ?? 'Unknown'}<v-text
+          >@${userInfo$.value.name ?? t('Unknown')}<v-text
             .str=${ZERO_WIDTH_FOR_EMBED_NODE}
           ></v-text
         ></span>`;
@@ -126,7 +129,7 @@ export class AffineMention extends SignalWatcher(
         data-selected=${this.selected}
         data-type="loading"
         class="affine-mention"
-        >@loading<span class="dots"
+        >@${t('loading')}<span class="dots"
           ><span class="dot">.</span><span class="dot">.</span
           ><span class="dot">.</span></span
         ><v-text .str=${ZERO_WIDTH_FOR_EMBED_NODE}></v-text

@@ -13,6 +13,7 @@ import {
   AuthProvider,
   AuthService,
   DefaultServerService,
+  FetchService,
   ServerScope,
   ServerService,
   ServersService,
@@ -215,6 +216,30 @@ framework.scope(ServerScope).override(AuthProvider, resolver => {
         endpoint,
         ...credential,
       });
+    },
+    async signUp({ email, password, name, verifyToken, challenge }) {
+      // the native auth plugin has no sign-up call: create the account
+      // through the app's fetch, then let the plugin open the native session
+      // with the same credentials
+      const fetchService = resolver.get(FetchService);
+      const headers: Record<string, string> = {
+        'content-type': 'application/json',
+      };
+      if (verifyToken) {
+        headers['x-captcha-token'] = verifyToken;
+        headers['x-captcha-provider'] = challenge ? 'hashcash' : 'turnstile';
+      }
+      if (challenge) {
+        headers['x-captcha-challenge'] = challenge;
+      }
+      const res = await fetchService.fetch('/api/auth/sign-up', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ email, password, name }),
+      });
+      const user = await res.json();
+      await Auth.signInPassword({ endpoint, email, password });
+      return user;
     },
     async signInOpenAppSignInCode(code) {
       await Auth.signInOpenApp({

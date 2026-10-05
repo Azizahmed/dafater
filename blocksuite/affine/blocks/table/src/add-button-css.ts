@@ -12,7 +12,7 @@ export const addColumnButtonStyle = css({
   alignItems: 'center',
   position: 'absolute',
   top: '0',
-  left: 'calc(100% + 2px)',
+  insetInlineStart: 'calc(100% + 2px)',
   height: '100%',
   transition:
     'opacity 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out',
@@ -41,7 +41,7 @@ export const addRowButtonStyle = css({
   justifyContent: 'center',
   position: 'absolute',
   top: 'calc(100% + 2px)',
-  left: '0',
+  insetInlineStart: '0',
   width: '100%',
   transition:
     'opacity 0.2s ease-in-out, background-color 0.2s ease-in-out, color 0.2s ease-in-out',
@@ -71,7 +71,7 @@ export const addRowColumnButtonStyle = css({
   alignItems: 'center',
   position: 'absolute',
   top: 'calc(100% + 2px)',
-  left: 'calc(100% + 2px)',
+  insetInlineStart: 'calc(100% + 2px)',
   borderRadius: '2px',
   opacity: 0,
   transition:

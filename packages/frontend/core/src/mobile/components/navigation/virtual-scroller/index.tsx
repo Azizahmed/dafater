@@ -155,7 +155,7 @@ const EntityRowShell = ({
   return (
     <div
       className={styles.row}
-      style={{ paddingLeft: rowIndent(row.depth) }}
+      style={{ paddingInlineStart: rowIndent(row.depth) }}
       data-navigation-row-id={row.id}
       tabIndex={-1}
     >
@@ -435,7 +435,7 @@ const FolderNewDocAction = ({ row }: { row: MobileNavigationRow }) => {
   return (
     <div
       className={styles.row}
-      style={{ paddingLeft: rowIndent(row.depth) }}
+      style={{ paddingInlineStart: rowIndent(row.depth) }}
       data-navigation-row-id={row.id}
       role="treeitem"
       aria-level={row.depth + 1}
@@ -466,7 +466,7 @@ const DocNewLinkedActionEnabled = ({
   return (
     <div
       className={styles.row}
-      style={{ paddingLeft: rowIndent(row.depth) }}
+      style={{ paddingInlineStart: rowIndent(row.depth) }}
       data-navigation-row-id={row.id}
       role="treeitem"
       aria-level={row.depth + 1}
@@ -500,7 +500,7 @@ const CollectionNewDocAction = ({ row }: { row: MobileNavigationRow }) => {
   return (
     <div
       className={styles.row}
-      style={{ paddingLeft: rowIndent(row.depth) }}
+      style={{ paddingInlineStart: rowIndent(row.depth) }}
       data-navigation-row-id={row.id}
       role="treeitem"
       aria-level={row.depth + 1}
@@ -525,7 +525,7 @@ const TagNewDocAction = ({ row }: { row: MobileNavigationRow }) => {
   return (
     <div
       className={styles.row}
-      style={{ paddingLeft: rowIndent(row.depth) }}
+      style={{ paddingInlineStart: rowIndent(row.depth) }}
       data-navigation-row-id={row.id}
       role="treeitem"
       aria-level={row.depth + 1}
@@ -560,7 +560,7 @@ const ProjectedEntityRow = ({
     return (
       <div
         className={styles.permission}
-        style={{ paddingLeft: rowIndent(row.depth) }}
+        style={{ paddingInlineStart: rowIndent(row.depth) }}
         data-navigation-row-id={row.id}
         role="treeitem"
         aria-level={row.depth + 1}
@@ -905,7 +905,7 @@ export const MobileNavigationVirtualScroller = () => {
               <div
                 className={styles.permission}
                 data-navigation-row-id={row.id}
-                style={{ paddingLeft: rowIndent(row.depth) }}
+                style={{ paddingInlineStart: rowIndent(row.depth) }}
                 role="treeitem"
                 aria-level={row.depth + 1}
                 tabIndex={-1}

@@ -6,7 +6,7 @@ import {
 import type { AffineEditorContainer } from '@affine/core/blocksuite/block-suite-editor/blocksuite-editor';
 import { EditorService } from '@affine/core/modules/editor';
 import { getAFFiNEWorkspaceSchema } from '@affine/core/modules/workspace/global-schema';
-import { useI18n } from '@affine/i18n';
+import { I18n, useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
 import { ExportManager } from '@blocksuite/affine/blocks/surface';
 import {
@@ -96,7 +96,7 @@ async function exportDoc(
     return;
   }
 
-  const docTitle = doc.meta?.title || 'Untitled';
+  const docTitle = doc.meta?.title || I18n['Untitled']();
   const contentBlob = new Blob([result.file], { type: config.contentType });
 
   let downloadBlob: Blob;

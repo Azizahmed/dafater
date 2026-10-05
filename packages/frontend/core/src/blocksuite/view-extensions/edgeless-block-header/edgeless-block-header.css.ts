@@ -16,7 +16,7 @@ export const titleContainer = style({
   display: 'flex',
   alignItems: 'center',
   padding: 4,
-  marginRight: 8,
+  marginInlineEnd: 8,
   gap: 4,
   flex: 1,
   overflow: 'hidden',

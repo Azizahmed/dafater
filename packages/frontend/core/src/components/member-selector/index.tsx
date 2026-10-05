@@ -11,6 +11,7 @@ import {
   type Member,
   MemberSearchService,
 } from '@affine/core/modules/permissions';
+import { useI18n } from '@affine/i18n';
 import { DoneIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import clsx from 'clsx';
@@ -73,6 +74,7 @@ export const MemberSelector = ({
   onChange,
   style,
 }: MemberSelectorProps) => {
+  const t = useI18n();
   const [inputValue, setInputValue] = useState('');
   const memberSearchService = useService(MemberSearchService);
 
@@ -187,8 +189,10 @@ export const MemberSelector = ({
         if (inputValue.length > 0 || selected.length === 0) {
           return;
         }
+        // in RTL the inline list runs right-to-left, so ArrowLeft moves forward
+        const isRtl = getComputedStyle(e.currentTarget).direction === 'rtl';
         const newItemToFocus =
-          e.key === 'ArrowLeft'
+          (e.key === 'ArrowLeft') !== isRtl
             ? safeInlineFocusedIndex - 1
             : safeInlineFocusedIndex + 1;
 
@@ -233,7 +237,7 @@ export const MemberSelector = ({
             onEnter={onEnter}
             autoFocus
             className={styles.searchInput}
-            placeholder="Type here ..."
+            placeholder={t['com.affine.member-selector.placeholder']()}
           />
         </InlineMemberList>
         {BUILD_CONFIG.isMobileEdition ? null : (
@@ -253,7 +257,9 @@ export const MemberSelector = ({
             className={styles.memberSelectorScrollContainer}
           >
             {searchedMembers.length === 0 && (
-              <div className={styles.memberSelectorEmpty}>Nothing here yet</div>
+              <div className={styles.memberSelectorEmpty}>
+                {t['com.affine.member-selector.empty']()}
+              </div>
             )}
 
             {searchedMembers.map((member, idx) => {

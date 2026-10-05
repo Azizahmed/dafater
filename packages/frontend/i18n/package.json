@@ -6,7 +6,8 @@
   "private": true,
   "main": "src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./locale-config": "./src/locale-config.ts"
   },
   "scripts": {
     "build": "r build.ts",

@@ -10,6 +10,7 @@ import {
   type IVec,
   type SerializedXYWH,
 } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   generateKeyBetweenV2,
   getTopElements,
@@ -211,7 +212,9 @@ export class EdgelessFrameManager extends GfxExtension {
     const props = this.gfx.std
       .get(EditPropsStore)
       .applyLastProps('affine:frame', {
-        title: new Text(new Y.Text(`Frame ${this.frames.length + 1}`)),
+        title: new Text(
+          new Y.Text(t('Frame {n}', { n: this.frames.length + 1 }))
+        ),
         xywh: bound.serialize(),
         index: this.gfx.layer.generateIndex(true),
         presentationIndex: this.generatePresentationIndex(),

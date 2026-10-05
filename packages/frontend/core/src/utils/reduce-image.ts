@@ -1,3 +1,4 @@
+import { I18n } from '@affine/i18n';
 import reduce from 'image-blob-reduce';
 
 // validate and reduce image size and return as file
@@ -10,7 +11,7 @@ export const validateAndReduceImage = async (file: File): Promise<File> => {
 
     await img.decode().catch(() => {
       URL.revokeObjectURL(url);
-      throw new Error('Image could not be decoded');
+      throw new Error(I18n['com.affine.image.reduce.decode-failed']());
     });
 
     img.onload = img.onerror = () => {
@@ -31,11 +32,9 @@ export const validateAndReduceImage = async (file: File): Promise<File> => {
         return compressedImg;
       } catch (error) {
         if (error instanceof Error) {
-          throw new Error(
-            'Image processing failed. This can happen if fingerprint protection is enabled in your browser. Please check your browser settings and try again.'
-          );
+          throw new Error(I18n['com.affine.image.reduce.processing-failed']());
         } else {
-          throw new Error('Unknown error occurred');
+          throw new Error(I18n['com.affine.image.reduce.unknown-error']());
         }
       }
     }

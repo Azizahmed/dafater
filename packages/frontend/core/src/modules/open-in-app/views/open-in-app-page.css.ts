@@ -15,8 +15,8 @@ export const affineLogo = style({
 export const topNav = style({
   position: 'absolute',
   top: 0,
-  left: 0,
-  right: 0,
+  insetInlineStart: 0,
+  insetInlineEnd: 0,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',

@@ -3,6 +3,7 @@ import {
   type ElementRenderer,
   ElementRendererExtension,
 } from '@blocksuite/affine-block-surface';
+import { isRTL } from '@blocksuite/affine-gfx-text';
 import type { GroupElementModel } from '@blocksuite/affine-model';
 import { Bound } from '@blocksuite/global/gfx';
 
@@ -62,6 +63,7 @@ function renderTitle(
   ctx.font = font;
   ctx.fillStyle = renderer.getPropertyValue('--affine-blue');
   ctx.textAlign = 'left';
+  ctx.direction = isRTL(text) ? 'rtl' : 'ltr';
   ctx.textBaseline = 'middle';
   ctx.fillText(text, padding[0], -lineHeight / 2 - padding[1]);
 }

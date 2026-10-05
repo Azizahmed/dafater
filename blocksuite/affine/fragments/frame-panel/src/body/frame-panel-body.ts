@@ -6,6 +6,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { DisposableGroup } from '@blocksuite/global/disposable';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { type EditorHost, ShadowlessElement } from '@blocksuite/std';
 import {
@@ -249,7 +250,7 @@ export class FramePanelBody extends SignalWatcher(
   private _renderEmptyContent() {
     const emptyContent = html` <div class="no-frame-container">
       <div class="no-frame-placeholder">
-        Add frames to organize and present your Edgeless
+        ${t('Add frames to organize and present your Edgeless')}
       </div>
     </div>`;
 

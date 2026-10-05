@@ -1,4 +1,5 @@
 import { createLitPortal } from '@blocksuite/affine-components/portal';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import { ArrowDownSmallIcon, FlipDirectionIcon } from '@blocksuite/icons/lit';
 import { flip, offset } from '@floating-ui/dom';
@@ -88,7 +89,7 @@ export class AdapterPanelHeader extends SignalWatcher(LitElement) {
       <div class="adapter-panel-header">
         <div class="adapter-selector" @click="${this._toggleAdapterMenu}">
           <span class="adapter-selector-label">
-            ${this.activeAdapter.label}
+            ${t(this.activeAdapter.label)}
           </span>
           ${ArrowDownSmallIcon({ width: '16px', height: '16px' })}
         </div>

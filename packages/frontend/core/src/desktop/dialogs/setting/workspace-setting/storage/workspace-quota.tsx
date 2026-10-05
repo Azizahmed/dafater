@@ -42,7 +42,9 @@ export const StorageProgress = () => {
 
   if (isLoading) {
     if (loadError) {
-      return <ErrorMessage>Load error</ErrorMessage>;
+      return (
+        <ErrorMessage>{t['com.affine.settings.load-error']()}</ErrorMessage>
+      );
     }
     return <Skeleton height={26} />;
   }

@@ -12,6 +12,7 @@ import {
   menu,
   type MenuOptions,
 } from '@blocksuite/affine/components/context-menu';
+import { t } from '@blocksuite/affine/global/i18n';
 import type { DatabaseBlockModel } from '@blocksuite/affine/model';
 import { LinkIcon } from '@blocksuite/icons/lit';
 import type { FrameworkProvider } from '@toeverything/infra';
@@ -33,7 +34,7 @@ function createCopyLinkToBlockMenuItem(
   model: DatabaseBlockModel
 ) {
   return menu.action({
-    name: 'Copy link to block',
+    name: t('Copy link to block'),
     prefix: LinkIcon({ width: '20', height: '20' }),
     hide: () => {
       const { editor } = framework.get(EditorService);

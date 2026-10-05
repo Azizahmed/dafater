@@ -1,5 +1,6 @@
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import { IS_MOBILE } from '@blocksuite/global/env';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import {
   ArrowLeftBigIcon,
@@ -85,6 +86,10 @@ export class MenuComponent
       justify-content: center;
       margin-top: 8px;
     }
+
+    .affine-menu-back:dir(rtl) svg {
+      transform: scaleX(-1);
+    }
   `;
 
   private readonly _clickContainer = (e: MouseEvent) => {
@@ -167,7 +172,7 @@ export class MenuComponent
       <div class="affine-menu-body">
         ${
           result.length === 0 && this.menu.enableSearch
-            ? html` <div class="no-results">No Results</div>`
+            ? html` <div class="no-results">${t('No Results')}</div>`
             : ''
         }
         ${result}
@@ -224,7 +229,7 @@ export class MenuComponent
                     this.menu.close();
                   }
                 }}"
-                class="dv-icon-20 dv-hover dv-pd-2 dv-round-4"
+                class="affine-menu-back dv-icon-20 dv-hover dv-pd-2 dv-round-4"
                 style="display:flex;"
               >
                 ${ArrowLeftBigIcon()}
@@ -328,7 +333,10 @@ export class MobileMenuComponent
         style="display:flex;align-items:center;height: 44px;"
         @mouseenter="${() => this.menu.closeSubMenu()}"
       >
-        <div style="width: 50px;flex-shrink: 0;margin-left: 10px;">
+        <div
+          class="affine-menu-back"
+          style="width: 50px;flex-shrink: 0;margin-inline-start: 10px;"
+        >
           ${
             title?.onBack
               ? html` <div
@@ -370,10 +378,10 @@ export class MobileMenuComponent
           color: ${unsafeCSSVarV2('button/primary')};
           width: 50px;
           flex-shrink: 0;
-          margin-right: 10px;
+          margin-inline-end: 10px;
          "
         >
-          Done
+          ${t('Done')}
         </div>
       </div>
     `;

@@ -154,7 +154,7 @@ export const tooltipRow = style({
 });
 
 export const tooltipValue = style({
-  marginLeft: 'auto',
+  marginInlineStart: 'auto',
   color: cssVar('textPrimaryColor'),
   fontWeight: 600,
   fontVariantNumeric: 'tabular-nums',

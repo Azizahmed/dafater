@@ -1,6 +1,7 @@
 import { DefaultTool } from '@blocksuite/affine-block-surface';
 import { toggleEmbedCardCreateModal } from '@blocksuite/affine-components/embed-card-modal';
 import type { SlashMenuConfig } from '@blocksuite/affine-widget-slash-menu';
+import { t } from '@blocksuite/global/i18n';
 import { GithubDuotoneIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 
@@ -30,7 +31,9 @@ export const embedGithubSlashMenuConfig: SlashMenuConfig = {
           await toggleEmbedCardCreateModal(
             host,
             'GitHub',
-            'The added GitHub issue or pull request link will be displayed as a card view.',
+            t(
+              'The added GitHub issue or pull request link will be displayed as a card view.'
+            ),
             { mode: 'page', parentModel, index },
             ({ mode }) => {
               if (mode === 'edgeless') {

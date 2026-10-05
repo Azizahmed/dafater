@@ -51,7 +51,7 @@ export const descriptionStyle = style({
   fontSize: cssVar('fontXs'),
   lineHeight: '20px',
   color: cssVarV2('text/secondary'),
-  textAlign: 'left',
+  textAlign: 'start',
   padding: '0 6px',
 });
 export const containerStyle = style({
@@ -105,7 +105,7 @@ export const cloudSvgContainer = style({
   alignItems: 'center',
   position: 'absolute',
   bottom: '0',
-  right: '0',
+  insetInlineEnd: '0',
 });
 export const shareLinkStyle = style({
   padding: '4px',

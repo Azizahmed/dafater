@@ -52,22 +52,39 @@ describe('redirect proxy allowlist', () => {
     });
   });
 
-  it('allows current hostname (canary)', async () => {
+  it('allows the built-in Dafater server host, not AFFiNE cloud', async () => {
     vi.resetModules();
     process.env.BUILD_TYPE = 'canary';
     process.env.NODE_ENV = 'production';
     delete process.env.DEV_SERVER_URL;
-
-    const { validateRedirectProxyUrl } =
-      await import('../../src/main/security/redirect-proxy');
-    expect(
-      validateRedirectProxyUrl(
-        'assets://./redirect-proxy?redirect_uri=https%3A%2F%2Faffine.fail%2Fpricing'
-      )
-    ).toEqual({
-      allow: true,
-      redirectTarget: 'https://affine.fail/pricing',
+    vi.stubGlobal('BUILD_CONFIG', {
+      ...globalThis.BUILD_CONFIG,
+      dafaterServerUrl: 'https://notes.example.com',
     });
+
+    try {
+      const { validateRedirectProxyUrl } =
+        await import('../../src/main/security/redirect-proxy');
+      expect(
+        validateRedirectProxyUrl(
+          'assets://./redirect-proxy?redirect_uri=https%3A%2F%2Fnotes.example.com%2Fauth'
+        )
+      ).toEqual({
+        allow: true,
+        redirectTarget: 'https://notes.example.com/auth',
+      });
+      expect(
+        validateRedirectProxyUrl(
+          'assets://./redirect-proxy?redirect_uri=https%3A%2F%2Faffine.fail%2Fpricing'
+        )
+      ).toEqual({
+        allow: false,
+        reason: 'untrusted_redirect_target',
+        redirectTarget: 'https://affine.fail/pricing',
+      });
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it('allows current hostname from DEV_SERVER_URL in development', async () => {

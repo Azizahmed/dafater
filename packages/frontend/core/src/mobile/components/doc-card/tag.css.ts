@@ -34,7 +34,7 @@ export const tag = style({
     height: 8,
     borderRadius: 4,
     backgroundColor: tagColorVar,
-    marginRight: 4,
+    marginInlineEnd: 4,
   },
 });
 

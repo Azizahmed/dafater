@@ -132,11 +132,18 @@ export class PointerEventWatcher {
       paddingTop -
       DRAG_HANDLE_GRABBER_HEIGHT * scaleInNote;
 
+    const containerWidth = DRAG_HANDLE_CONTAINER_WIDTH * scaleInNote;
+    // The handle occupies the inline-start edge of the dragging area:
+    // its left edge for LTR blocks, its right edge for RTL blocks.
+    const left = this.widget.anchorBlockIsRtl.value
+      ? draggingAreaRect.right - containerWidth
+      : draggingAreaRect.left;
+
     return {
       paddingTop: `${paddingTop}px`,
       paddingBottom: `${paddingBottom}px`,
-      width: `${DRAG_HANDLE_CONTAINER_WIDTH * scaleInNote}px`,
-      left: `${draggingAreaRect.left}px`,
+      width: `${containerWidth}px`,
+      left: `${left}px`,
       top: `${draggingAreaRect.top}px`,
       height: `${draggingAreaRect.height}px`,
     };
@@ -352,7 +359,12 @@ export class PointerEventWatcher {
         this.widget.mode === 'page'
       ) {
         const posTop = this._getTopWithBlockComponent(block);
-        addBlockWidgetContainer.style.left = `${draggingAreaRect.left - ADD_BLOCK_WIDGET_WIDTH}px`;
+        // Outside the drag handle: to its left for LTR, to its right for RTL.
+        addBlockWidgetContainer.style.left = `${
+          this.widget.anchorBlockIsRtl.peek()
+            ? draggingAreaRect.right
+            : draggingAreaRect.left - ADD_BLOCK_WIDGET_WIDTH
+        }px`;
         addBlockWidgetContainer.style.top = `${posTop}px`;
         addBlockWidgetContainer.style.height = 'auto';
         addBlockWidgetContainer.style.display = 'flex';

@@ -3,6 +3,7 @@ import {
   popFilterableSimpleMenu,
   type PopupTarget,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import {
   ArrowRightBigIcon,
   DeleteIcon,
@@ -32,7 +33,7 @@ export const popCardMenu = (
     menu.group({
       items: [
         menu.action({
-          name: 'Expand Card',
+          name: t('Expand Card'),
           prefix: ExpandFullIcon(),
           select: () => {
             kanbanViewLogic.root.openDetailPanel({
@@ -46,7 +47,7 @@ export const popCardMenu = (
     menu.group({
       items: [
         menu.subMenu({
-          name: 'Move To',
+          name: t('Move To'),
           prefix: ArrowRightBigIcon(),
           options: {
             items:
@@ -54,7 +55,8 @@ export const popCardMenu = (
                 .filter(v => v.key !== groupKey)
                 .map(group =>
                   menu.action({
-                    name: group.value != null ? group.name$.value : 'Ungroup',
+                    name:
+                      group.value != null ? group.name$.value : t('Ungroup'),
                     select: () => {
                       groupTrait.moveCardTo(
                         cardId,
@@ -73,7 +75,7 @@ export const popCardMenu = (
       name: '',
       items: [
         menu.action({
-          name: 'Insert Before',
+          name: t('Insert Before'),
           prefix: html` <div
             style="transform: rotate(90deg);display:flex;align-items:center;"
           >
@@ -88,7 +90,7 @@ export const popCardMenu = (
           },
         }),
         menu.action({
-          name: 'Insert After',
+          name: t('Insert After'),
           prefix: html` <div
             style="transform: rotate(90deg);display:flex;align-items:center;"
           >
@@ -107,7 +109,7 @@ export const popCardMenu = (
     menu.group({
       items: [
         menu.action({
-          name: 'Delete Card',
+          name: t('Delete Card'),
           class: {
             'delete-item': true,
           },

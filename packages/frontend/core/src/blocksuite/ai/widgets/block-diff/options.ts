@@ -11,7 +11,7 @@ export class BlockDiffOptions extends WithDisposable(LitElement) {
   static override styles = css`
     :host {
       position: absolute;
-      right: -20px;
+      inset-inline-end: -20px;
       top: 0;
 
       display: flex;

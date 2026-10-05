@@ -490,11 +490,15 @@ export class TableSelectionController implements ReactiveController {
       return;
     }
     const leftRect = leftCell.getBoundingClientRect();
+    const rightRect = rightCell.getBoundingClientRect();
     const scale = leftRect.width / leftCell.column.width$.value;
+    // In a right-to-left table the first column is the right-most one.
+    const x1 = Math.min(leftRect.left, rightRect.left);
+    const x2 = Math.max(leftRect.right, rightRect.right);
     return {
       top: leftRect.top / scale,
-      left: leftRect.left / scale,
-      width: (rightCell.getBoundingClientRect().right - leftRect.left) / scale,
+      left: x1 / scale,
+      width: (x2 - x1) / scale,
       height: (bottomRow.getBoundingClientRect().bottom - leftRect.top) / scale,
       scale,
     };

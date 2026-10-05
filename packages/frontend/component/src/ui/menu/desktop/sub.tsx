@@ -4,6 +4,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { useContext, useMemo } from 'react';
 
+import { mirrorInRtl } from '../../../styles';
 import type { MenuSubProps } from '../menu.types';
 import * as styles from '../styles.css';
 import { useMenuItem } from '../use-menu-item';
@@ -31,7 +32,7 @@ export const DesktopMenuSub = ({
   const { type } = useContext(DesktopMenuContext);
   const { className, children, otherProps } = useMenuItem({
     children: propsChildren,
-    suffixIcon: <ArrowRightSmallIcon />,
+    suffixIcon: <ArrowRightSmallIcon className={mirrorInRtl} />,
     ...triggerOptions,
   });
 

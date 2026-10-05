@@ -1,6 +1,7 @@
 import { NoteDisplayMode } from '@blocksuite/affine-model';
 import { DocModeProvider } from '@blocksuite/affine-shared/services';
 import { scrollbarStyle } from '@blocksuite/affine-shared/styles';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { TocIcon } from '@blocksuite/icons/lit';
 import {
@@ -47,7 +48,7 @@ export class OutlineViewer extends SignalWatcher(
     .outline-viewer-indicators-container {
       position: absolute;
       top: 0;
-      right: 0;
+      inset-inline-end: 0;
       max-height: 100%;
       display: flex;
       flex-direction: column;
@@ -138,13 +139,18 @@ export class OutlineViewer extends SignalWatcher(
       .outline-viewer-panel {
         width: 200px;
         border-width: 1px;
-        padding: 8px 4px 8px 8px;
+        padding-block: 8px;
+        padding-inline: 8px 4px;
         opacity: 1;
         transform: translateX(-10px);
         transition:
           transform var(--duration) var(--timing),
           opacity var(--duration) var(--timing);
       }
+    }
+
+    .outline-viewer-root:dir(rtl):hover .outline-viewer-panel {
+      transform: translateX(10px);
     }
   `;
 
@@ -242,7 +248,7 @@ export class OutlineViewer extends SignalWatcher(
     const toggleOutlinePanelButton =
       this.toggleOutlinePanel !== null
         ? html`<edgeless-tool-icon-button
-            .tooltip=${'Open in sidebar'}
+            .tooltip=${t('Open in sidebar')}
             .tipPosition=${'top-end'}
             .activeMode=${'background'}
             @click=${this._toggleOutlinePanel}
@@ -271,7 +277,7 @@ export class OutlineViewer extends SignalWatcher(
         </div>
         <div class="outline-viewer-panel">
           <div class="outline-viewer-item outline-viewer-header">
-            <span>Table of Contents</span>
+            <span>${t('Table of Contents')}</span>
             ${toggleOutlinePanelButton}
           </div>
           ${repeat(

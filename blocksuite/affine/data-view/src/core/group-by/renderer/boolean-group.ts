@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { CheckBoxCheckSolidIcon, CheckBoxUnIcon } from '@blocksuite/icons/lit';
 import { css, html } from 'lit';
 
@@ -18,7 +19,9 @@ export class BooleanGroupView extends BaseGroup<boolean, NonNullable<unknown>> {
   protected override render(): unknown {
     // Handle null/undefined values
     if (this.value == null) {
-      const displayName = `No ${this.group.property.name$.value ?? 'value'}`;
+      const displayName = t('No {name}', {
+        name: this.group.property.name$.value ?? t('value'),
+      });
       return html` <div class="data-view-group-title-boolean-view">
         ${displayName}
       </div>`;

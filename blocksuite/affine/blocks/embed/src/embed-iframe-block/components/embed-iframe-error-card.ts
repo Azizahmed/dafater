@@ -5,6 +5,7 @@ import {
   TelemetryProvider,
 } from '@blocksuite/affine-shared/services';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { EditIcon, InformationIcon, ResetIcon } from '@blocksuite/icons/lit';
 import type { BlockStdScope } from '@blocksuite/std';
@@ -246,10 +247,12 @@ export class EmbedIframeErrorCard extends WithDisposable(LitElement) {
             <span class="error-icon">
               ${InformationIcon({ width: '16px', height: '16px' })}
             </span>
-            <span class="error-title-text">This link couldn’t be loaded.</span>
+            <span class="error-title-text"
+              >${t('This link couldn’t be loaded.')}</span
+            >
           </div>
           <div class="error-message">
-            ${this.error?.message || 'Failed to load embedded content'}
+            ${this.error?.message || t('Failed to load embedded content')}
           </div>
           <div class="error-info">
             ${
@@ -260,7 +263,7 @@ export class EmbedIframeErrorCard extends WithDisposable(LitElement) {
                       <span class="icon"
                         >${EditIcon({ width: '16px', height: '16px' })}</span
                       >
-                      <span class="text">Edit</span>
+                      <span class="text">${t('Edit')}</span>
                     </div>
                   `
             }
@@ -268,7 +271,7 @@ export class EmbedIframeErrorCard extends WithDisposable(LitElement) {
               <span class="icon"
                 >${ResetIcon({ width: '16px', height: '16px' })}</span
               >
-              <span class="text">Reload</span>
+              <span class="text">${t('Reload')}</span>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import type { InsertToPosition } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { AddCursorIcon } from '@blocksuite/icons/lit';
 import { computed, signal } from '@preact/signals-core';
 import { cssVarV2 } from '@toeverything/theme/v2';
@@ -180,7 +181,7 @@ export class VirtualTableViewUILogic extends DataViewUILogicBase<
     return html` <div style="display:flex;">
       <div class="${dv.hover} ${dv.round8} ${styles.addGroup}" @click="${add}">
         <div class="${dv.icon16}" style="display:flex;">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>${t('New Group')}</div>
       </div>
     </div>`;
   };

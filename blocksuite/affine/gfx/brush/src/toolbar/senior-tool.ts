@@ -1,9 +1,10 @@
 import { SeniorToolExtension } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { html } from 'lit';
 
 export const penSeniorTool = SeniorToolExtension('pen', ({ block }) => {
   return {
-    name: 'Pen',
+    name: t('Pen'),
     content: html`<div class="pen-and-eraser">
       <edgeless-pen-tool-button .edgeless=${block}></edgeless-pen-tool-button>
 

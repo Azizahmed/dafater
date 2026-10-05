@@ -386,7 +386,9 @@ export const LinkPreview = ({
           >
             {edgelessLink ? (
               <>
-                [Edgeless]
+                {t[
+                  'com.affine.editor.bi-directional-link-panel.edgeless-prefix'
+                ]()}
                 <AffinePageReference
                   key={link.blockId}
                   pageId={linkGroup.docId}
@@ -435,7 +437,9 @@ export const BiDirectionalLinkPanel = () => {
       {!show && <Divider size="thinner" />}
 
       <div className={styles.titleLine}>
-        <div className={styles.title}>Bi-Directional Links</div>
+        <div className={styles.title}>
+          {t['com.affine.editor.bi-directional-link-panel.title']()}
+        </div>
         <Button className={styles.showButton} onClick={handleClickShow}>
           {show
             ? t['com.affine.editor.bi-directional-link-panel.hide']()

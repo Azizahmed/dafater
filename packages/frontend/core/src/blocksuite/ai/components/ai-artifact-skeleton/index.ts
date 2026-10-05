@@ -29,7 +29,7 @@ export class ArtifactSkeleton extends LitElement {
     .icon {
       position: absolute;
       top: 10px;
-      left: 11px;
+      inset-inline-start: 11px;
       width: 32px;
       height: 32px;
 
@@ -43,7 +43,7 @@ export class ArtifactSkeleton extends LitElement {
     /* Base line style */
     .line {
       position: absolute;
-      left: 11px;
+      inset-inline-start: 11px;
       height: 10px;
       border-radius: 6px;
       background-color: ${unsafeCSSVarV2('layer/background/tertiary')};

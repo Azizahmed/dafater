@@ -17,6 +17,7 @@
     "@blocksuite/affine-ext-loader": "workspace:*",
     "@blocksuite/affine-shared": "workspace:*",
     "@blocksuite/affine-widget-edgeless-toolbar": "workspace:*",
+    "@blocksuite/global": "workspace:*",
     "@blocksuite/std": "workspace:*",
     "lit": "^3.2.0"
   },

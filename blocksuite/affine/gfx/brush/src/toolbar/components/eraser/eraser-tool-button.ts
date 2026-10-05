@@ -1,6 +1,7 @@
 import { DefaultTool } from '@blocksuite/affine-block-surface';
 import { ThemeProvider } from '@blocksuite/affine-shared/services';
 import { EdgelessToolbarToolMixin } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { css, html, LitElement } from 'lit';
 
 import { EraserTool } from '../../../eraser-tool';
@@ -61,7 +62,7 @@ export class EdgelessEraserToolButton extends EdgelessToolbarToolMixin(
       <edgeless-toolbar-button
         class="edgeless-eraser-button"
         .tooltip=${html`<affine-tooltip-content-with-shortcut
-          data-tip="${'Eraser'}"
+          data-tip="${t('Eraser')}"
           data-shortcut="${'E'}"
         ></affine-tooltip-content-with-shortcut>`}
         .tooltipOffset=${4}

@@ -1,5 +1,6 @@
 import { EdgelessLegacySlotIdentifier } from '@blocksuite/affine-block-surface';
 import { stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { MinusIcon, PlusIcon, ViewBarIcon } from '@blocksuite/icons/lit';
 import type { BlockStdScope } from '@blocksuite/std';
@@ -152,6 +153,9 @@ export class EdgelessZoomToolbar extends WithDisposable(LitElement) {
     const formattedZoom = `${Math.round(this.zoom * 100)}%`;
     const classes = `edgeless-zoom-toolbar-container ${this.layout}`;
     const locked = this.locked;
+    // The vertical bar opens beside the toggle button, on the inline-end side.
+    const sideTip =
+      getComputedStyle(this).direction === 'rtl' ? 'left' : 'right';
 
     return html`
       <div
@@ -162,8 +166,8 @@ export class EdgelessZoomToolbar extends WithDisposable(LitElement) {
         @pointerdown=${stopPropagation}
       >
         <edgeless-tool-icon-button
-          .tooltip=${'Fit to screen'}
-          .tipPosition=${this._isVerticalBar() ? 'right' : 'top-end'}
+          .tooltip=${t('Fit to screen')}
+          .tipPosition=${this._isVerticalBar() ? sideTip : 'top-end'}
           .arrow=${!this._isVerticalBar()}
           @click=${() => this.gfx.fitToScreen()}
           .iconContainerPadding=${4}
@@ -173,8 +177,8 @@ export class EdgelessZoomToolbar extends WithDisposable(LitElement) {
           ${ViewBarIcon()}
         </edgeless-tool-icon-button>
         <edgeless-tool-icon-button
-          .tooltip=${'Zoom out'}
-          .tipPosition=${this._isVerticalBar() ? 'right' : 'top'}
+          .tooltip=${t('Zoom out')}
+          .tipPosition=${this._isVerticalBar() ? sideTip : 'top'}
           .arrow=${!this._isVerticalBar()}
           @click=${() => this.setZoomByStep(-ZOOM_STEP)}
           .iconContainerPadding=${4}
@@ -191,8 +195,8 @@ export class EdgelessZoomToolbar extends WithDisposable(LitElement) {
           ${formattedZoom}
         </button>
         <edgeless-tool-icon-button
-          .tooltip=${'Zoom in'}
-          .tipPosition=${this._isVerticalBar() ? 'right' : 'top'}
+          .tooltip=${t('Zoom in')}
+          .tipPosition=${this._isVerticalBar() ? sideTip : 'top'}
           .arrow=${!this._isVerticalBar()}
           @click=${() => this.setZoomByStep(ZOOM_STEP)}
           .iconContainerPadding=${4}

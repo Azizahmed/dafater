@@ -7,7 +7,7 @@ export class ChatContentPureText extends ShadowlessElement {
   static override styles = css`
     .chat-content-pure-text {
       display: inline-block;
-      text-align: left;
+      text-align: start;
       max-width: 100%;
       max-height: 500px;
       overflow-y: auto;
@@ -16,6 +16,7 @@ export class ChatContentPureText extends ShadowlessElement {
       border-radius: 8px;
       padding: 12px;
       white-space: pre-wrap;
+      unicode-bidi: plaintext;
       word-wrap: break-word;
       scrollbar-width: auto;
     }

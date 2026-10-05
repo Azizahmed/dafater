@@ -9,6 +9,7 @@ import {
   ToolbarModuleExtension,
 } from '@blocksuite/affine-shared/services';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   AutoHeightIcon,
   CustomizedHeightIcon,
@@ -81,8 +82,8 @@ const builtinSurfaceToolbarConfig = {
         );
         const label$ = computed(() =>
           firstModel.props.displayMode$.value === NoteDisplayMode.EdgelessOnly
-            ? 'Display in Page'
-            : 'Displayed in Page'
+            ? t('Display in Page')
+            : t('Displayed in Page')
         );
         const onSelect = () => {
           const newMode =
@@ -105,7 +106,9 @@ const builtinSurfaceToolbarConfig = {
           content: html`<editor-icon-button
             aria-label="${label$.value}"
             .showTooltip="${shouldShowTooltip$.value}"
-            .tooltip="${'This note is part of Page Mode. Click to remove it from the page.'}"
+            .tooltip="${t(
+              'This note is part of Page Mode. Click to remove it from the page.'
+            )}"
             data-testid="display-in-page"
             @click=${() => onSelect()}
           >
@@ -148,10 +151,12 @@ const builtinSurfaceToolbarConfig = {
       id: 'e.slicer',
       label: 'Slicer',
       icon: ScissorsIcon(),
-      tooltip: html`<affine-tooltip-content-with-shortcut
-        data-tip="${'Cutting mode'}"
-        data-shortcut="${'-'}"
-      ></affine-tooltip-content-with-shortcut>`,
+      get tooltip() {
+        return html`<affine-tooltip-content-with-shortcut
+          data-tip="${t('Cutting mode')}"
+          data-shortcut="${'-'}"
+        ></affine-tooltip-content-with-shortcut>`;
+      },
       active: false,
       when(ctx) {
         return (
@@ -303,24 +308,28 @@ function setDisplayMode(
   const data =
     newMode === NoteDisplayMode.EdgelessOnly
       ? {
-          title: 'Note removed from Page Mode',
-          message: 'Content removed from your page.',
+          title: t('Note removed from Page Mode'),
+          message: t(
+            'Content removed from your page. Find it in the TOC for quick navigation.'
+          ),
         }
       : {
-          title: 'Note displayed in Page Mode',
-          message: 'Content added to your page.',
+          title: t('Note displayed in Page Mode'),
+          message: t(
+            'Content added to your page. Find it in the TOC for quick navigation.'
+          ),
         };
 
   const notification = ctx.std.getOptional(NotificationProvider);
   notification?.notifyWithUndoAction({
     title: data.title,
-    message: `${data.message} Find it in the TOC for quick navigation.`,
+    message: data.message,
     accent: 'success',
     duration: 5 * 1000,
     actions: [
       {
         key: 'view-in-toc',
-        label: 'View in Toc',
+        label: t('View in Toc'),
         onClick: () => {
           const sidebar = ctx.std.getOptional(SidebarExtensionIdentifier);
           sidebar?.open('outline');

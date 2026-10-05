@@ -1,6 +1,7 @@
-import { Button, Scrollable } from '@affine/component';
+import { Button, mirrorInRtl, Scrollable } from '@affine/component';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { type Island } from '@affine/core/utils/island';
+import { useI18n } from '@affine/i18n';
 import { ArrowLeftBigIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import { eases, waapi } from 'animejs';
@@ -59,7 +60,7 @@ export const SubPageProvider = ({
   open,
   onClose,
   children,
-  backText = 'Back',
+  backText,
   animation = true,
 }: {
   island: Island;
@@ -69,6 +70,7 @@ export const SubPageProvider = ({
   backText?: string;
   animation?: boolean;
 }) => {
+  const t = useI18n();
   const featureFlagService = useService(FeatureFlagService);
   const enableSettingSubpageAnimation = useLiveData(
     featureFlagService.flags.enable_setting_subpage_animation.$
@@ -201,10 +203,10 @@ export const SubPageProvider = ({
           <Button
             className={styles.backButton}
             onClick={onClose}
-            prefix={<ArrowLeftBigIcon />}
+            prefix={<ArrowLeftBigIcon className={mirrorInRtl} />}
             variant="plain"
           >
-            {backText}
+            {backText ?? t['com.affine.backButton']()}
           </Button>
         </header>
         <Scrollable.Root className={styles.content}>

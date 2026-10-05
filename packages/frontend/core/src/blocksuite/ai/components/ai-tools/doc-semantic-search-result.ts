@@ -1,4 +1,5 @@
 import type { PeekViewService } from '@affine/core/modules/peek-view';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { AiEmbeddingIcon, PageIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -71,7 +72,9 @@ export class DocSemanticSearchResult extends WithDisposable(ShadowlessElement) {
 
   renderToolCall() {
     return html`<tool-call-card
-      .name=${`Finding semantically related pages for "${this.data.args.query}"`}
+      .name=${t('Finding semantically related pages for "{query}"', {
+        query: this.data.args.query,
+      })}
       .icon=${AiEmbeddingIcon()}
       .width=${this.width}
     ></tool-call-card>`;
@@ -86,17 +89,20 @@ export class DocSemanticSearchResult extends WithDisposable(ShadowlessElement) {
       return html`<tool-call-failed
         .name=${getToolErrorDisplayName(
           isToolError(result) ? result : null,
-          'Semantic search failed',
+          t('Semantic search failed'),
           {
-            'Workspace Sync Required':
-              'Enable workspace sync to search documents',
+            'Workspace Sync Required': t(
+              'Enable workspace sync to search documents'
+            ),
           }
         )}
         .icon=${AiEmbeddingIcon()}
       ></tool-call-failed>`;
     }
     return html`<tool-result-card
-      .name=${`Found semantically related pages for "${this.data.args.query}"`}
+      .name=${t('Found semantically related pages for "{query}"', {
+        query: this.data.args.query,
+      })}
       .icon=${AiEmbeddingIcon()}
       .width=${this.width}
       .results=${result

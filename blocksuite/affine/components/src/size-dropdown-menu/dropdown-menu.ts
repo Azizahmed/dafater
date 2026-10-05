@@ -1,4 +1,5 @@
 import { stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { DoneIcon } from '@blocksuite/icons/lit';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
@@ -155,8 +156,8 @@ export class SizeDropdownMenu extends SignalWatcher(
         .contentPadding="${'8px'}"
         .button=${html`
           <editor-icon-button
-            aria-label="${label}"
-            .tooltip="${label}"
+            aria-label="${t(label)}"
+            .tooltip="${t(label)}"
             .justify="${'space-between'}"
             .labelHeight="${'20px'}"
             .iconContainerWidth="${icon ? 'unset' : '65px'}"
@@ -174,11 +175,15 @@ export class SizeDropdownMenu extends SignalWatcher(
             ({ key, value }) => key ?? value,
             ({ key, value }) => html`
               <editor-menu-action
-                aria-label="${key ?? value}"
+                aria-label="${typeof key === 'string' ? t(key) : (key ?? value)}"
                 ?data-selected="${size === value}"
                 @click=${() => this.select(value)}
               >
-                ${key ?? format?.(value) ?? value}
+                ${
+                  typeof key === 'string'
+                    ? t(key)
+                    : (key ?? format?.(value) ?? value)
+                }
                 ${when(isCheckType && size === value, () => DoneIcon())}
               </editor-menu-action>
             `

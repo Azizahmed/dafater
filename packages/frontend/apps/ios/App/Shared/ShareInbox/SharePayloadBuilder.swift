@@ -219,7 +219,7 @@ enum SharePayloadBuilder {
     guard let content else {
       return failure(
         title: title,
-        message: "AFFiNE can currently save links, text, one image, or one PDF."
+        message: "Dafater can currently save links, text, one image, or one PDF."
       )
     }
 

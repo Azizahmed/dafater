@@ -1,9 +1,8 @@
 import { useConfirmModal } from '@affine/component';
-import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { type I18nString, useI18n } from '@affine/i18n';
 import { InformationFillDuotoneIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { type WorkspaceMetadata, WorkspacesService } from '../../workspace';
 import { WorkspaceQuotaService } from '../services/quota';
@@ -20,6 +19,7 @@ interface Message {
 /**
  *
  * Notification that the cloud workspace quota has exceeded the limit
+ * (Dafater: informational only, no plan upgrade)
  *
  */
 export const QuotaCheck = ({
@@ -36,28 +36,7 @@ export const QuotaCheck = ({
   const profile = useLiveData(workspaceProfile.profile$);
   const isOwner = profile?.isOwner;
   const isTeam = profile?.isTeam;
-  const workspaceDialogService = useService(WorkspaceDialogService);
-  const dialog = useLiveData(workspaceDialogService.dialogs$);
   const t = useI18n();
-
-  const onConfirm = useCallback(() => {
-    if (!isOwner) {
-      return;
-    }
-    if (
-      dialog.some(
-        d =>
-          (d.type === 'setting' && d.props.activeTab === 'plans') ||
-          (d.type === 'setting' && d.props.activeTab === 'workspace:license')
-      )
-    ) {
-      return;
-    }
-    workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
-    });
-  }, [dialog, isOwner, workspaceDialogService]);
 
   useEffect(() => {
     workspaceQuota?.revalidate();
@@ -83,7 +62,6 @@ export const QuotaCheck = ({
         cancelText: message.cancelText ? t.t(message.cancelText) : undefined,
         children: <Tips tips={message.tips} />,
         childrenContentClassName: styles.modalChildren,
-        onConfirm: onConfirm,
         confirmButtonOptions: {
           variant: 'primary',
         },
@@ -100,7 +78,6 @@ export const QuotaCheck = ({
   }, [
     isOwner,
     isTeam,
-    onConfirm,
     openConfirmModal,
     quota,
     t,
@@ -120,30 +97,27 @@ const messages: Record<
       description: 'com.affine.payment.sync-paused.owner.both.description',
       tips: [
         'com.affine.payment.sync-paused.owner.both.tips-1',
-        'com.affine.payment.sync-paused.owner.both.tips-2',
+        'com.affine.dafater.sync-paused.owner.tips-admin',
       ],
-      cancelText: 'Cancel',
-      confirmText: 'com.affine.payment.upgrade',
+      confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
     storage: {
       title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.owner.storage.description',
       tips: [
         'com.affine.payment.sync-paused.owner.storage.tips-1',
-        'com.affine.payment.sync-paused.owner.storage.tips-2',
+        'com.affine.dafater.sync-paused.owner.tips-admin',
       ],
-      cancelText: 'Cancel',
-      confirmText: 'com.affine.payment.upgrade',
+      confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
     member: {
       title: 'com.affine.payment.sync-paused.title',
       description: 'com.affine.payment.sync-paused.owner.member.description',
       tips: [
         'com.affine.payment.sync-paused.owner.member.tips-1',
-        'com.affine.payment.sync-paused.owner.member.tips-2',
+        'com.affine.dafater.sync-paused.owner.tips-admin',
       ],
-      cancelText: 'Cancel',
-      confirmText: 'com.affine.payment.upgrade',
+      confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
   },
   member: {
@@ -154,12 +128,12 @@ const messages: Record<
     },
     storage: {
       title: 'com.affine.payment.sync-paused.title',
-      description: 'com.affine.payment.sync-paused.member.storage.description',
+      description: 'com.affine.dafater.sync-paused.member.storage.description',
       confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
     member: {
       title: 'com.affine.payment.sync-paused.title',
-      description: 'com.affine.payment.sync-paused.member.member.description',
+      description: 'com.affine.dafater.sync-paused.member.member.description',
       confirmText: 'com.affine.payment.sync-paused.member.member.confirm',
     },
   },

@@ -39,7 +39,7 @@ const FavoriteOperation = ({ collection }: { collection: ListItem }) => {
 
   return (
     <FavoriteTag
-      style={{ marginRight: 8 }}
+      style={{ marginInlineEnd: 8 }}
       onClick={onToggleFavoriteCollection}
       active={isFavorite}
     />

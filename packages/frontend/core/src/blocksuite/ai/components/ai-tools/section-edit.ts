@@ -1,4 +1,5 @@
 import type { FeatureFlagService } from '@affine/core/modules/feature-flag';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import type { ColorScheme } from '@blocksuite/affine/model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -140,7 +141,9 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     return html`
       <tool-call-card
-        .name=${`Editing: ${this.data.args.instructions}`}
+        .name=${t('Editing: {instructions}', {
+          instructions: this.data.args.instructions,
+        })}
         .icon=${PageIcon()}
       ></tool-call-card>
     `;
@@ -158,7 +161,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
           <div class="section-edit-header">
             <div class="section-edit-title">
               ${PageIcon()}
-              <span>Edited Content</span>
+              <span>${t('Edited Content')}</span>
             </div>
             <div class="section-edit-actions">
               <div
@@ -166,12 +169,12 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                 @click=${async () => {
                   const success = await copyText(result.content);
                   if (success) {
-                    this.notifySuccess('Copied to clipboard');
+                    this.notifySuccess(t('Copied to clipboard'));
                   }
                 }}
               >
                 ${CopyIcon()}
-                <affine-tooltip>Copy</affine-tooltip>
+                <affine-tooltip>${t('Copy')}</affine-tooltip>
               </div>
               ${
                 this.independentMode
@@ -182,7 +185,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                         if (!this.host) return;
                         if (this.host.std.store.readonly$.value) {
                           this.notificationService.notify({
-                            title: 'Cannot insert in read-only mode',
+                            title: t('Cannot insert in read-only mode'),
                             accent: 'error',
                             onClose: () => {},
                           });
@@ -204,7 +207,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                       }}
                     >
                       ${InsertBleowIcon()}
-                      <affine-tooltip>Insert below</affine-tooltip>
+                      <affine-tooltip>${t('Insert below')}</affine-tooltip>
                     </div>`
               }
               ${
@@ -218,7 +221,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
                       }}
                     >
                       ${LinkedPageIcon()}
-                      <affine-tooltip>Create new doc</affine-tooltip>
+                      <affine-tooltip>${t('Create new doc')}</affine-tooltip>
                     </div>`
               }
             </div>
@@ -236,7 +239,7 @@ export class SectionEditTool extends WithDisposable(ShadowlessElement) {
 
     return html`
       <tool-call-failed
-        .name=${'Section edit failed'}
+        .name=${t('Section edit failed')}
         .icon=${PageIcon()}
       ></tool-call-failed>
     `;

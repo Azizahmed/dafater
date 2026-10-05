@@ -66,7 +66,7 @@ export const commentItem = style({
       backgroundColor: cssVarV2('layer/insideBorder/primaryBorder'),
       position: 'absolute',
       top: '0',
-      left: '0',
+      insetInlineStart: '0',
     },
     '&[data-highlighting="true"]': {
       backgroundColor: cssVarV2('block/comment/hanelActive'),
@@ -106,7 +106,7 @@ export const pendingComment = style({
       height: '100%',
       backgroundColor: cssVarV2('layer/insideBorder/primaryBorder'),
       position: 'absolute',
-      left: '0',
+      insetInlineStart: '0',
       top: '0',
       bottom: '0',
     },
@@ -116,7 +116,7 @@ export const pendingComment = style({
 export const previewContainer = style({
   fontSize: cssVar('fontSm'),
   color: cssVarV2('text/secondary'),
-  paddingLeft: '10px',
+  paddingInlineStart: '10px',
   position: 'relative',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
@@ -129,7 +129,7 @@ export const previewContainer = style({
       width: '2px',
       height: '100%',
       position: 'absolute',
-      left: '0',
+      insetInlineStart: '0',
       top: '0',
       backgroundColor: cssVarV2('block/comment/highlightUnderline'),
     },
@@ -145,7 +145,7 @@ export const commentActions = style({
   gap: '8px',
   marginTop: '8px',
   position: 'absolute',
-  right: 12,
+  insetInlineEnd: 12,
   top: 4,
   zIndex: 1,
   pointerEvents: 'none',
@@ -171,7 +171,7 @@ export const readonlyCommentContainer = style({
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
-  paddingLeft: '8px',
+  paddingInlineStart: '8px',
   position: 'relative',
 });
 
@@ -188,7 +188,7 @@ export const commentInputContainer = style({
   alignItems: 'flex-start',
   justifyContent: 'flex-start',
   gap: '4px',
-  paddingLeft: '8px',
+  paddingInlineStart: '8px',
   maxWidth: '800px',
 });
 
@@ -210,7 +210,7 @@ export const collapsedReplies = style({
   justifyContent: 'flex-start',
   cursor: 'pointer',
   height: '28px',
-  paddingLeft: '42px',
+  paddingInlineStart: '42px',
   borderRadius: 8,
   selectors: {
     '&:hover': {
@@ -236,7 +236,7 @@ export const replyActions = style({
   opacity: 0,
   gap: '8px',
   position: 'absolute',
-  right: 0,
+  insetInlineEnd: 0,
   top: 0,
   pointerEvents: 'none',
   zIndex: 1,

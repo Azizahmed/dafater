@@ -1,4 +1,5 @@
 import { AIStarIconWithAnimation } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { ShadowlessElement } from '@blocksuite/affine/std';
 import { AiIcon } from '@blocksuite/icons/lit';
 import { css, html } from 'lit';
@@ -30,7 +31,7 @@ export class AssistantAvatar extends ShadowlessElement {
         ? AIStarIconWithAnimation
         : AffineAvatarIcon
     }
-    AFFiNE AI`;
+    ${t('Dafater AI')}`;
   }
 }
 

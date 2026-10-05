@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { ShadowlessElement } from '@blocksuite/std';
 import { css, html } from 'lit';
@@ -44,8 +45,8 @@ export class DateGroupView extends SignalWatcher(
     const displayName =
       name ||
       (this.group.value === null
-        ? `No ${this.group.property.name$.value}`
-        : 'Ungroups');
+        ? t('No {name}', { name: this.group.property.name$.value })
+        : t('Ungroups'));
     return html`<div class="dv-date-group">
       <span>${displayName}</span>
     </div>`;

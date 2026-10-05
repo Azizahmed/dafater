@@ -15,7 +15,7 @@ import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hoo
 import { DesktopApiService } from '@affine/core/modules/desktop-api';
 import { MeetingSettingsService } from '@affine/core/modules/media/services/meeting-settings';
 import type { MeetingSettingsSchema } from '@affine/electron/main/shared-state-schema';
-import { Trans, useI18n } from '@affine/i18n';
+import { useI18n } from '@affine/i18n';
 import {
   ArrowRightSmallIcon,
   DoneIcon,
@@ -199,37 +199,12 @@ const MeetingsSettingsMain = () => {
       <SettingHeader
         beta
         title={t['com.affine.settings.meetings']()}
-        subtitle={
-          <>
-            {t['com.affine.settings.meetings.setting.prompt']()}
-            <br />
-            <Trans
-              i18nKey="com.affine.settings.meetings.setting.prompt.2"
-              components={{
-                strong: <strong />,
-              }}
-            />
-          </>
-        }
+        subtitle={t['com.affine.settings.meetings.setting.prompt']()}
       />
 
       <SettingRow
         name={t['com.affine.settings.meetings.enable.title']()}
-        desc={
-          <Trans
-            i18nKey="com.affine.settings.meetings.enable.description"
-            components={{
-              1: (
-                <a
-                  className={styles.link}
-                  href="https://discord.com/channels/959027316334407691/1358384103925350542"
-                  target="_blank"
-                  rel="noreferrer"
-                />
-              ),
-            }}
-          />
-        }
+        desc={t['com.affine.dafater.meetings.enable.description']()}
       >
         <Switch
           checked={settings.enabled}

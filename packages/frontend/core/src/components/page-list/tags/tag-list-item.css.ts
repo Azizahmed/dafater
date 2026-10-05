@@ -34,17 +34,17 @@ export const dragPageItemOverlay = style({
 });
 export const dndCell = style({
   position: 'relative',
-  marginLeft: -8,
+  marginInlineStart: -8,
   height: '100%',
   outline: 'none',
-  paddingLeft: 8,
+  paddingInlineStart: 8,
 });
 globalStyle(`[data-draggable=true] ${dndCell}:before`, {
   content: '""',
   position: 'absolute',
   top: '50%',
   transform: 'translateY(-50%)',
-  left: 0,
+  insetInlineStart: 0,
   width: 4,
   height: 4,
   transition: 'height 0.2s, opacity 0.2s',
@@ -67,10 +67,10 @@ globalStyle(`[data-draggable=true][data-dragging=true] ${dndCell}:before`, {
 });
 
 globalStyle(`${root} > :first-child`, {
-  paddingLeft: '16px',
+  paddingInlineStart: '16px',
 });
 globalStyle(`${root} > :last-child`, {
-  paddingRight: '8px',
+  paddingInlineEnd: '8px',
 });
 export const titleIconsWrapper = style({
   padding: '5px',
@@ -100,7 +100,7 @@ export const titleCellMain = style({
   whiteSpace: 'nowrap',
   textOverflow: 'ellipsis',
   alignSelf: 'center',
-  paddingRight: '4px',
+  paddingInlineEnd: '4px',
 });
 export const titleCellPreview = style({
   overflow: 'hidden',

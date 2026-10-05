@@ -5,6 +5,7 @@ import type {
 } from '@blocksuite/affine-components/toolbar';
 import { renderGroups } from '@blocksuite/affine-components/toolbar';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { noop } from '@blocksuite/global/utils';
 import { MoreVerticalIcon } from '@blocksuite/icons/lit';
@@ -127,8 +128,8 @@ export class AffineCodeToolbar extends WithDisposable(LitElement) {
         <editor-icon-button
           class="code-toolbar-button more"
           data-testid="more"
-          aria-label="More"
-          .tooltip=${'More'}
+          aria-label=${t('More')}
+          .tooltip=${t('More')}
           .tooltipOffset=${4}
           .iconSize=${'16px'}
           .iconContainerPadding=${4}

@@ -3,6 +3,7 @@ import {
   type ToolbarAction,
   ToolbarContext,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import { PaletteIcon } from '@blocksuite/icons/lit';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
@@ -77,8 +78,8 @@ export class CardStyleDropdownMenu extends SignalWatcher(LitElement) {
         .contentPadding="${'8px'}"
         .button=${html`
           <editor-icon-button
-            aria-label="Card style"
-            .tooltip="${'Card style'}"
+            aria-label=${t('Card style')}
+            .tooltip="${t('Card style')}"
           >
             ${PaletteIcon()}
           </editor-icon-button>
@@ -90,9 +91,9 @@ export class CardStyleDropdownMenu extends SignalWatcher(LitElement) {
             action => action.id,
             ({ id, label, icon, disabled, run }) => html`
               <editor-icon-button
-                aria-label="${ifDefined(label)}"
+                aria-label="${ifDefined(label && t(label))}"
                 data-testid="${id}"
-                .tooltip="${label}"
+                .tooltip="${label && t(label)}"
                 .activeMode="${'border'}"
                 .iconContainerWidth="${'76px'}"
                 .iconContainerHeight="${'76px'}"

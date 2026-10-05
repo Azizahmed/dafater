@@ -1,14 +1,12 @@
 import { Scrollable } from '@affine/component';
+import { DafaterLogo } from '@affine/component/dafater-logo';
 import { Avatar } from '@affine/component/ui/avatar';
-import { UserPlanButton } from '@affine/core/components/affine/auth/user-plan-button';
-import { useCatchEventCallback } from '@affine/core/components/hooks/use-catch-event-hook';
 import { AuthService } from '@affine/core/modules/cloud';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import type { SettingTab } from '@affine/core/modules/dialogs/constant';
 import { type WorkspaceMetadata } from '@affine/core/modules/workspace';
 import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
-import { Logo1Icon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import clsx from 'clsx';
 import {
@@ -20,6 +18,7 @@ import {
 } from 'react';
 
 import { useGeneralSettingList } from '../general-setting';
+import { useServerSettingList } from '../server-setting';
 import { useWorkspaceSettingList } from '../workspace-setting';
 import * as style from './style.css';
 
@@ -32,16 +31,8 @@ export type UserInfoProps = {
   active?: boolean;
 };
 
-export const UserInfo = ({
-  onAccountSettingClick,
-  onTabChange,
-  active,
-}: UserInfoProps) => {
+export const UserInfo = ({ onAccountSettingClick, active }: UserInfoProps) => {
   const account = useLiveData(useService(AuthService).session.account$);
-
-  const onClick = useCatchEventCallback(() => {
-    onTabChange('plans', null);
-  }, [onTabChange]);
 
   if (!account) {
     // TODO(@eyhn): loading ui
@@ -68,7 +59,6 @@ export const UserInfo = ({
           <div className="name" title={account.label}>
             {account.label}
           </div>
-          <UserPlanButton onClick={onClick} />
         </div>
 
         <div className="email" title={account.email}>
@@ -91,7 +81,7 @@ export const SignInButton = () => {
       }, [globalDialogService])}
     >
       <div className="avatar not-sign">
-        <Logo1Icon />
+        <DafaterLogo />
       </div>
 
       <div className="content">
@@ -123,6 +113,7 @@ const SettingSidebarItem = ({
   beta,
   ...props
 }: SettingSidebarItemProps) => {
+  const t = useI18n();
   return (
     <div
       {...props}
@@ -134,7 +125,11 @@ const SettingSidebarItem = ({
     >
       <div className={style.sidebarSelectItemIcon}>{icon}</div>
       <div className={style.sidebarSelectItemName}>{title}</div>
-      {beta ? <div className={style.sidebarSelectItemBeta}>Beta</div> : null}
+      {beta ? (
+        <div className={style.sidebarSelectItemBeta}>
+          {t['com.affine.settings.beta']()}
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -169,6 +164,7 @@ export const SettingSidebar = ({
   const loginStatus = useLiveData(useService(AuthService).session.status$);
   const generalList = useGeneralSettingList();
   const workspaceSettingList = useWorkspaceSettingList();
+  const serverSettingList = useServerSettingList();
   const gotoTab = useCallback(
     (tab: SettingTab) => {
       track.$.settingsPanel.menu.openSettings({ to: tab });
@@ -193,6 +189,16 @@ export const SettingSidebar = ({
         title: t['com.affine.settingSidebar.settings.workspace'](),
         items: workspaceSettingList,
       },
+      // Dafater: only listed for the server administrator
+      ...(serverSettingList.length
+        ? [
+            {
+              key: 'setting:server',
+              title: t['com.affine.settingSidebar.settings.server'](),
+              items: serverSettingList,
+            },
+          ]
+        : []),
     ].map(group => {
       return {
         ...group,
@@ -207,7 +213,14 @@ export const SettingSidebar = ({
       };
     });
     return res;
-  }, [activeTab, generalList, gotoTab, t, workspaceSettingList]);
+  }, [
+    activeTab,
+    generalList,
+    gotoTab,
+    serverSettingList,
+    t,
+    workspaceSettingList,
+  ]);
 
   return (
     <div className={style.settingSlideBar} data-testid="settings-sidebar">

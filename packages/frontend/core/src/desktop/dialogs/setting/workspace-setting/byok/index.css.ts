@@ -179,7 +179,7 @@ export const form = style({
   gap: 16,
   maxHeight: 'min(720px, calc(100vh - 180px))',
   overflowY: 'auto',
-  paddingRight: 2,
+  paddingInlineEnd: 2,
 });
 
 export const field = style({
@@ -548,7 +548,7 @@ export const inputStack = style({
 });
 
 export const testStatus = style({
-  marginRight: 'auto',
+  marginInlineEnd: 'auto',
   fontSize: cssVar('fontXs'),
 });
 

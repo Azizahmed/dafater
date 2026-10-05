@@ -11,6 +11,7 @@ import { QuotaModule } from '../../core/quota';
 import { StorageModule } from '../../core/storage';
 import { WorkspaceModule } from '../../core/workspaces';
 import { IndexerModule } from '../indexer';
+import { AdminAiConfigController } from './admin-ai-controller';
 import { CopilotAttachmentController } from './attachment-controller';
 import { CopilotController } from './controller';
 import { CopilotFeatureGuard, CopilotFeatureService } from './feature';
@@ -78,12 +79,14 @@ export class CopilotApiModule {}
 @Module({
   imports: [
     PermissionModule,
+    ServerConfigModule,
     CopilotKernelModule,
     CopilotFeatureModule,
     CopilotApiModule,
   ],
   providers: [McpCredentialService, McpCredentialResolver],
   controllers: [
+    AdminAiConfigController,
     CopilotAttachmentController,
     CopilotController,
     WorkspaceMcpController,

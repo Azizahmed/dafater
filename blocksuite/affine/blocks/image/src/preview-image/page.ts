@@ -1,5 +1,6 @@
 import type { ImageBlockModel } from '@blocksuite/affine-model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { ImageIcon } from '@blocksuite/icons/lit';
 import { BlockComponent } from '@blocksuite/std';
 import { css, html } from 'lit';
@@ -45,7 +46,7 @@ export class ImagePlaceholderBlockComponent extends BlockComponent<ImageBlockMod
     >
       <div class="placeholder-preview-content">
         ${ImageIcon({ width: '24px', height: '24px' })}
-        <span class="text">Image Block</span>
+        <span class="text">${t('Image Block')}</span>
       </div>
     </div>`;
   }

@@ -1,4 +1,5 @@
 import { IconButton } from '@affine/component';
+import { useI18n } from '@affine/i18n';
 
 import * as styles from './sidebar-header.css';
 
@@ -47,12 +48,13 @@ function Container({
 }
 
 const ToggleButton = ({ onToggle }: { onToggle?: () => void }) => {
+  const t = useI18n();
   return (
     <IconButton
       size="24"
       onClick={onToggle}
       data-testid="right-sidebar-close"
-      tooltip="Close sidebar"
+      tooltip={t['com.affine.workbench.sidebar.close']()}
     >
       <RightSidebarOpenIcon />
     </IconButton>

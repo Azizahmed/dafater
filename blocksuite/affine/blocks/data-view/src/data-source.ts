@@ -10,6 +10,7 @@ import {
 import { DataSourceBase, type PropertyMetaConfig } from '@blocksuite/data-view';
 import { propertyPresets } from '@blocksuite/data-view/property-presets';
 import { BlockSuiteError } from '@blocksuite/global/exceptions';
+import { t } from '@blocksuite/global/i18n';
 import type { EditorHost } from '@blocksuite/std';
 import type { Block, Store } from '@blocksuite/store';
 import { Subject } from 'rxjs';
@@ -111,12 +112,11 @@ export class BlockQueryDataSource extends DataSourceBase {
 
   private newColumnName() {
     let i = 1;
-    while (
-      this.block.props.columns.some(column => column.name === `Column ${i}`)
-    ) {
+    const name = (index: number) => t('Column {index}', { index });
+    while (this.block.props.columns.some(column => column.name === name(i))) {
       i++;
     }
-    return `Column ${i}`;
+    return name(i);
   }
 
   cellValueChange(rowId: string, propertyId: string, value: unknown): void {
@@ -245,7 +245,7 @@ export class BlockQueryDataSource extends DataSourceBase {
       return viewColumn.name;
     }
     if (propertyId === 'type') {
-      return 'Block Type';
+      return t('Block Type');
     }
     return this.getProperty(propertyId)?.name ?? '';
   }

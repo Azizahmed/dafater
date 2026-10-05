@@ -11,8 +11,8 @@ import {
 } from '../../base';
 import { Models } from '../../models';
 import { AuthService, Public, SessionIssuer } from '../auth';
-import { ServerService } from '../config';
 import { validators } from '../utils/validators';
+import { FIRST_USER_LOCK } from './sign-up';
 
 interface CreateUserInput {
   name?: string;
@@ -28,8 +28,7 @@ export class CustomSetupController {
     private readonly models: Models,
     private readonly auth: AuthService,
     private readonly sessionIssuer: SessionIssuer,
-    private readonly mutex: Mutex,
-    private readonly server: ServerService
+    private readonly mutex: Mutex
   ) {}
 
   @Public()
@@ -39,7 +38,8 @@ export class CustomSetupController {
     @Res() res: Response,
     @Body() input: CreateUserInput
   ) {
-    if (await this.server.initialized()) {
+    // a fresh count: `ServerService.initialized()` caches `true` forever
+    if ((await this.models.user.count()) > 0) {
       throw new ActionForbidden('First user already created');
     }
 
@@ -54,16 +54,25 @@ export class CustomSetupController {
       this.config.auth.passwordRequirements
     );
 
-    await using lock = await this.mutex.acquire('createFirstAdmin');
+    await using lock = await this.mutex.acquire(FIRST_USER_LOCK);
 
     if (!lock) {
       throw new InternalServerError();
     }
+
+    // re-check under the lock: `/api/auth/sign-up` may have registered the
+    // first user in the meantime
+    if ((await this.models.user.count()) > 0) {
+      throw new ActionForbidden('First user already created');
+    }
+
     const user = await this.models.user.create({
       name: input.name || undefined,
       email: input.email,
       password: input.password,
       registered: true,
+      // no email verification on a self-hosted server
+      emailVerifiedAt: new Date(),
     });
 
     try {

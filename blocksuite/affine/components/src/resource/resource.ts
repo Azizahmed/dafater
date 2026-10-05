@@ -1,4 +1,5 @@
 import type { Disposable } from '@blocksuite/global/disposable';
+import { t } from '@blocksuite/global/i18n';
 import type { BlobEngine, BlobState } from '@blocksuite/sync';
 import {
   computed,
@@ -168,10 +169,10 @@ export class ResourceController implements Disposable {
 
       blob = (await this.engine.get(blobId)) ?? null;
 
-      if (!blob) errorMessage = `${this.kind} not found`;
+      if (!blob) errorMessage = notFoundMessage(this.kind);
     } catch (err) {
       console.error(err);
-      errorMessage = `Failed to retrieve ${this.kind}`;
+      errorMessage = retrieveFailedMessage(this.kind);
     }
 
     if (errorMessage) this.updateState({ errorMessage });
@@ -226,5 +227,27 @@ export class ResourceController implements Disposable {
 
     // Releases the current url.
     URL.revokeObjectURL(url);
+  }
+}
+
+function notFoundMessage(kind: ResourceKind) {
+  switch (kind) {
+    case 'Blob':
+      return t('Blob not found');
+    case 'Image':
+      return t('Image not found');
+    default:
+      return t('File not found');
+  }
+}
+
+function retrieveFailedMessage(kind: ResourceKind) {
+  switch (kind) {
+    case 'Blob':
+      return t('Failed to retrieve Blob');
+    case 'Image':
+      return t('Failed to retrieve Image');
+    default:
+      return t('Failed to retrieve File');
   }
 }

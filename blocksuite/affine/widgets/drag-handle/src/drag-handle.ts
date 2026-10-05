@@ -23,7 +23,7 @@ import type { AFFINE_DRAG_HANDLE_WIDGET } from './consts.js';
 import { RectHelper } from './helpers/rect-helper.js';
 import { SelectionHelper } from './helpers/selection-helper.js';
 import { styles } from './styles.js';
-import { updateDragHandleClassName } from './utils.js';
+import { isRtlElement, updateDragHandleClassName } from './utils.js';
 import { DragEventWatcher } from './watchers/drag-event-watcher.js';
 import { EdgelessWatcher } from './watchers/edgeless-watcher.js';
 import { HandleEventWatcher } from './watchers/handle-event-watcher.js';
@@ -103,6 +103,16 @@ export class AffineDragHandleWidget extends WidgetComponent<RootBlockModel> {
     if (!this.anchorBlockId.value) return null;
 
     return this.std.view.getBlock(this.anchorBlockId.value);
+  });
+
+  /**
+   * Whether the anchor block is laid out right-to-left (its own `dir` or an
+   * inherited one). In that case the drag handle is mirrored to the block's
+   * right side. Computed once per anchor block.
+   */
+  anchorBlockIsRtl: ReadonlySignal<boolean> = computed(() => {
+    const block = this.anchorBlockComponent.value;
+    return !!block && isRtlElement(block);
   });
 
   anchorEdgelessElement: ReadonlySignal<GfxModel | null> = computed(() => {

@@ -42,7 +42,7 @@ export const quickSelect = style({
   height: '100%',
   position: 'absolute',
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
 });
 export const listItem = style({
   display: 'flex',

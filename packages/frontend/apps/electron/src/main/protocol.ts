@@ -17,7 +17,7 @@ import {
   initializeAuthSessions,
   isManagedAuthEndpoint,
 } from './auth/auth-session';
-import { buildType, isDev } from './config';
+import { isDev } from './config';
 import { logger } from './logger';
 
 const webStaticDir = join(resourcesPath, 'web-static');
@@ -50,19 +50,14 @@ async function resolveWhitelistedLocalPath(filepath: string) {
   throw new Error('Invalid filepath');
 }
 
-const apiBaseByBuildType: Record<typeof buildType, string> = {
-  stable: 'https://app.affine.pro',
-  beta: 'https://insider.affine.pro',
-  internal: 'https://insider.affine.pro',
-  canary: 'https://affine.fail',
-};
-
-function resolveApiBaseUrl() {
+// Dafater: relative API requests go to the built-in Dafater server
+// (BUILD_CONFIG.dafaterServerUrl), never to AFFiNE's cloud.
+function resolveApiBaseUrl(): string | null {
   if (isDev && devServerBase) {
     return devServerBase;
   }
 
-  return apiBaseByBuildType[buildType] ?? apiBaseByBuildType.stable;
+  return BUILD_CONFIG.dafaterServerUrl || null;
 }
 
 function buildTargetUrl(base: string, urlObject: URL) {
@@ -100,7 +95,12 @@ async function handleFileRequest(request: Request) {
       urlObject.pathname === '/graphql');
 
   if (isApiRequest) {
-    return proxyRequest(request, urlObject, resolveApiBaseUrl());
+    const apiBase = resolveApiBaseUrl();
+    if (!apiBase) {
+      // no built-in Dafater server in this build
+      return new Response(null, { status: 503 });
+    }
+    return proxyRequest(request, urlObject, apiBase);
   }
 
   const isFontRequest =

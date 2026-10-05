@@ -8,6 +8,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import {
   ArrowRightSmallIcon,
   DeleteIcon,
@@ -168,9 +169,9 @@ export const popViewOptions = (
   const titleConfig = {
     get text() {
       if (currentPage.value === 'custom') return customPageTitle;
-      return (
+      return t(
         pageTitles[currentPage.value as Exclude<Page, 'custom'>] ??
-        'View settings'
+          'View settings'
       );
     },
     get onBack(): ((menu: Menu) => false) | undefined {
@@ -196,7 +197,7 @@ export const popViewOptions = (
           style="padding:4px 8px;font-size:12px;line-height:20px;font-weight:500;border-radius:4px;cursor:pointer;color:var(--affine-primary-color);"
           @click="${clickChangeAll}"
         >
-          ${isAllShowed ? 'Hide All' : 'Show All'}
+          ${isAllShowed ? t('Hide All') : t('Show All')}
         </div>`;
     },
     get onClose() {
@@ -233,7 +234,7 @@ export const popViewOptions = (
       menu.group({
         items: [
           menu.action({
-            name: 'Add',
+            name: t('Add'),
             prefix: PlusIcon(),
             select: ele => {
               const value = filterTrait.filter$.value;
@@ -262,7 +263,7 @@ export const popViewOptions = (
     return [
       () => html`<sort-root-view .sortUtils="${sortUtils}"></sort-root-view>`,
       menu.action({
-        name: 'Add sort',
+        name: t('Add sort'),
         prefix: PlusIcon(),
         select: ele => {
           popCreateSort(popupTargetFromElement(ele), { sortUtils });
@@ -270,7 +271,7 @@ export const popViewOptions = (
         },
       }),
       menu.action({
-        name: 'Delete',
+        name: t('Delete'),
         class: { 'delete-item': true },
         prefix: DeleteIcon(),
         select: () => {
@@ -316,7 +317,7 @@ export const popViewOptions = (
     items.push(
       menu.input({
         initialValue: view.name$.value,
-        placeholder: 'View name',
+        placeholder: t('View name'),
         disableAutoFocus: true,
         onChange: text => {
           view.nameSet(text);
@@ -331,7 +332,7 @@ export const popViewOptions = (
             const viewTypeItems = menuObj.renderItems(
               view.manager.viewMetas.map<MenuConfig>(meta => {
                 return menuObj => {
-                  if (!menuObj.search(meta.model.defaultName)) {
+                  if (!menuObj.search(t(meta.model.defaultName))) {
                     return;
                   }
                   const isSelected =
@@ -358,7 +359,7 @@ export const popViewOptions = (
                           ${renderUniLit(meta.renderer.icon)}
                         </div>
                         <div style="${textStyle}">
-                          ${meta.model.defaultName}
+                          ${t(meta.model.defaultName)}
                         </div>
                       </div>
                     `,
@@ -398,7 +399,7 @@ export const popViewOptions = (
                 <div
                   style="font-size:14px;line-height:22px;color:var(--affine-text-secondary-color);"
                 >
-                  Layout
+                  ${t('Layout')}
                 </div>
               </div>
               <div style="display:flex;gap:4px;margin-top:8px;">
@@ -414,12 +415,12 @@ export const popViewOptions = (
 
     settingItems.push(
       menu.action({
-        name: 'Properties',
+        name: t('Properties'),
         prefix: InfoIcon(),
         closeOnSelect: false,
         postfix: html`
           <div style="font-size: 14px;">
-            ${view.properties$.value.length} shown
+            ${t('{count} shown', { count: view.properties$.value.length })}
           </div>
           ${ArrowRightSmallIcon()}
         `,
@@ -435,7 +436,7 @@ export const popViewOptions = (
       const filterCount = filterTrait.filter$.value.conditions.length;
       settingItems.push(
         menu.action({
-          name: 'Filter',
+          name: t('Filter'),
           prefix: FilterIcon(),
           closeOnSelect: false,
           postfix: html`
@@ -444,8 +445,8 @@ export const popViewOptions = (
                 filterCount === 0
                   ? ''
                   : filterCount === 1
-                    ? '1 active'
-                    : `${filterCount} active`
+                    ? t('{count} active', { count: 1 })
+                    : t('{count} active', { count: filterCount })
               }
             </div>
             ${ArrowRightSmallIcon()}
@@ -463,7 +464,7 @@ export const popViewOptions = (
       const sortCount = sortTrait.sortList$.value.length;
       settingItems.push(
         menu.action({
-          name: 'Sort',
+          name: t('Sort'),
           prefix: SortIcon(),
           closeOnSelect: false,
           postfix: html`
@@ -472,8 +473,8 @@ export const popViewOptions = (
                 sortCount === 0
                   ? ''
                   : sortCount === 1
-                    ? '1 active'
-                    : `${sortCount} active`
+                    ? t('{count} active', { count: 1 })
+                    : t('{count} active', { count: sortCount })
               }
             </div>
             ${ArrowRightSmallIcon()}
@@ -490,7 +491,7 @@ export const popViewOptions = (
     if (groupTrait) {
       settingItems.push(
         menu.action({
-          name: 'Group',
+          name: t('Group'),
           prefix: GroupingIcon(),
           closeOnSelect: false,
           postfix: html`
@@ -531,7 +532,7 @@ export const popViewOptions = (
       menu.group({
         items: [
           menu.action({
-            name: 'Duplicate view',
+            name: t('Duplicate view'),
             prefix: DuplicateIcon(),
             closeOnSelect: false,
             select: () => {
@@ -539,7 +540,7 @@ export const popViewOptions = (
             },
           }),
           menu.action({
-            name: 'Delete view',
+            name: t('Delete view'),
             prefix: DeleteIcon(),
             closeOnSelect: false,
             select: () => {

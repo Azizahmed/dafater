@@ -11,6 +11,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { formatSize } from '@blocksuite/affine-shared/utils';
 import { IS_MOBILE } from '@blocksuite/global/env';
+import { t } from '@blocksuite/global/i18n';
 import { BrokenImageIcon, ImageIcon } from '@blocksuite/icons/lit';
 import { BlockSelection } from '@blocksuite/std';
 import { computed } from '@preact/signals-core';
@@ -143,12 +144,18 @@ export class ImageBlockComponent extends CaptionedBlockComponent<ImageBlockModel
       width: '100%',
     });
 
+    // Left/right alignment is physical: in RTL the flex start is the right.
+    const isRtl = this.matches(':dir(rtl)');
     const alignItemsStyleMap = styleMap({
       alignItems:
         this.model.props.textAlign$.value === 'left'
-          ? 'flex-start'
-          : this.model.props.textAlign$.value === 'right'
+          ? isRtl
             ? 'flex-end'
+            : 'flex-start'
+          : this.model.props.textAlign$.value === 'right'
+            ? isRtl
+              ? 'flex-start'
+              : 'flex-end'
             : undefined,
     });
 
@@ -159,7 +166,7 @@ export class ImageBlockComponent extends CaptionedBlockComponent<ImageBlockModel
       }),
       errorIcon: BrokenImageIcon(),
       icon: ImageIcon(),
-      title: 'Image',
+      title: t('Image'),
       description: formatSize(size),
     });
 

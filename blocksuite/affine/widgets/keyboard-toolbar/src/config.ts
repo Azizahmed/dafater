@@ -57,6 +57,7 @@ import {
 } from '@blocksuite/affine-shared/utils';
 import type { AffineLinkedDocWidget } from '@blocksuite/affine-widget-linked-doc';
 import { viewPresets } from '@blocksuite/data-view/view-presets';
+import { t } from '@blocksuite/global/i18n';
 import { assertType } from '@blocksuite/global/utils';
 import {
   AttachmentIcon,
@@ -135,6 +136,10 @@ export type KeyboardIconType =
 
 export type KeyboardToolbarActionItem = {
   name: string;
+  /**
+   * @description Text shown in tool panels. Defaults to the translated `name`.
+   */
+  label?: string;
   icon: KeyboardIconType;
   background?: string | ((ctx: KeyboardToolbarContext) => string | undefined);
   /**
@@ -151,6 +156,11 @@ export type KeyboardToolbarActionItem = {
    * @description The action to be executed when the item is clicked.
    */
   action?: (ctx: KeyboardToolbarContext) => void | Promise<void>;
+  /**
+   * @default false
+   * @description Whether to mirror the icon in right-to-left layouts.
+   */
+  mirrorInRtl?: boolean;
 };
 
 export type KeyboardSubToolbarConfig = {
@@ -461,8 +471,8 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
         const index = parentModel.children.indexOf(model) + 1;
         await toggleEmbedCardCreateModal(
           std.host,
-          'Links',
-          'The added link will be displayed as a card view.',
+          t('Links'),
+          t('The added link will be displayed as a card view.'),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {
@@ -561,7 +571,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
         await toggleEmbedCardCreateModal(
           std.host,
           'YouTube',
-          'The added YouTube video link will be displayed as an embed view.',
+          t('The added YouTube video link will be displayed as an embed view.'),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {
@@ -594,7 +604,9 @@ const embedToolGroup: KeyboardToolPanelGroup = {
         await toggleEmbedCardCreateModal(
           std.host,
           'GitHub',
-          'The added GitHub issue or pull request link will be displayed as a card view.',
+          t(
+            'The added GitHub issue or pull request link will be displayed as a card view.'
+          ),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {
@@ -628,7 +640,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
         await toggleEmbedCardCreateModal(
           std.host,
           'Figma',
-          'The added Figma link will be displayed as an embed view.',
+          t('The added Figma link will be displayed as an embed view.'),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {
@@ -661,7 +673,7 @@ const embedToolGroup: KeyboardToolPanelGroup = {
         await toggleEmbedCardCreateModal(
           std.host,
           'Loom',
-          'The added Loom video link will be displayed as an embed view.',
+          t('The added Loom video link will be displayed as an embed view.'),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {
@@ -705,6 +717,7 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
 
   const frameItems = frameModels.map<KeyboardToolbarActionItem>(frameModel => ({
     name: 'Frame: ' + frameModel.props.title.toString(),
+    label: t('Frame: {title}', { title: frameModel.props.title.toString() }),
     icon: FrameIcon(),
     action: ({ std }) => {
       std.command
@@ -727,6 +740,7 @@ const documentGroupFrameToolGroup: DynamicKeyboardToolPanelGroup = ({
 
   const groupItems = groupElements.map<KeyboardToolbarActionItem>(group => ({
     name: 'Group: ' + group.title.toString(),
+    label: t('Group: {title}', { title: group.title.toString() }),
     icon: GroupIcon(),
     action: ({ std }) => {
       std.command
@@ -1137,6 +1151,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
     {
       name: 'RightTab',
       icon: RightTabIcon(),
+      mirrorInRtl: true,
       disableWhen: ({ std }) => {
         const [success] = std.command
           .chain()
@@ -1162,6 +1177,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
     {
       name: 'CollapseTab',
       icon: CollapseTabIcon(),
+      mirrorInRtl: true,
       disableWhen: ({ std }) => {
         const [success] = std.command
           .chain()
@@ -1191,7 +1207,7 @@ export const defaultKeyboardToolbarConfig: KeyboardToolbarConfig = {
           .pipe(getSelectedModelsCommand)
           .with({
             onCopy: () => {
-              toast(std.host, 'Copied to clipboard');
+              toast(std.host, t('Copied to clipboard'));
             },
           })
           .pipe(draftSelectedModelsCommand)

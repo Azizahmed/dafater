@@ -3,6 +3,7 @@ import {
   popMenu,
   type PopupTarget,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import type { Middleware } from '@floating-ui/dom';
 
 import { renderUniLit } from '../utils/index.js';
@@ -24,7 +25,7 @@ export const popCreateSort = (
     options: {
       onClose: props.onClose,
       title: {
-        text: 'New sort',
+        text: t('New sort'),
         onBack: props.onBack,
       },
       items: [

@@ -39,7 +39,10 @@ export interface SelectMarkdownSyncFolderResult {
   canceled?: boolean;
 }
 
-const extension = 'affine';
+// Workspaces are exported as `.dafater`; `.affine` (the upstream extension) and
+// raw `.db` files are still accepted on import.
+const extension = 'dafater';
+const importExtensions = [extension, 'affine', 'db'];
 
 function getDefaultDBFileName(name: string, id: string) {
   const fileName = `${name}_${id}.${extension}`;
@@ -124,11 +127,11 @@ export async function saveDBFileAs(
       filters: [
         {
           extensions: [extension],
-          name: '',
+          name: 'Dafater Workspace',
         },
       ],
       defaultPath: getDefaultDBFileName(name, id),
-      message: 'Save Workspace as a SQLite Database file',
+      message: 'Save Workspace as a Dafater (SQLite) file',
     });
 
     const filePath = ret.filePath;
@@ -212,12 +215,11 @@ export async function loadDBFile(): Promise<LoadDBFileResult> {
       buttonLabel: 'Load',
       filters: [
         {
-          name: 'SQLite Database',
-          // do we want to support other file format?
-          extensions: ['db', 'affine'],
+          name: 'Dafater Workspace / SQLite Database',
+          extensions: importExtensions,
         },
       ],
-      message: 'Load Workspace from a AFFiNE file',
+      message: 'Load Workspace from a Dafater file',
     });
     const selectedPath = ret.filePaths?.[0];
     if (ret.canceled || !selectedPath) {

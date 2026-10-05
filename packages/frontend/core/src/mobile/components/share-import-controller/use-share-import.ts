@@ -9,6 +9,7 @@ import {
   WorkspacesService,
 } from '@affine/core/modules/workspace';
 import { ServerDeploymentType } from '@affine/graphql';
+import { I18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -209,7 +210,9 @@ export function useShareImport(provider: ShareInboxProvider) {
       ) {
         notify.warning({
           title:
-            'Content saved. Some selected tags or the collection are no longer available.',
+            I18n[
+              'com.affine.mobile.share-import.notify.destination-unavailable'
+            ](),
         });
       }
       try {
@@ -290,7 +293,9 @@ export function useShareImport(provider: ShareInboxProvider) {
       }
       if (importedCount > 0) {
         notify.success({
-          title: `${importedCount} shared ${importedCount === 1 ? 'item' : 'items'} saved`,
+          title: I18n['com.affine.mobile.share-import.notify.saved-count']({
+            count: importedCount,
+          }),
         });
       }
       if (nextEntry?.status === 'ready') {
@@ -448,7 +453,9 @@ export function useShareImport(provider: ShareInboxProvider) {
         );
         if (!retryEntry || retryEntry.status !== 'ready') {
           setEntry(undefined);
-          notify.success({ title: 'Shared content saved' });
+          notify.success({
+            title: I18n['com.affine.mobile.share-import.notify.saved'](),
+          });
           await refresh();
           return;
         }
@@ -465,7 +472,10 @@ export function useShareImport(provider: ShareInboxProvider) {
         allowOffline
       );
       if (outcome === 'completed') {
-        if (ownsOperation) notify.success({ title: 'Shared content saved' });
+        if (ownsOperation)
+          notify.success({
+            title: I18n['com.affine.mobile.share-import.notify.saved'](),
+          });
       } else if (outcome === 'completion-failed') {
         setManualItem({ ...item, lastError: 'completion-failed' });
         return;

@@ -38,6 +38,7 @@ import { CalendarExternalSourceProvider } from '@blocksuite/data-view/view-prese
 import { widgetPresets } from '@blocksuite/data-view/widget-presets';
 import { IS_MOBILE } from '@blocksuite/global/env';
 import { Rect } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   CommentIcon,
   CopyIcon,
@@ -81,7 +82,7 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
       items: [
         menu.input({
           initialValue: this.model.props.title.toString(),
-          placeholder: 'Database title',
+          placeholder: t('Database title'),
           onChange: text => {
             this.model.props.title.replace(
               0,
@@ -92,7 +93,7 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
         }),
         menu.action({
           prefix: CommentIcon(),
-          name: 'Comment',
+          name: t('Comment'),
           hide: () => !this.std.getOptional(CommentProviderIdentifier),
           select: () => {
             this.std.getOptional(CommentProviderIdentifier)?.addComment([
@@ -104,13 +105,13 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
         }),
         menu.action({
           prefix: CopyIcon(),
-          name: 'Copy',
+          name: t('Copy'),
           select: () => {
             const slice = Slice.fromModels(this.store, [this.model]);
             this.std.clipboard
               .copySlice(slice)
               .then(() => {
-                toast(this.host, 'Copied to clipboard');
+                toast(this.host, t('Copied to clipboard'));
               })
               .catch(console.error);
           },
@@ -122,7 +123,7 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
               class: {
                 'delete-item': true,
               },
-              name: 'Delete Database',
+              name: t('Delete Database'),
               select: () => {
                 this.model.children.slice().forEach(block => {
                   this.store.deleteBlock(block);
@@ -403,8 +404,9 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
                 whiteSpace: 'wrap',
               })}
             >
-              Mobile database editing is not supported yet. You can open it in
-              experimental features, or edit it in desktop mode.
+              ${t(
+                'Mobile database editing is not supported yet. You can open it in experimental features, or edit it in desktop mode.'
+              )}
             </div>`,
             accent: 'warning',
             onClose: () => {

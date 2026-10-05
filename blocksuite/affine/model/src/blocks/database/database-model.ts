@@ -5,6 +5,7 @@ import {
   defineBlockSchema,
 } from '@blocksuite/store';
 
+import type { TextDirection } from '../../consts/index.js';
 import type {
   ColumnDataType,
   SerializedCells,
@@ -17,6 +18,7 @@ export type DatabaseBlockProps = {
   cells: SerializedCells;
   columns: Array<ColumnDataType>;
   comments?: Record<string, boolean>;
+  textDirection?: TextDirection;
 };
 
 export class DatabaseBlockModel extends BlockModel<DatabaseBlockProps> {}
@@ -29,6 +31,7 @@ export const DatabaseBlockSchema = defineBlockSchema({
     cells: Object.create(null),
     columns: [],
     comments: undefined,
+    textDirection: undefined,
   }),
   metadata: {
     role: 'hub',

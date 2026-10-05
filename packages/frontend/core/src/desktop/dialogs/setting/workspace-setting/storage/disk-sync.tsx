@@ -9,10 +9,12 @@ import {
   getDiskSyncFolderPath,
   setDiskSyncFolderPath,
 } from '@affine/core/modules/workspace-engine/impls/disk-config';
+import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useCallback, useEffect, useState } from 'react';
 
 export const DiskSyncPanel = ({ workspaceId }: { workspaceId: string }) => {
+  const t = useI18n();
   const desktopApi = useService(DesktopApiService);
   const featureFlagService = useService(FeatureFlagService);
   const enabled = useLiveData(featureFlagService.flags.enable_disk_sync.$);
@@ -55,9 +57,10 @@ export const DiskSyncPanel = ({ workspaceId }: { workspaceId: string }) => {
       return;
     }
     notify.success({
-      title: 'Disk sync folder updated',
+      title:
+        t['com.affine.settings.workspace.storage.disk-sync.folder-updated'](),
     });
-  }, [desktopApi.handler.dialog, enabled, folder, workspaceId]);
+  }, [desktopApi.handler.dialog, enabled, folder, t, workspaceId]);
 
   const onClearFolder = useCallback(() => {
     if (!folder) {
@@ -73,19 +76,26 @@ export const DiskSyncPanel = ({ workspaceId }: { workspaceId: string }) => {
   return (
     <>
       <SettingRow
-        name={'Markdown Folder Sync (Experimental)'}
-        desc={'Sync pages with Markdown files in a local folder.'}
+        name={t['com.affine.settings.workspace.storage.disk-sync.title']()}
+        desc={t[
+          'com.affine.settings.workspace.storage.disk-sync.description'
+        ]()}
       >
         <Switch
-          aria-label="Disk Markdown Sync"
+          aria-label={t[
+            'com.affine.settings.workspace.storage.disk-sync.toggle'
+          ]()}
           data-testid="disk-sync-toggle"
           checked={!!enabled}
           onChange={onToggle}
         />
       </SettingRow>
       <SettingRow
-        name={'Sync Folder'}
-        desc={folder ?? 'No folder selected'}
+        name={t['com.affine.settings.workspace.storage.disk-sync.folder']()}
+        desc={
+          folder ??
+          t['com.affine.settings.workspace.storage.disk-sync.no-folder']()
+        }
         spreadCol={false}
       >
         <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
@@ -94,7 +104,9 @@ export const DiskSyncPanel = ({ workspaceId }: { workspaceId: string }) => {
             disabled={!enabled}
             onClick={onChooseFolder}
           >
-            Choose Folder
+            {t[
+              'com.affine.settings.workspace.storage.disk-sync.choose-folder'
+            ]()}
           </Button>
           {folder ? (
             <Button
@@ -102,15 +114,17 @@ export const DiskSyncPanel = ({ workspaceId }: { workspaceId: string }) => {
               disabled={!enabled}
               onClick={onClearFolder}
             >
-              Clear
+              {t['com.affine.settings.workspace.storage.disk-sync.clear']()}
             </Button>
           ) : null}
         </div>
       </SettingRow>
       {enabled && folder ? (
         <SettingRow
-          name={'Review Markdown changes'}
-          desc={`Changes to existing files are saved in ${folder}/.affine-sync/candidates. Review a candidate, then copy it over the Markdown file with the same id to accept it.`}
+          name={t['com.affine.settings.workspace.storage.disk-sync.review']()}
+          desc={t[
+            'com.affine.settings.workspace.storage.disk-sync.review.description'
+          ]({ folder })}
           spreadCol={false}
         />
       ) : null}

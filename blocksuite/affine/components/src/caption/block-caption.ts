@@ -1,5 +1,6 @@
 import type { DocMode } from '@blocksuite/affine-model';
 import { stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import type { BlockStdScope } from '@blocksuite/std';
 import {
@@ -35,6 +36,7 @@ export class BlockCaptionEditor<
       font-size: var(--affine-font-sm);
       font-family: inherit;
       text-align: center;
+      unicode-bidi: plaintext;
       field-sizing: content;
       padding: 0;
       margin-top: 4px;
@@ -145,7 +147,7 @@ export class BlockCaptionEditor<
 
     return html`<textarea
       .disabled=${this.doc.readonly}
-      placeholder="Write a caption"
+      placeholder=${t('Write a caption')}
       class="block-caption-editor"
       .value=${this.caption ?? ''}
       @input=${this._onInputChange}

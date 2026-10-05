@@ -22,9 +22,15 @@ import { MobileViewExtension } from '@affine/core/blocksuite/view-extensions/mob
 import { PdfViewExtension } from '@affine/core/blocksuite/view-extensions/pdf';
 import { AffineThemeViewExtension } from '@affine/core/blocksuite/view-extensions/theme';
 import { TurboRendererViewExtension } from '@affine/core/blocksuite/view-extensions/turbo-renderer';
+import {
+  arabaseEditorTranslate,
+  dafaterSlashMenuTranslate,
+} from '@affine/core/modules/arabase';
 import { PeekViewService } from '@affine/core/modules/peek-view';
 import { DebugLogger } from '@affine/debug';
+import { I18n } from '@affine/i18n';
 import { tracker } from '@affine/track';
+import { ArabaseEditorViewExtension } from '@arabase/blocksuite';
 import { DatabaseViewExtension } from '@blocksuite/affine/blocks/database/view';
 import { ParagraphViewExtension } from '@blocksuite/affine/blocks/paragraph/view';
 import type {
@@ -66,6 +72,7 @@ type Configure = {
     enableComment?: boolean,
     framework?: FrameworkProvider
   ) => Configure;
+  arabase: () => Configure;
 
   value: ViewExtensionManager;
 };
@@ -102,6 +109,7 @@ class ViewProvider {
       AffineLinkPreviewExtension,
       AffineDatabaseViewExtension,
       CommentViewExtension,
+      ArabaseEditorViewExtension,
     ]);
   }
 
@@ -130,6 +138,7 @@ class ViewProvider {
       codeBlockPreview: this._configureCodeBlockHtmlPreview,
       iconPicker: this._configureIconPicker,
       comment: this._configureComment,
+      arabase: this._configureArabase,
       value: this._manager,
     };
   }
@@ -153,7 +162,8 @@ class ViewProvider {
       .linkPreview()
       .codeBlockPreview()
       .iconPicker()
-      .comment();
+      .comment()
+      .arabase();
 
     return this.config;
   };
@@ -247,39 +257,30 @@ class ViewProvider {
   };
 
   private readonly _configureParagraph = (enableAI?: boolean) => {
-    if (BUILD_CONFIG.isMobileEdition) {
-      this._manager.configure(ParagraphViewExtension, {
-        getPlaceholder: model => {
-          const placeholders = {
-            text: '',
-            h1: 'Heading 1',
-            h2: 'Heading 2',
-            h3: 'Heading 3',
-            h4: 'Heading 4',
-            h5: 'Heading 5',
-            h6: 'Heading 6',
-            quote: '',
-          };
-          return placeholders[model.props.type] ?? '';
-        },
-      });
-    } else if (enableAI) {
-      this._manager.configure(ParagraphViewExtension, {
-        getPlaceholder: model => {
-          const placeholders = {
-            text: "Type '/' for commands, 'space' for AI",
-            h1: 'Heading 1',
-            h2: 'Heading 2',
-            h3: 'Heading 3',
-            h4: 'Heading 4',
-            h5: 'Heading 5',
-            h6: 'Heading 6',
-            quote: '',
-          };
-          return placeholders[model.props.type] ?? '';
-        },
-      });
-    }
+    // Placeholders are resolved at render time, so they follow the current
+    // UI language.
+    this._manager.configure(ParagraphViewExtension, {
+      getPlaceholder: model => {
+        const type = model.props.type;
+        if (type.startsWith('h')) {
+          return I18n.t('com.affine.editor.placeholder.heading', {
+            level: type.slice(1),
+          });
+        }
+        if (type !== 'text' || BUILD_CONFIG.isMobileEdition) return '';
+        return enableAI
+          ? I18n.t('com.affine.editor.placeholder.text-with-ai')
+          : I18n.t('com.affine.editor.placeholder.text');
+      },
+    });
+    return this.config;
+  };
+
+  private readonly _configureArabase = () => {
+    this._manager.configure(ArabaseEditorViewExtension, {
+      translate: arabaseEditorTranslate,
+      translateSlashMenu: dafaterSlashMenuTranslate,
+    });
     return this.config;
   };
 

@@ -38,6 +38,7 @@ import {
   renderMenu,
 } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   AddTextIcon,
   ConnectorCIcon,
@@ -109,17 +110,23 @@ const REAR_ENDPOINT_STYLE_LIST = [
 
 const CONNECTOR_MODE_LIST = [
   {
-    key: 'Curve',
+    get key() {
+      return t('Curve');
+    },
     value: ConnectorMode.Curve,
     icon: ConnectorCIcon(),
   },
   {
-    key: 'Elbowed',
+    get key() {
+      return t('Elbowed');
+    },
     value: ConnectorMode.Orthogonal,
     icon: ConnectorEIcon(),
   },
   {
-    key: 'Straight',
+    get key() {
+      return t('Straight');
+    },
     value: ConnectorMode.Straight,
     icon: ConnectorLIcon(),
   },
@@ -191,7 +198,7 @@ export const connectorToolbarConfig = {
         return html`
           <edgeless-color-picker-button
             class="stroke-color"
-            .label="${'Stroke style'}"
+            .label="${t('Stroke style')}"
             .pick=${onPickColor}
             .color=${stroke}
             .theme=${theme}
@@ -233,6 +240,7 @@ export const connectorToolbarConfig = {
 
         return renderMenu({
           label: 'Style',
+          tooltip: t('Style'),
           items: LINE_STYLE_LIST,
           currentValue: rough,
           onPick,
@@ -257,6 +265,7 @@ export const connectorToolbarConfig = {
 
             return renderMenu({
               label: 'Start point style',
+              tooltip: t('Start point style'),
               items: FRONT_ENDPOINT_STYLE_LIST,
               currentValue: pointStyle,
               onPick,
@@ -303,6 +312,7 @@ export const connectorToolbarConfig = {
 
             return renderMenu({
               label: 'End point style',
+              tooltip: t('End point style'),
               items: REAR_ENDPOINT_STYLE_LIST,
               currentValue: pointStyle,
               onPick,
@@ -324,7 +334,7 @@ export const connectorToolbarConfig = {
 
             return renderMenu({
               label: 'Shape',
-              tooltip: 'Connector shape',
+              tooltip: t('Connector shape'),
               items: CONNECTOR_MODE_LIST,
               currentValue: mode,
               onPick,

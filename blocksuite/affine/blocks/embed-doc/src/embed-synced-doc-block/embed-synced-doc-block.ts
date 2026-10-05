@@ -27,6 +27,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { cloneReferenceInfo } from '@blocksuite/affine-shared/utils';
 import { Bound, getCommonBound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   BlockSelection,
   BlockStdScope,
@@ -247,7 +248,7 @@ export class EmbedSyncedDocBlockComponent extends EmbedBlockComponent<EmbedSynce
                 ? html`
                     <div class="affine-embed-synced-doc-editor-empty">
                       <span>
-                        This is a linked doc, you can add content here.
+                        ${t('This is a linked doc, you can add content here.')}
                       </span>
                     </div>
                   `
@@ -389,7 +390,7 @@ export class EmbedSyncedDocBlockComponent extends EmbedBlockComponent<EmbedSynce
   }
 
   get docTitle() {
-    return this.syncedDoc?.meta?.title || 'Untitled';
+    return this.syncedDoc?.meta?.title || t('Untitled');
   }
 
   get docUpdatedAt() {

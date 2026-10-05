@@ -32,7 +32,7 @@ export const importModalContent = style({
 
 export const closeButton = style({
   top: '24px',
-  right: '24px',
+  insetInlineEnd: '24px',
 });
 
 export const importModalTip = style({
@@ -128,7 +128,7 @@ export const importItemLabel = style({
   display: 'flex',
   alignItems: 'center',
   padding: '0 4px',
-  textAlign: 'left',
+  textAlign: 'start',
   flex: 1,
   color: cssVar('textPrimaryColor'),
   fontSize: cssVar('fontBase'),
@@ -139,9 +139,9 @@ export const importItemLabel = style({
 });
 
 export const importItemPrefix = style({
-  marginRight: 'auto',
+  marginInlineEnd: 'auto',
 });
 
 export const importItemSuffix = style({
-  marginLeft: 'auto',
+  marginInlineStart: 'auto',
 });

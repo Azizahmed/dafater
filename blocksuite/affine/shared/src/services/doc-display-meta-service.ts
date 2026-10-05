@@ -4,6 +4,7 @@ import {
   type DisposableMember,
   disposeMember,
 } from '@blocksuite/global/disposable';
+import { t } from '@blocksuite/global/i18n';
 import {
   AliasIcon,
   BlockLinkIcon,
@@ -159,18 +160,18 @@ export class DocDisplayMetaService
     const doc = this.std.workspace.getDoc(pageId);
 
     if (!doc) {
-      return computed(() => title || 'Deleted doc');
+      return computed(() => title || t('Deleted doc'));
     }
 
     const store = doc.getStore();
 
     let title$ = this.titleMap.get(store);
     if (!title$) {
-      title$ = signal(doc.meta?.title || 'Untitled');
+      title$ = signal(doc.meta?.title || '');
 
       const disposable = this.std.workspace.slots.docListUpdated.subscribe(
         () => {
-          title$!.value = doc.meta?.title || 'Untitled';
+          title$!.value = doc.meta?.title || '';
         }
       );
 
@@ -179,7 +180,7 @@ export class DocDisplayMetaService
     }
 
     return computed(() => {
-      return title || title$.value;
+      return title || title$.value || t('Untitled');
     });
   }
 

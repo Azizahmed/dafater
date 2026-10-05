@@ -14,7 +14,7 @@ interface AppConfig {
 
 const config: CapacitorConfig & AppConfig = {
   appId: 'app.affine.pro',
-  appName: 'AFFiNE',
+  appName: 'Dafater',
   webDir: 'dist',
   affineVersion: packageJson.version,
   ios: {

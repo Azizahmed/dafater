@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import type { EditorHost } from '@blocksuite/affine/std';
 import { baseTheme } from '@toeverything/theme';
@@ -146,14 +147,16 @@ export class AIPanelError extends WithDisposable(LitElement) {
           AIErrorType.Unauthorized,
           () =>
             html` <div class="error-info">
-                You need to login to AFFiNE Cloud to continue using AFFiNE AI.
+                ${t(
+                  'You need to login to Dafater Cloud to continue using Dafater AI.'
+                )}
               </div>
               <div class="action-button-group">
                 <div @click=${this.config.cancel} class="action-button">
-                  <span>Cancel</span>
+                  <span>${t('Cancel')}</span>
                 </div>
                 <div @click=${this.config.login} class="action-button primary">
-                  <span>Login</span>
+                  <span>${t('Login')}</span>
                 </div>
               </div>`,
         ],
@@ -161,19 +164,13 @@ export class AIPanelError extends WithDisposable(LitElement) {
           AIErrorType.PaymentRequired,
           () =>
             html` <div class="error-info">
-                You've reached the current usage cap for AFFiNE AI. You can
-                subscribe to AFFiNE AI(with free 7-day-trial) to continue the AI
-                experience!
+                ${t(
+                  'The AI request could not be completed. Contact your system administrator.'
+                )}
               </div>
               <div class="action-button-group">
                 <div @click=${this.config.cancel} class="action-button">
-                  <span>Cancel</span>
-                </div>
-                <div
-                  @click=${this.config.upgrade}
-                  class="action-button primary"
-                >
-                  <span>Upgrade</span>
+                  <span>${t('Cancel')}</span>
                 </div>
               </div>`,
         ],
@@ -183,12 +180,12 @@ export class AIPanelError extends WithDisposable(LitElement) {
         const tip = this.config.error?.message;
         const error = tip
           ? html`<span class="error-tip">
-              An error occurred
+              ${t('An error occurred')}
               <affine-tooltip tip-position="bottom-start">
                 ${tip}
               </affine-tooltip>
             </span>`
-          : 'An error occurred';
+          : t('An error occurred');
         return html`
           <style>
             .error-tip {
@@ -196,11 +193,10 @@ export class AIPanelError extends WithDisposable(LitElement) {
             }
           </style>
           <div class="error-info">
-            ${error}. Please try again later. If this issue persists, please let
-            us know at
-            <a href="mailto:support@toeverything.info">
-              support@toeverything.info
-            </a>
+            ${error}.
+            ${t(
+              'Please try again later. If this issue persists, contact your system administrator.'
+            )}
           </div>
         `;
       }
@@ -209,7 +205,7 @@ export class AIPanelError extends WithDisposable(LitElement) {
     return html`
       <div class="error" data-testid="ai-error">
         <div class="answer-tip">
-          <div class="answer-label">Answer</div>
+          <div class="answer-label">${t('Answer')}</div>
           <slot></slot>
         </div>
         ${errorTemplate}

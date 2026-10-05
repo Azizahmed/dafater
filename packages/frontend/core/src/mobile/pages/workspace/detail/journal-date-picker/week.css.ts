@@ -21,7 +21,7 @@ export const weekSwipeRoot = style({
 });
 export const weekSwipeSlide = style({
   width: '300%',
-  marginLeft: '-100%',
+  marginInlineStart: '-100%',
   display: 'flex',
 });
 export const weekSwipeItem = style({

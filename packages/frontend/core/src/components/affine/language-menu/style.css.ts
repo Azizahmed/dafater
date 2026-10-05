@@ -20,5 +20,5 @@ export const languageLabelWrapper = style({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginRight: '8px',
+  marginInlineEnd: '8px',
 });

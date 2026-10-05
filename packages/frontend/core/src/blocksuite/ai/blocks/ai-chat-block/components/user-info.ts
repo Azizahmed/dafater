@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { baseTheme } from '@toeverything/theme';
 import { css, html, LitElement, type TemplateResult, unsafeCSS } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -107,11 +108,11 @@ export function UserInfoTemplate(
 
   const userInfoTemplate = isUser
     ? html`<user-info
-        .userName=${userInfo.userName ?? 'You'}
+        .userName=${userInfo.userName ?? t('You')}
         .avatarUrl=${userInfo.avatarUrl}
       ></user-info>`
     : html`<user-info
-        .userName=${'AFFiNE AI'}
+        .userName=${t('Dafater AI')}
         .avatarIcon=${AffineAIIcon}
       ></user-info>`;
 

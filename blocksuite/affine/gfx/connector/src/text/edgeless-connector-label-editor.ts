@@ -9,6 +9,7 @@ import { ThemeProvider } from '@blocksuite/affine-shared/services';
 import { almostEqual } from '@blocksuite/affine-shared/utils';
 import { BlockSuiteError, ErrorCode } from '@blocksuite/global/exceptions';
 import { Bound, type IVec, Vec } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import {
   type BlockComponent,
@@ -107,6 +108,11 @@ export class EdgelessConnectorLabelEditor extends WithDisposable(
       .inline-editor span {
         word-break: normal !important;
         overflow-wrap: anywhere !important;
+      }
+
+      /* Each line takes its direction from its text, like the canvas. */
+      .inline-editor v-line > div {
+        unicode-bidi: plaintext;
       }
 
       .edgeless-connector-label-editor-placeholder {
@@ -372,7 +378,7 @@ export class EdgelessConnectorLabelEditor extends WithDisposable(
           isEmpty
             ? html`
                 <span class="edgeless-connector-label-editor-placeholder">
-                  Add text
+                  ${t('Add text')}
                 </span>
               `
             : nothing

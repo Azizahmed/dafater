@@ -20,7 +20,8 @@ export class AskAIPanel extends WithDisposable(LitElement) {
 
     .ask-ai-panel {
       box-sizing: border-box;
-      padding: 8px 4px 8px 8px;
+      padding-block: 8px;
+      padding-inline: 8px 4px;
       max-height: 374px;
       overflow-y: auto;
       background: var(--affine-background-overlay-panel-color);

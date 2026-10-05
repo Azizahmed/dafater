@@ -2,6 +2,7 @@ import type { IconData } from '@affine/component';
 import type { ExplorerIconService } from '@affine/core/modules/explorer-icon/services/explorer-icon';
 import type { OrganizeService } from '@affine/core/modules/organize';
 import type { TagService } from '@affine/core/modules/tag';
+import { I18n } from '@affine/i18n';
 import {
   type ExtensionType,
   type Schema,
@@ -86,7 +87,10 @@ export class ImportCommitService {
         warnings.push({
           code: 'skipped_doc',
           sourcePath: doc.sourcePath,
-          message: `Skipped ${doc.sourcePath ?? doc.id}: ${errorMessage(error)}`,
+          message: I18n.t('com.affine.import.warning.skipped-doc', {
+            path: doc.sourcePath ?? doc.id,
+            reason: errorMessage(error),
+          }),
         });
         continue;
       }
@@ -94,7 +98,9 @@ export class ImportCommitService {
         warnings.push({
           code: 'skipped_doc',
           sourcePath: doc.sourcePath,
-          message: `Skipped ${doc.sourcePath ?? doc.id}: document snapshot could not be committed`,
+          message: I18n.t('com.affine.import.warning.doc-not-committed', {
+            path: doc.sourcePath ?? doc.id,
+          }),
         });
         continue;
       }
@@ -114,7 +120,10 @@ export class ImportCommitService {
           warnings.push({
             code: 'doc_meta_failed',
             sourcePath: doc.sourcePath,
-            message: `Failed to apply metadata for ${doc.sourcePath ?? doc.id}: ${errorMessage(error)}`,
+            message: I18n.t('com.affine.import.warning.doc-meta-failed', {
+              path: doc.sourcePath ?? doc.id,
+              reason: errorMessage(error),
+            }),
           });
         }
       }
@@ -212,7 +221,9 @@ export class ImportCommitService {
             warnings.push({
               code: 'unresolved_folder',
               sourcePath: folder.path,
-              message: `Skipped folder placement for ${folder.path}: parent folder was not found`,
+              message: I18n.t('com.affine.import.warning.unresolved-folder', {
+                path: folder.path,
+              }),
             });
           }
           break;

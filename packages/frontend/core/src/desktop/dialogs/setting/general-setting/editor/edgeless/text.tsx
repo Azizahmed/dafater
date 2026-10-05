@@ -12,7 +12,6 @@ import {
   FontFamily,
   FontFamilyMap,
   FontStyle,
-  FontWeightMap,
   TextAlign,
 } from '@blocksuite/affine/model';
 import type { Store } from '@blocksuite/affine/store';
@@ -22,7 +21,12 @@ import { useCallback, useMemo } from 'react';
 
 import { DropdownMenu } from '../menu';
 import { menuTrigger, settingWrapper } from '../style.css';
-import { sortedFontWeightEntries, usePalettes } from '../utils';
+import {
+  getFontStyleLabel,
+  getFontWeightLabel,
+  sortedFontWeightEntries,
+  usePalettes,
+} from '../utils';
 import { Point } from './point';
 import { EdgelessSnapshot } from './snapshot';
 
@@ -75,7 +79,7 @@ export const TextSettings = () => {
 
   const colorItems = useMemo(() => {
     const { color } = settings['affine:edgeless-text'];
-    return palettes.map(({ key, value, resolvedValue }) => {
+    return palettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set('affine:edgeless-text', { color: value });
       };
@@ -87,7 +91,7 @@ export const TextSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -117,11 +121,11 @@ export const TextSettings = () => {
       const isSelected = fontStyle === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getFontStyleLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const fontWeightItems = useMemo(() => {
     const { fontWeight } = settings['affine:edgeless-text'];
@@ -132,11 +136,11 @@ export const TextSettings = () => {
       const isSelected = fontWeight === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getFontWeightLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const currentColor = useMemo(() => {
     const { color } = settings['affine:edgeless-text'];
@@ -167,7 +171,7 @@ export const TextSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={currentColor.resolvedValue} />}
               >
-                {currentColor.key}
+                {currentColor.label}
               </MenuTrigger>
             }
           />
@@ -198,7 +202,7 @@ export const TextSettings = () => {
           items={fontStyleItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {String(settings['affine:edgeless-text'].fontStyle)}
+              {getFontStyleLabel(t, settings['affine:edgeless-text'].fontStyle)}
             </MenuTrigger>
           }
         />
@@ -213,7 +217,10 @@ export const TextSettings = () => {
           items={fontWeightItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {FontWeightMap[settings['affine:edgeless-text'].fontWeight]}
+              {getFontWeightLabel(
+                t,
+                settings['affine:edgeless-text'].fontWeight
+              )}
             </MenuTrigger>
           }
         />

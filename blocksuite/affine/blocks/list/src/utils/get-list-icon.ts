@@ -67,7 +67,7 @@ export function getListIcon(
     case 'toggle':
       return html`<div
         contenteditable="false"
-        class="affine-list-block__prefix"
+        class="affine-list-block__prefix affine-list-block__toggle-prefix"
         @click=${onClick}
       >
         ${showChildren ? ToggleDownIcon() : ToggleRightIcon()}

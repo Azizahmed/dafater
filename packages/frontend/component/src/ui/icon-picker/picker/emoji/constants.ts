@@ -41,3 +41,15 @@ export const GROUP_ICON_MAP: Record<
   Symbols: SymbolIcon,
   Flags: FlagIcon,
 };
+
+/** Display names of the groups (the English names are also ids). */
+export const GROUP_I18N_KEYS: Record<GroupName, string> = {
+  'Smileys & People': 'com.affine.icon-picker.emoji-group.smileys-people',
+  'Animals & Nature': 'com.affine.icon-picker.emoji-group.animals-nature',
+  'Food & Drink': 'com.affine.icon-picker.emoji-group.food-drink',
+  Activity: 'com.affine.icon-picker.emoji-group.activity',
+  'Travel & Places': 'com.affine.icon-picker.emoji-group.travel-places',
+  Objects: 'com.affine.icon-picker.emoji-group.objects',
+  Symbols: 'com.affine.icon-picker.emoji-group.symbols',
+  Flags: 'com.affine.icon-picker.emoji-group.flags',
+};

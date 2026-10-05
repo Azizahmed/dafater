@@ -35,7 +35,7 @@ function buildProgram(logger: Logger) {
 
   program
     .name(getProgramName())
-    .description('AFFiNE server CLI')
+    .description('Dafater server CLI')
     .showHelpAfterError()
     .showSuggestionAfterError();
 

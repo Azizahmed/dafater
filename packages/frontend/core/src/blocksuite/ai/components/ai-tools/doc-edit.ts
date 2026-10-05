@@ -1,4 +1,5 @@
 import track from '@affine/track';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
 import { type EditorHost, ShadowlessElement } from '@blocksuite/affine/std';
@@ -112,7 +113,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
           align-items: center;
           gap: 8px;
           cursor: pointer;
-          padding-right: 8px;
+          padding-inline-end: 8px;
           color: ${unsafeCSSVarV2('text/secondary')};
 
           button {
@@ -268,7 +269,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
     const success = await copyText(removeMarkdownComments(changedMarkdown));
     if (success) {
       this.notificationService.notify({
-        title: 'Copied to clipboard',
+        title: t('Copied to clipboard'),
         accent: 'success',
         onClose: function (): void {},
       });
@@ -278,7 +279,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     return html`
       <tool-call-card
-        .name=${'Editing the document'}
+        .name=${t('Editing the document')}
         .icon=${EditIcon()}
       ></tool-call-card>
     `;
@@ -302,13 +303,13 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
               <div class="doc-edit-tool-result-card-diff-replace">
                 <div class="doc-edit-tool-result-card-diff original">
                   <div class="doc-edit-tool-result-card-diff-title">
-                    Original
+                    ${t('Original')}
                   </div>
                   <div>${this.renderSantizedText(oldBlock?.content ?? '')}</div>
                 </div>
                 <div class="doc-edit-tool-result-card-diff modified">
                   <div class="doc-edit-tool-result-card-diff-title">
-                    Modified
+                    ${t('Modified')}
                   </div>
                   <div>${this.renderSantizedText(patch.content)}</div>
                 </div>
@@ -318,14 +319,18 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
             const oldBlock = oldBlockMap.get(patch.id);
             return html`
               <div class="doc-edit-tool-result-card-diff deleted">
-                <div class="doc-edit-tool-result-card-diff-title">Deleted</div>
+                <div class="doc-edit-tool-result-card-diff-title">
+                  ${t('Deleted')}
+                </div>
                 <div>${this.renderSantizedText(oldBlock?.content ?? '')}</div>
               </div>
             `;
           } else if (patch.op === 'insert') {
             return html`
               <div class="doc-edit-tool-result-card-diff insert">
-                <div class="doc-edit-tool-result-card-diff-title">Inserted</div>
+                <div class="doc-edit-tool-result-card-diff-title">
+                  ${t('Inserted')}
+                </div>
                 <div>${this.renderSantizedText(patch.block.content)}</div>
               </div>
             `;
@@ -370,14 +375,16 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
                     <button @click=${() => this._toggleCollapse()}>
                       ${this.isCollapsed ? ExpandFullIcon() : ExpandCloseIcon()}
                       <affine-tooltip>
-                        ${this.isCollapsed ? 'Expand' : 'Collapse'}
+                        ${this.isCollapsed ? t('Expand') : t('Collapse')}
                       </affine-tooltip>
                     </button>
                     <button @click=${() => this._handleCopy(changedContent)}>
                       ${CopyIcon()}
-                      <affine-tooltip>Copy</affine-tooltip>
+                      <affine-tooltip>${t('Copy')}</affine-tooltip>
                     </button>
-                    <button @click=${() => this._handleApply(op)}>Apply</button>
+                    <button @click=${() => this._handleApply(op)}>
+                      ${t('Apply')}
+                    </button>
                   </div>
                 </div>
                 <div class="doc-edit-tool-result-card-content">
@@ -390,7 +397,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
                       ${CloseIcon({
                         style: `color: ${unsafeCSSVarV2('icon/secondary')}`,
                       })}
-                      Reject
+                      ${t('Reject')}
                     </button>
                     <button
                       class="doc-edit-tool-result-accept"
@@ -399,7 +406,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
                       ${DoneIcon({
                         style: `color: ${unsafeCSSVarV2('icon/activated')}`,
                       })}
-                      Accept
+                      ${t('Accept')}
                     </button>
                   </div>
                 </div>
@@ -412,7 +419,7 @@ export class DocEditTool extends WithDisposable(ShadowlessElement) {
 
     return html`
       <tool-call-failed
-        .name=${'Document editing failed'}
+        .name=${t('Document editing failed')}
         .icon=${EditIcon()}
       ></tool-call-failed>
     `;

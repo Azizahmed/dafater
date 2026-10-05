@@ -22,11 +22,11 @@ export const root = style({
   selectors: {
     '&[data-open="false"][data-handle-position="right"],&[data-is-floating="true"][data-handle-position="right"]':
       {
-        marginLeft: `calc(${panelWidthVar} * -1)`,
+        marginInlineStart: `calc(${panelWidthVar} * -1)`,
       },
     '&[data-open="false"][data-handle-position="left"],&[data-is-floating="true"][data-handle-position="left"]':
       {
-        marginRight: `calc(${panelWidthVar} * -1)`,
+        marginInlineEnd: `calc(${panelWidthVar} * -1)`,
       },
     '&[data-open="true"][data-handle-position="right"][data-is-floating="true"]':
       {
@@ -36,8 +36,16 @@ export const root = style({
       {
         transform: `translateX(calc(${panelWidthVar} * -1))`,
       },
+    '&:dir(rtl)[data-open="true"][data-handle-position="right"][data-is-floating="true"]':
+      {
+        transform: `translateX(calc(${panelWidthVar} * -1 - 4px))`,
+      },
+    '&:dir(rtl)[data-open="true"][data-handle-position="left"][data-is-floating="true"]':
+      {
+        transform: `translateX(${panelWidthVar})`,
+      },
     '&[data-enable-animation="true"]': {
-      transition: `margin-left ${animationTimeout}, margin-right ${animationTimeout}, transform ${animationTimeout}, background ${animationTimeout}`,
+      transition: `margin-inline-start ${animationTimeout}, margin-inline-end ${animationTimeout}, transform ${animationTimeout}, background ${animationTimeout}`,
     },
     '&[data-transition-state="exited"]': {
       // avoid focus on hidden panel
@@ -59,7 +67,7 @@ export const panelContent = style({
 });
 export const resizeHandleContainer = style({
   position: 'absolute',
-  right: resizeHandleOffsetVar,
+  insetInlineEnd: resizeHandleOffsetVar,
   top: resizeHandleVerticalPadding,
   bottom: resizeHandleVerticalPadding,
   width: 8,
@@ -88,9 +96,15 @@ export const resizeHandleContainer = style({
       display: 'block',
     },
     '&[data-handle-position="left"]': {
-      left: resizeHandleOffsetVar,
-      right: 'auto',
+      insetInlineStart: resizeHandleOffsetVar,
+      insetInlineEnd: 'auto',
       transform: 'translateX(-50%)',
+    },
+    '&:dir(rtl)': {
+      transform: 'translateX(-50%)',
+    },
+    '&:dir(rtl)[data-handle-position="left"]': {
+      transform: 'translateX(50%)',
     },
   },
 });

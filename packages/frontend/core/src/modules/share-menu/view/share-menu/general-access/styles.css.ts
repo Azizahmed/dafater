@@ -3,7 +3,9 @@ import { cssVarV2 } from '@toeverything/theme/v2';
 import { style } from '@vanilla-extract/css';
 
 export const menuTriggerStyle = style({
-  padding: '4px 0px 4px 4px',
+  paddingBlock: '4px 4px',
+  paddingInlineStart: '4px',
+  paddingInlineEnd: '0px',
   borderRadius: '4px',
   justifyContent: 'space-between',
   display: 'flex',
@@ -14,7 +16,7 @@ export const menuTriggerStyle = style({
     '&.disable': {
       alignItems: 'center',
       gap: '4px',
-      marginRight: '4px',
+      marginInlineEnd: '4px',
       color: cssVarV2('text/disable'),
     },
   },
@@ -35,7 +37,7 @@ export const rowContainerStyle = style({
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginLeft: '4px',
+  marginInlineStart: '4px',
 });
 export const exportContainerStyle = style({
   display: 'flex',

@@ -127,7 +127,7 @@ export const styles = css`
   .affine-embed-figma-content-description::after {
     content: '...';
     position: absolute;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
     background-color: var(--affine-background-primary-color);
   }

@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { ShadowlessElement } from '@blocksuite/affine/std';
 import { UngroupIcon } from '@blocksuite/icons/lit';
@@ -21,7 +22,7 @@ export class ChatPanelSelectedChip extends SignalWatcher(
     const isLoading = state === 'processing';
     const tooltip = getChipTooltip(
       state,
-      'selected-content',
+      t('selected-content'),
       this.chip.tooltip
     );
 
@@ -29,7 +30,7 @@ export class ChatPanelSelectedChip extends SignalWatcher(
 
     return html`<chat-panel-chip
       .state=${state}
-      .name=${'selected-content'}
+      .name=${t('selected-content')}
       .tooltip=${tooltip}
       .icon=${icon}
       .closeable=${!isLoading}

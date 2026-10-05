@@ -168,7 +168,7 @@ export const settingButton = style({
   width: 0,
   height: 20,
   overflow: 'hidden',
-  marginLeft: 0,
+  marginInlineStart: 0,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -191,7 +191,7 @@ export const settingButton = style({
 
 export const showOnCardHover = style({
   position: 'absolute',
-  right: 0,
+  insetInlineEnd: 0,
   display: 'flex',
   gap: 8,
   alignItems: 'center',

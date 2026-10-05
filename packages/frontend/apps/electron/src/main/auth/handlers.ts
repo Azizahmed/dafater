@@ -35,6 +35,10 @@ export interface PasswordSignInResponse extends SignInResponse {
   sessionOnly?: boolean;
 }
 
+export interface SignUpResponse extends PasswordSignInResponse {
+  isAdmin: boolean;
+}
+
 const authCookieNames = [
   'affine_session',
   'affine_user_id',
@@ -185,6 +189,50 @@ export const authHandlers = {
       }),
     });
     const body = await readJson<PasswordSignInResponse>(response);
+    const { persistent } = await exchangeSession(endpoint, body);
+    return { ...body, sessionOnly: !persistent };
+  },
+
+  // Dafater account sign-up (email + password); the first account on a
+  // server becomes its administrator
+  signUp: async (
+    _,
+    endpoint: string,
+    credential: {
+      email: string;
+      password: string;
+      name?: string;
+      verifyToken?: string;
+      challenge?: string;
+    }
+  ) => {
+    const response = await authFetch(authUrl(endpoint, '/api/auth/sign-up'), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-affine-client-kind': 'native',
+        'x-affine-version': BUILD_CONFIG.appVersion,
+        ...(credential.verifyToken
+          ? { 'x-captcha-token': credential.verifyToken }
+          : {}),
+        ...(credential.verifyToken
+          ? {
+              'x-captcha-provider': credential.challenge
+                ? 'hashcash'
+                : 'turnstile',
+            }
+          : {}),
+        ...(credential.challenge
+          ? { 'x-captcha-challenge': credential.challenge }
+          : {}),
+      },
+      body: JSON.stringify({
+        email: credential.email,
+        password: credential.password,
+        name: credential.name,
+      }),
+    });
+    const body = await readJson<SignUpResponse>(response);
     const { persistent } = await exchangeSession(endpoint, body);
     return { ...body, sessionOnly: !persistent };
   },

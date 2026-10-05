@@ -1,5 +1,6 @@
 import { scrollbarStyle } from '@blocksuite/affine-shared/styles';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import { consume } from '@lit/context';
 import { css, html, LitElement } from 'lit';
@@ -33,6 +34,8 @@ export class AdapterPanelBody extends SignalWatcher(LitElement) {
       color: var(--affine-text-primary-color);
       font-size: var(--affine-font-sm);
       box-sizing: border-box;
+      unicode-bidi: plaintext;
+      text-align: start;
     }
 
     .html-content {
@@ -50,6 +53,7 @@ export class AdapterPanelBody extends SignalWatcher(LitElement) {
       box-sizing: border-box;
       color: var(--affine-text-primary-color);
       overflow: auto;
+      unicode-bidi: plaintext;
     }
 
     ${scrollbarStyle('.html-panel-content')}
@@ -149,13 +153,13 @@ export class AdapterPanelBody extends SignalWatcher(LitElement) {
             class="html-toggle-item"
             ?active=${!this.isHtmlPreview}
             @click=${() => (this._context.isHtmlPreview$.value = false)}
-            >Source</span
+            >${t('Source')}</span
           >
           <span
             class="html-toggle-item"
             ?active=${this.isHtmlPreview}
             @click=${() => (this._context.isHtmlPreview$.value = true)}
-            >Preview</span
+            >${t('Preview')}</span
           >
         </div>
       </div>

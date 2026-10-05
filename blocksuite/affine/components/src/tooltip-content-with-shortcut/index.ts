@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 import { repeat } from 'lit-html/directives/repeat.js';
@@ -45,12 +46,13 @@ export class TooltipContentWithShortcut extends LitElement {
     return shortcut.split(' ');
   }
 
+  // Tips are static UI strings from tool configs, translated when rendered.
   override render() {
     const { tip, shortcuts, postfix } = this;
 
     return html`
       <div class="tooltip-with-shortcut">
-        <span class="tooltip__label">${tip}</span>
+        <span class="tooltip__label">${tip && t(tip)}</span>
         <div class="tooltip__shortcuts">
           ${repeat(
             shortcuts,

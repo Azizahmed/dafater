@@ -1,3 +1,4 @@
+import { useI18n } from '@affine/i18n';
 import { RecentIcon } from '@blocksuite/icons/rc';
 import clsx from 'clsx';
 import {
@@ -21,7 +22,12 @@ import {
   type MasonryRef,
 } from '../../../masonry';
 import * as pickerStyles from '../picker.css';
-import { GROUP_ICON_MAP, type GroupName, GROUPS } from './constants';
+import {
+  GROUP_I18N_KEYS,
+  GROUP_ICON_MAP,
+  type GroupName,
+  GROUPS,
+} from './constants';
 import rawData from './data/en.json';
 import { EmojiButton } from './emoji-button';
 import * as styles from './emoji-picker.css';
@@ -85,9 +91,14 @@ const EmojiGroupHeader = memo(function EmojiGroupHeader({
 }: {
   groupId: string;
 }) {
+  const t = useI18n();
+  const i18nKey =
+    groupId === 'Recent'
+      ? 'com.affine.icon-picker.recent'
+      : GROUP_I18N_KEYS[groupId as GroupName];
   return (
     <div className={pickerStyles.groupName} data-group-name={groupId}>
-      {groupId}
+      {i18nKey ? t.t(i18nKey) : groupId}
     </div>
   );
 });
@@ -104,6 +115,7 @@ export const EmojiGroups = memo(function EmojiGroups({
   keyword?: string;
   skin?: number;
 }) {
+  const t = useI18n();
   const masonryRef = useRef<MasonryRef>(null);
   const [activeGroupId, setActiveGroupId] = useState<string | undefined>(
     'Recent'
@@ -181,7 +193,9 @@ export const EmojiGroups = memo(function EmojiGroups({
     return (
       <div className={styles.loadingWrapper}>
         <Loading size={16} />
-        <span style={{ marginLeft: 4 }}>Loading emojis...</span>
+        <span style={{ marginInlineStart: 4 }}>
+          {t['com.affine.icon-picker.loading-emojis']()}
+        </span>
       </div>
     );
   }

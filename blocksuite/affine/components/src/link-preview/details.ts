@@ -3,6 +3,7 @@ import type {
   LinkPreviewResult,
 } from '@blocksuite/affine-shared/services';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { ToggleDownIcon, ToggleRightIcon } from '@blocksuite/icons/lit';
 import { flip, offset, shift } from '@floating-ui/dom';
 import { css, html, LitElement, nothing, type PropertyValues } from 'lit';
@@ -19,7 +20,7 @@ export class LinkPreviewDetails extends LitElement {
     }
     :host([floating]) {
       position: absolute;
-      right: 8px;
+      inset-inline-end: 8px;
       bottom: 8px;
     }
     :host([floating]) button {
@@ -49,6 +50,9 @@ export class LinkPreviewDetails extends LitElement {
     }
     button:focus-visible {
       outline: 2px solid var(--affine-primary-color);
+    }
+    :host(:dir(rtl)) button[aria-expanded='false'] svg {
+      transform: scaleX(-1);
     }
     .content {
       color: inherit;
@@ -80,7 +84,7 @@ export class LinkPreviewDetails extends LitElement {
       font-weight: 600;
     }
     time {
-      margin-right: 8px;
+      margin-inline-end: 8px;
       font-variant-numeric: tabular-nums;
     }
   `;
@@ -193,7 +197,7 @@ export class LinkPreviewDetails extends LitElement {
         @click=${this.toggle}
       >
         ${(this.open ? ToggleDownIcon : ToggleRightIcon)({ width: '16px', height: '16px' })}
-        Details
+        ${t('Details')}
       </button>
       ${this.open && !this.floating ? this.renderContent() : nothing}
     </div>`;
@@ -217,7 +221,7 @@ export class LinkPreviewDetails extends LitElement {
       contenteditable="false"
       aria-busy=${this.loading}
       role=${this.floating ? 'dialog' : 'region'}
-      aria-label="Link details"
+      aria-label=${t('Link details')}
       tabindex="-1"
       @click=${(event: Event) => event.stopPropagation()}
       @dblclick=${(event: Event) => event.stopPropagation()}
@@ -226,14 +230,16 @@ export class LinkPreviewDetails extends LitElement {
     >
       ${
         this.loading
-          ? html`<span class="status" role="status">Loading details…</span>`
+          ? html`<span class="status" role="status"
+              >${t('Loading details…')}</span
+            >`
           : html`
               ${metadata.length ? html`<div class="meta">${metadata.join(' · ')}</div>` : nothing}
-              ${value?.description ? html`<p class="description">${value.description}</p>` : nothing}
+              ${value?.description ? html`<p class="description" dir="auto">${value.description}</p>` : nothing}
               ${
                 transcript?.segments.length
                   ? html`
-                      <h4>Transcript</h4>
+                      <h4>${t('Transcript')}</h4>
                       ${transcript.segments.map(segment => {
                         const headings = [];
                         while (
@@ -246,16 +252,18 @@ export class LinkPreviewDetails extends LitElement {
                           );
                         }
                         return html`${headings}
-                          <div class="segment">
+                          <div class="segment" dir="auto">
                             ${segment.startSeconds === undefined ? nothing : html`<time>${timestamp(segment.startSeconds)}</time>`}${segment.speaker ? html`<strong>${segment.speaker}: </strong>` : nothing}<span
                               class="segment-text"
                               >${segment.text}</span
                             >
                           </div>`;
                       })}
-                      ${transcript.truncated ? html`<p class="status">Transcript truncated by the preview service.</p>` : nothing}
+                      ${transcript.truncated ? html`<p class="status">${t('Transcript truncated by the preview service.')}</p>` : nothing}
                     `
-                  : html`<div class="status">No transcript available.</div>`
+                  : html`<div class="status">
+                      ${t('No transcript available.')}
+                    </div>`
               }
             `
       }

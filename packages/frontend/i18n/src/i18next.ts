@@ -11,6 +11,14 @@ const logger = new DebugLogger('i18n');
 
 const defaultLng: Language = 'en';
 
+function bundledResources() {
+  return Object.fromEntries(
+    Object.entries(SUPPORTED_LANGUAGES)
+      .filter(([, { resource }]) => typeof resource !== 'function')
+      .map(([lng, { resource }]) => [lng, { translation: resource }])
+  );
+}
+
 let _instance: i18n | null = null;
 export const getOrCreateI18n = (): i18n => {
   if (!_instance) {
@@ -39,32 +47,16 @@ export const getOrCreateI18n = (): i18n => {
       } as BackendModule)
       .init({
         lng: defaultLng,
-        fallbackLng: code => {
-          // always fallback to english
-          const fallbacks: string[] = [defaultLng];
-          const langPart = code.split('-')[0];
-
-          // fallback xx-YY to xx, e.g. es-AR to es
-          // fallback zh-Hant to zh-Hans
-          if (langPart === 'cn') {
-            fallbacks.push('zh-Hans');
-          } else if (
-            langPart !== code &&
-            SUPPORTED_LANGUAGES[code as Language]
-          ) {
-            fallbacks.unshift(langPart);
-          }
-
-          return fallbacks;
-        },
+        // Arabic and English are complete; anything missing falls back to
+        // English.
+        fallbackLng: defaultLng,
         supportedLngs: Object.keys(SUPPORTED_LANGUAGES),
         debug: false,
         partialBundledLanguages: true,
-        resources: {
-          [defaultLng]: {
-            translation: SUPPORTED_LANGUAGES[defaultLng].resource,
-          },
-        },
+        // Bundled languages are ready synchronously: the first render can
+        // use them without suspending or flashing the fallback language.
+        initAsync: false,
+        resources: bundledResources(),
         interpolation: {
           escapeValue: false, // not needed for react as it escapes by default
         },

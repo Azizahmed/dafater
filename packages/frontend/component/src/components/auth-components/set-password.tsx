@@ -36,7 +36,7 @@ export const SetPassword: FC<{
         variant="primary"
         size="large"
         disabled={!passwordPass}
-        style={{ marginRight: 20 }}
+        style={{ marginInlineEnd: 20 }}
         onClick={useCallback(() => {
           onSetPassword(passwordRef.current);
         }, [onSetPassword])}

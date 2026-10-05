@@ -7,6 +7,7 @@ import {
   createButtonPopper,
   stopPropagation,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { InformationIcon } from '@blocksuite/icons/lit';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
@@ -123,20 +124,20 @@ export class ResourceStatus extends WithDisposable(LitElement) {
 
   override render() {
     const { message, needUpload } = this;
-    const { type, label } = needUpload
+    const { header, label } = needUpload
       ? {
-          type: 'Upload',
-          label: 'Retry',
+          header: t('Upload failed'),
+          label: t('Retry'),
         }
       : {
-          type: 'Download',
-          label: 'Reload',
+          header: t('Download failed'),
+          label: t('Reload'),
         };
 
     return html`
       <button class="status">${InformationIcon()}</button>
       <div class="popper">
-        <div class="header">${type} failed</div>
+        <div class="header">${header}</div>
         <div class="content">${message}</div>
         <div class="footer">
           <button class="action">${label}</button>

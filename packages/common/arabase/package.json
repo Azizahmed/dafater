@@ -1,0 +1,19 @@
+{
+  "name": "@arabase/core",
+  "description": "Arabase kernel: locale/direction primitives, bidi detection, pre-paint boot and the module system shared by Dafater and future projects.",
+  "private": true,
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./boot": "./src/boot.ts",
+    "./arabic": "./src/modules/arabic/index.ts",
+    "./arabic/fonts.css": "./src/modules/arabic/fonts.css"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.11"
+  },
+  "version": "0.27.5"
+}

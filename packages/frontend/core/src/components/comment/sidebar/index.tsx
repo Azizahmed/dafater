@@ -209,7 +209,7 @@ const CommentRow = ({
             </div>
           ) : null}
         </div>
-        <div style={{ marginLeft: '34px' }}>
+        <div style={{ marginInlineStart: '34px' }}>
           <CommentEditor
             readonly
             defaultSnapshot={snapshot}

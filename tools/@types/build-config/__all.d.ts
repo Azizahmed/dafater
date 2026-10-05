@@ -21,6 +21,9 @@ declare interface BUILD_CONFIG_TYPE {
   isAndroid: boolean;
   isAdmin: boolean;
 
+  /** UI language of fresh installs (a key of `SUPPORTED_LANGUAGES`). */
+  defaultLanguage: string;
+
   appVersion: string;
   editorVersion: string;
   appBuildType: 'stable' | 'beta' | 'internal' | 'canary';
@@ -36,6 +39,15 @@ declare interface BUILD_CONFIG_TYPE {
   linkPreviewUrl: string;
 
   SENTRY_DSN: string;
+
+  /**
+   * Dafater: URL of the built-in Dafater server for native builds
+   * (env `DAFATER_SERVER_URL`; '' = no built-in server). Web builds use
+   * `location.origin`.
+   */
+  dafaterServerUrl: string;
+  /** Dafater: whether the desktop auto-updater and its UI are enabled. */
+  enableUpdater: boolean;
 }
 
 declare var BUILD_CONFIG: BUILD_CONFIG_TYPE;

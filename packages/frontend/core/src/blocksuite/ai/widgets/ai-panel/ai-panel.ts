@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { ColorScheme } from '@blocksuite/affine/model';
 import {
   DocModeProvider,
@@ -300,10 +301,10 @@ export class AffineAIPanelWidget extends WidgetComponent {
     this._discardModalAbort = new AbortController();
     return notification
       .confirm({
-        title: 'Stop generating',
-        message: 'AI is generating content. Do you want to stop generating?',
-        cancelText: 'Cancel',
-        confirmText: 'Stop',
+        title: t('Stop generating'),
+        message: t('AI is generating content. Do you want to stop generating?'),
+        cancelText: t('Cancel'),
+        confirmText: t('Stop'),
         abort: this._abortController.signal,
       })
       .finally(() => (this._discardModalAbort = null));
@@ -318,10 +319,10 @@ export class AffineAIPanelWidget extends WidgetComponent {
     this._discardModalAbort = new AbortController();
     return notification
       .confirm({
-        title: 'Discard the AI result',
-        message: 'Do you want to discard the results the AI just generated?',
-        cancelText: 'Cancel',
-        confirmText: 'Discard',
+        title: t('Discard the AI result'),
+        message: t('Do you want to discard the results the AI just generated?'),
+        cancelText: t('Cancel'),
+        confirmText: t('Discard'),
         abort: this._abortController.signal,
       })
       .finally(() => (this._discardModalAbort = null));
@@ -440,8 +441,10 @@ export class AffineAIPanelWidget extends WidgetComponent {
     }
     // edgeless element
     else {
+      // open toward the inline-end side of the element in RTL
+      const isRtl = getComputedStyle(this).direction === 'rtl';
       return {
-        placement: 'right-start',
+        placement: isRtl ? 'left-start' : 'right-start',
         middleware: [
           offset({ mainAxis: 16 }),
           flip({

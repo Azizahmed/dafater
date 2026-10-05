@@ -1,39 +1,58 @@
 import { cssVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
+
 type Color = {
-  name: string;
+  /** Display name, in the active language. */
+  readonly name: string;
   color: string;
 };
 export const colorList: Color[] = [
   {
-    name: 'Blue',
+    get name() {
+      return t('Blue');
+    },
     color: cssVarV2.table.headerBackground.blue,
   },
   {
-    name: 'Green',
+    get name() {
+      return t('Green');
+    },
     color: cssVarV2.table.headerBackground.green,
   },
   {
-    name: 'Grey',
+    get name() {
+      return t('Grey');
+    },
     color: cssVarV2.table.headerBackground.grey,
   },
   {
-    name: 'Orange',
+    get name() {
+      return t('Orange');
+    },
     color: cssVarV2.table.headerBackground.orange,
   },
   {
-    name: 'Purple',
+    get name() {
+      return t('Purple');
+    },
     color: cssVarV2.table.headerBackground.purple,
   },
   {
-    name: 'Red',
+    get name() {
+      return t('Red');
+    },
     color: cssVarV2.table.headerBackground.red,
   },
   {
-    name: 'Teal',
+    get name() {
+      return t('Teal');
+    },
     color: cssVarV2.table.headerBackground.teal,
   },
   {
-    name: 'Yellow',
+    get name() {
+      return t('Yellow');
+    },
     color: cssVarV2.table.headerBackground.yellow,
   },
 ];

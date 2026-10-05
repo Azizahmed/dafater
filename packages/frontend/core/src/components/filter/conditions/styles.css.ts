@@ -6,7 +6,9 @@ export const filterTypeStyle = style({
   fontSize: cssVar('fontSm'),
   display: 'flex',
   alignItems: 'center',
-  padding: '0px 4px 0 0',
+  paddingBlock: '0px 0',
+  paddingInlineStart: '0',
+  paddingInlineEnd: '4px',
   lineHeight: '22px',
   color: cssVar('textPrimaryColor'),
 });
@@ -43,7 +45,7 @@ export const ellipsisTextStyle = style({
 
 export const filterTypeIconStyle = style({
   fontSize: '18px',
-  marginRight: '6px',
+  marginInlineEnd: '6px',
   padding: '1px 0',
   display: 'flex',
   alignItems: 'center',

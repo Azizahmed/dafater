@@ -332,7 +332,7 @@ export const destinationRow = style({
   borderBottom: `0.5px solid ${cssVarV2('layer/insideBorder/border')}`,
   color: cssVarV2('text/primary'),
   background: 'transparent',
-  textAlign: 'left',
+  textAlign: 'start',
   selectors: {
     '&:last-child': { borderBottom: 0 },
     '&:disabled': { opacity: 0.5 },
@@ -422,7 +422,7 @@ export const selectionRow = style({
   borderBottom: `0.5px solid ${cssVarV2('layer/insideBorder/border')}`,
   color: cssVarV2('text/primary'),
   background: 'transparent',
-  textAlign: 'left',
+  textAlign: 'start',
 });
 
 export const selectionLabel = style([

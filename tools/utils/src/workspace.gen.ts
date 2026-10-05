@@ -1118,6 +1118,11 @@ export const PackageList = [
     ],
   },
   {
+    location: 'packages/common/arabase',
+    name: '@arabase/core',
+    workspaceDependencies: [],
+  },
+  {
     location: 'packages/common/auth',
     name: '@affine/auth',
     workspaceDependencies: [],
@@ -1281,6 +1286,11 @@ export const PackageList = [
     ],
   },
   {
+    location: 'packages/frontend/arabase-blocksuite',
+    name: '@arabase/blocksuite',
+    workspaceDependencies: ['packages/common/arabase', 'blocksuite/affine/all'],
+  },
+  {
     location: 'packages/frontend/component',
     name: '@affine/component',
     workspaceDependencies: [
@@ -1306,6 +1316,8 @@ export const PackageList = [
       'packages/common/reader',
       'packages/frontend/templates',
       'packages/frontend/track',
+      'packages/frontend/arabase-blocksuite',
+      'packages/common/arabase',
       'blocksuite/affine/all',
       'blocksuite/affine/blocks/root',
       'blocksuite/affine/components',
@@ -1422,7 +1434,11 @@ export const PackageList = [
   {
     location: 'tools/cli',
     name: '@affine-tools/cli',
-    workspaceDependencies: ['tools/utils', 'packages/common/s3-compat'],
+    workspaceDependencies: [
+      'tools/utils',
+      'packages/common/s3-compat',
+      'packages/common/arabase',
+    ],
   },
   {
     location: 'tools/commitlint',
@@ -1534,6 +1550,7 @@ export type PackageName =
   | '@affine/docs'
   | '@affine/server-native'
   | '@affine/server'
+  | '@arabase/core'
   | '@affine/auth'
   | '@affine/debug'
   | '@affine/env'
@@ -1552,6 +1569,7 @@ export type PackageName =
   | '@affine/mobile'
   | '@affine/mobile-shared'
   | '@affine/web'
+  | '@arabase/blocksuite'
   | '@affine/component'
   | '@affine/core'
   | '@affine/electron-api'

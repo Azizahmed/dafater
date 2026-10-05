@@ -1,13 +1,13 @@
-import { Avatar } from '@affine/component';
+import { Avatar, mirrorInRtl } from '@affine/component';
 import { useSignOut } from '@affine/core/components/hooks/affine/use-sign-out';
 import { AuthService } from '@affine/core/modules/cloud';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import { useI18n } from '@affine/i18n';
 import { ArrowRightSmallIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
+import clsx from 'clsx';
 import { type ReactNode } from 'react';
 
-import { UserPlanTag } from '../../../components';
 import { SettingGroup } from '../group';
 import { RowLayout } from '../row.layout';
 import * as styles from './style.css';
@@ -44,7 +44,7 @@ const BaseLayout = ({
           <div className={styles.title}>{title}</div>
           <div className={styles.caption}>{caption}</div>
         </div>
-        <ArrowRightSmallIcon className={styles.suffixIcon} />
+        <ArrowRightSmallIcon className={clsx(styles.suffixIcon, mirrorInRtl)} />
       </div>
     </SettingGroup>
   );
@@ -71,7 +71,6 @@ const AuthorizedUserProfile = () => {
       title={
         <div className={styles.nameWithTag}>
           <span className={styles.name}>{account?.label}</span>
-          <UserPlanTag />
         </div>
       }
       onClick={confirmSignOut}

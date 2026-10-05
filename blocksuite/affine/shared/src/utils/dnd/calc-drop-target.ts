@@ -116,6 +116,7 @@ export function calcDropTarget(
 
   placement = before ? 'before' : 'after';
   let offsetY = 4;
+  let isRtl = false;
 
   if (placement === 'before') {
     // before
@@ -148,13 +149,17 @@ export function calcDropTarget(
     // If drop in target has children, we can use insert before or after of that children
     // to achieve the same effect.
     const hasChild = (element as BlockComponent).childBlocks.length;
-    if (
-      allowSublist &&
-      matchModels(model, [ListBlockModel]) &&
-      !hasChild &&
-      point.x > domRect.x + BLOCK_CHILDREN_CONTAINER_PADDING_LEFT
-    ) {
-      placement = 'in';
+    if (allowSublist && matchModels(model, [ListBlockModel]) && !hasChild) {
+      // The pointer must be past the children indentation, measured from
+      // the inline-start side (left for LTR, right for RTL).
+      isRtl = getComputedStyle(element).direction === 'rtl';
+      if (
+        isRtl
+          ? point.x < domRect.right - BLOCK_CHILDREN_CONTAINER_PADDING_LEFT
+          : point.x > domRect.x + BLOCK_CHILDREN_CONTAINER_PADDING_LEFT
+      ) {
+        placement = 'in';
+      }
     }
     // after
     let next;
@@ -192,7 +197,8 @@ export function calcDropTarget(
   }
 
   if (placement === 'in') {
-    domRect.x += BLOCK_CHILDREN_CONTAINER_PADDING_LEFT;
+    // Children are indented from the inline-start side
+    if (!isRtl) domRect.x += BLOCK_CHILDREN_CONTAINER_PADDING_LEFT;
     domRect.width -= BLOCK_CHILDREN_CONTAINER_PADDING_LEFT;
   }
 

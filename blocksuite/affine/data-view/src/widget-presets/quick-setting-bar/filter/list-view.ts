@@ -2,6 +2,7 @@ import {
   type PopupTarget,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import {
   ArrowDownSmallIcon,
@@ -140,7 +141,7 @@ export class FilterBar extends SignalWatcher(ShadowlessElement) {
       class="filter-bar-add-filter dv-icon-16 dv-round-4 dv-hover"
       @click="${this.addFilter}"
     >
-      ${PlusIcon()} Add filter
+      ${PlusIcon()} ${t('Add filter')}
     </div>`;
   };
 
@@ -186,7 +187,10 @@ export class FilterBar extends SignalWatcher(ShadowlessElement) {
       );
     };
     const length = condition.conditions.length;
-    const text = length > 1 ? `${length} rules` : `${length} rule`;
+    const text =
+      length > 1
+        ? t('{count} rules', { count: length })
+        : t('{count} rule', { count: length });
     return html` <data-view-component-button
       hoverType="border"
       .icon="${FilterIcon()}"

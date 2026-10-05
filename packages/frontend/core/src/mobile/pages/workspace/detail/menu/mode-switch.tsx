@@ -4,26 +4,31 @@ import {
   useMobileMenuController,
 } from '@affine/component';
 import { EditorService } from '@affine/core/modules/editor';
+import { useI18n } from '@affine/i18n';
 import track from '@affine/track';
 import type { DocMode } from '@blocksuite/affine/model';
 import { useLiveData, useService } from '@toeverything/infra';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import * as styles from './mode-switch.css';
 
-const EdgelessRadioItem: RadioItem = {
-  value: 'edgeless',
-  label: 'Edgeless',
-  testId: 'switch-edgeless-mode-button',
-};
-const PageRadioItem: RadioItem = {
-  value: 'page',
-  label: 'Page',
-  testId: 'switch-page-mode-button',
-};
-const items = [PageRadioItem, EdgelessRadioItem];
-
 export const EditorModeSwitch = () => {
+  const t = useI18n();
+  const items = useMemo<RadioItem[]>(
+    () => [
+      {
+        value: 'page',
+        label: t['com.affine.pageMode.page'](),
+        testId: 'switch-page-mode-button',
+      },
+      {
+        value: 'edgeless',
+        label: t['com.affine.pageMode.edgeless'](),
+        testId: 'switch-edgeless-mode-button',
+      },
+    ],
+    [t]
+  );
   const { close } = useMobileMenuController();
   const editor = useService(EditorService).editor;
   const trash = useLiveData(editor.doc.trash$);

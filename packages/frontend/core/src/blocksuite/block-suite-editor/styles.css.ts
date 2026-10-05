@@ -46,7 +46,7 @@ const titleTagBasic = style({
   fontWeight: 600,
   padding: '0 4px',
   borderRadius: '4px',
-  marginLeft: '4px',
+  marginInlineStart: '4px',
   lineHeight: '0px',
 });
 export const titleDayTag = style([

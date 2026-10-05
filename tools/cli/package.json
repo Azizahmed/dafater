@@ -17,6 +17,7 @@
   "dependencies": {
     "@affine-tools/utils": "workspace:*",
     "@affine/s3-compat": "workspace:*",
+    "@arabase/core": "workspace:*",
     "@napi-rs/simple-git": "^1.0.0",
     "@rspack/core": "^2.0.8",
     "@rspack/dev-server": "^2.1.0",

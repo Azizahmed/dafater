@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { useCallback, useMemo } from 'react';
 import ReactPaginate from 'react-paginate';
 
+import { mirrorInRtl } from '../../styles';
 import * as styles from './pagination.css';
 export interface PaginationProps {
   totalCount: number;
@@ -37,8 +38,8 @@ export const Pagination = ({
       marginPagesDisplayed={2}
       pageCount={pageCount}
       forcePage={pageNum}
-      previousLabel={<ArrowLeftSmallIcon />}
-      nextLabel={<ArrowRightSmallIcon />}
+      previousLabel={<ArrowLeftSmallIcon className={mirrorInRtl} />}
+      nextLabel={<ArrowRightSmallIcon className={mirrorInRtl} />}
       pageClassName={styles.pageItem}
       previousClassName={clsx(styles.pageItem, 'label')}
       nextClassName={clsx(styles.pageItem, 'label')}

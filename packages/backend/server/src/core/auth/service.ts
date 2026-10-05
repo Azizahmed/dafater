@@ -75,7 +75,9 @@ export class AuthService implements OnApplicationBootstrap {
   }
 
   async onApplicationBootstrap() {
-    if (env.dev) {
+    // Dafater: the first real sign-up becomes the administrator, so seeded
+    // demo users are opt-in (`DAFATER_DEV_USERS=1`).
+    if (env.dev && process.env.DAFATER_DEV_USERS === '1') {
       await createDevUsers(this.models, this.entitlement);
     }
   }

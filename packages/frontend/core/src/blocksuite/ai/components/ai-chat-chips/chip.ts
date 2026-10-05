@@ -110,7 +110,9 @@ export class ChatPanelChip extends SignalWatcher(
         <div class="chip-card-content">
           ${this.icon}
           <span class="chip-card-title">
-            <span data-testid="chat-panel-chip-title">${this.name}</span>
+            <span data-testid="chat-panel-chip-title" dir="auto"
+              >${this.name}</span
+            >
           </span>
           <affine-tooltip>${this.tooltip}</affine-tooltip>
         </div>

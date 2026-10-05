@@ -1,5 +1,6 @@
 import { Peekable } from '@blocksuite/affine/components/peek';
 import { ViewExtensionManagerIdentifier } from '@blocksuite/affine/ext-loader';
+import { t } from '@blocksuite/affine/global/i18n';
 import { BlockComponent } from '@blocksuite/affine/std';
 import { computed } from '@preact/signals-core';
 import { html } from 'lit';
@@ -57,7 +58,7 @@ export class AIChatBlockComponent extends BlockComponent<AIChatBlockModel> {
         ></ai-chat-block-messages>
       </div>
       <div class="ai-chat-block-button">
-        ${ChatWithAIIcon} <span>AI chat block</span>
+        ${ChatWithAIIcon} <span>${t('AI chat block')}</span>
       </div>
     </div> `;
   }

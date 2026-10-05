@@ -66,7 +66,7 @@ fn descriptors() -> Vec<AppConfigDescriptor> {
   [
     (
       "enabled",
-      "Enable AI features. Workspace owners configure provider keys in Workspace Settings → Integrations → AI BYOK.",
+      "Enable AI features. The server administrator configures the AI provider (any OpenAI-compatible API) in the app under Settings → Server administration → AI.",
       false,
     ),
     (
@@ -116,8 +116,21 @@ fn descriptors() -> Vec<AppConfigDescriptor> {
             .iter()
             .map(|field| ((*field).to_string(), json!({ "type": "string", "pattern": "\\S" })))
             .collect::<serde_json::Map<_, _>>();
+          // Dafater: an `openai` profile with a custom `baseURL` (Ollama, LM
+          // Studio, ...) may omit `apiKey`.
+          let condition = if *provider == "openai" {
+            json!({
+              "properties": {
+                "type": { "const": provider },
+                "config": { "not": { "required": ["baseURL"] } }
+              },
+              "required": ["type"]
+            })
+          } else {
+            json!({ "properties": { "type": { "const": provider } }, "required": ["type"] })
+          };
           json!({
-            "if": { "properties": { "type": { "const": provider } }, "required": ["type"] },
+            "if": condition,
             "then": { "properties": { "config": { "required": fields, "properties": properties } } }
           })
         })
@@ -756,6 +769,34 @@ mod tests {
         json!({"id":"vertex","type":"geminiVertex","models":["gemini-3.7-flash"],"config":{"project":"test","location":"global"}}),
         true,
       ),
+      // Dafater: OpenAI-compatible profiles (custom baseURL, any model name,
+      // optional key for local servers).
+      (
+        json!({"id":"dafater-openai-compatible","type":"openai","models":["llama3.1"],"config":{
+          "baseURL":"http://localhost:11434/v1","dialect":"chat_completions","defaultModel":"llama3.1",
+          "allowPrivateNetwork":true,"vision":false
+        }}),
+        true,
+      ),
+      (
+        json!({"id":"dafater-openai-compatible","type":"openai","models":["openai/gpt-4o-mini"],"config":{
+          "apiKey":"sk-test","baseURL":"https://openrouter.ai/api/v1","dialect":"responses",
+          "modelMap":{"gpt-5.6-luna":"openai/gpt-4o-mini"}
+        }}),
+        true,
+      ),
+      (
+        json!({"id":"openai","type":"openai","models":["llama3.1"],"config":{"baseURL":"http://localhost:11434/v1","dialect":"completions"}}),
+        false,
+      ),
+      (
+        json!({"id":"openai","type":"openai","models":["llama3.1"],"config":{"baseURL":"http://localhost:11434/v1","vision":"yes"}}),
+        false,
+      ),
+      (
+        json!({"id":"openai","type":"openai","models":["llama3.1"],"config":{"baseURL":"http://localhost:11434/v1","modelMap":{"gpt-5.6-luna":1}}}),
+        false,
+      ),
     ] {
       let value = json!([profile]);
       assert_eq!(profile_schema.is_valid(&value), accepted);
@@ -764,6 +805,21 @@ mod tests {
           .unwrap()
           .is_empty(),
         accepted
+      );
+    }
+    // runtime-only checks: unknown models need a custom baseURL, which must be a URL
+    for profile in [
+      json!({"id":"openai","type":"openai","models":["llama3.1"],"config":{"apiKey":"sk-test"}}),
+      json!({"id":"openai","type":"openai","models":["llama3.1"],"config":{"baseURL":"not a url"}}),
+    ] {
+      assert!(
+        !validate_app_config_value(
+          "copilot".to_string(),
+          "providers.profiles".to_string(),
+          json!([profile])
+        )
+        .unwrap()
+        .is_empty()
       );
     }
     for descriptor in &descriptors {

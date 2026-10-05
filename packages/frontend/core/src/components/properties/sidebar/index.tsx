@@ -120,7 +120,11 @@ export const WorkspacePropertySidebar = () => {
                     <Icon className={styles.itemIcon} />
                     <span className={styles.itemName}>{t.t(value.name)}</span>
                     {isUniqueExist ? (
-                      <span className={styles.itemAdded}>Added</span>
+                      <span className={styles.itemAdded}>
+                        {t[
+                          'com.affine.page-properties.create-property.added'
+                        ]()}
+                      </span>
                     ) : (
                       <IconButton size={20} iconClassName={styles.itemAdd}>
                         <PlusIcon />

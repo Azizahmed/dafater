@@ -6,7 +6,7 @@ import { createVar, style } from '@vanilla-extract/css';
 export const root = style({
   position: 'fixed',
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
   zIndex: cssVar('zIndexModal'),
   width: '100dvw',
   height: '100dvh',
@@ -15,7 +15,7 @@ export const overlay = style({
   position: 'absolute',
   width: '100%',
   height: '100%',
-  left: 0,
+  insetInlineStart: 0,
   top: 0,
   background: 'transparent',
 });
@@ -50,7 +50,7 @@ export const triggerSizeVar = createVar('triggerSize');
 export const swipeBackTrigger = style({
   position: 'absolute',
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
   width: triggerSizeVar,
   height: '100%',
   zIndex: 1,

@@ -193,11 +193,14 @@ export class TableBlockComponent extends CaptionedBlockComponent<TableBlockModel
     const startRect = startCell.getBoundingClientRect();
     const endRect = endCell.getBoundingClientRect();
     const scale = this.getScale();
+    // In an RTL table the start column is the rightmost one.
+    const left = Math.min(startRect.left, endRect.left);
+    const right = Math.max(startRect.right, endRect.right);
 
     return {
       top: (startRect.top - rootRect.top) / scale,
-      left: (startRect.left - rootRect.left) / scale,
-      width: (endRect.right - startRect.left) / scale,
+      left: (left - rootRect.left) / scale,
+      width: (right - left) / scale,
       height: (endRect.bottom - startRect.top) / scale,
     };
   };
@@ -211,8 +214,8 @@ export class TableBlockComponent extends CaptionedBlockComponent<TableBlockModel
         contenteditable="false"
         class=${tableContainer}
         style=${styleMap({
-          marginLeft: `-${virtualPadding + 10}px`,
-          marginRight: `-${virtualPadding}px`,
+          marginInlineStart: `-${virtualPadding + 10}px`,
+          marginInlineEnd: `-${virtualPadding}px`,
           position: 'relative',
         })}
       >

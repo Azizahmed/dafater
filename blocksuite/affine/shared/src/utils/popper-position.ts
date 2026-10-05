@@ -1,5 +1,7 @@
 import clamp from 'lodash-es/clamp';
 
+const EDGE_GAP = 20;
+
 type CollisionBox = {
   /**
    * The point that the objRect is positioned to.
@@ -24,7 +26,7 @@ function calcSafeCoordinate({
   boundaryRect = document.body.getBoundingClientRect(),
   offsetX = 0,
   offsetY = 0,
-  edgeGap = 20,
+  edgeGap = EDGE_GAP,
 }: CollisionBox) {
   const safeX = clamp(
     positioningPoint.x + offsetX,
@@ -113,12 +115,28 @@ export function getPopperPosition(
   // because we are calculated its correct height
   const popperRect = popper?.getBoundingClientRect();
 
+  // In RTL the popper's right edge is aligned with the reference instead.
+  const rtl =
+    getComputedStyle(
+      popper instanceof Element ? popper : document.documentElement
+    ).direction === 'rtl';
+  const popperWidth = popperRect?.width ?? 0;
+  if (rtl && popperWidth) {
+    positioningPoint.x = referenceRect.right - popperWidth;
+  }
+
   const safeCoordinate = calcSafeCoordinate({
     positioningPoint,
     objRect: popperRect,
     boundaryRect,
     offsetY: placement === 'bottom' ? offsetY : -offsetY,
   });
+
+  // The width is unknown before the popper is rendered: let CSS subtract it.
+  const x =
+    rtl && !popperWidth
+      ? `max(${EDGE_GAP}px, calc(${referenceRect.right}px - 100%))`
+      : `${safeCoordinate.x}px`;
 
   return {
     placement,
@@ -129,7 +147,7 @@ export function getPopperPosition(
      * because sometimes the popper's height is smaller than the available space.
      */
     height,
-    x: `${safeCoordinate.x}px`,
+    x,
     y:
       placement === 'bottom'
         ? `${safeCoordinate.y}px`

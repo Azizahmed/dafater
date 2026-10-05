@@ -1,4 +1,4 @@
-import { Trans, useI18n } from '@affine/i18n';
+import { useI18n } from '@affine/i18n';
 import clsx from 'clsx';
 import { useCallback } from 'react';
 
@@ -34,18 +34,7 @@ export const EditorLoading = ({
               {t['com.affine.error.loading-timeout-error']()}
             </div>
             <div className={styles.text} data-longer-loading={true}>
-              <Trans
-                i18nKey="com.affine.error.contact-us"
-                components={{
-                  1: (
-                    <a
-                      style={{ color: 'var(--affine-primary-color)' }}
-                      href="https://affine.pro/redirect/discord"
-                      target="__blank"
-                    />
-                  ),
-                }}
-              />
+              {t['com.affine.dafater.error.contact-admin']()}
             </div>
           </div>
           <Button

@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  mirrorInRtl,
   SafeArea,
   Scrollable,
   useThemeColorMeta,
@@ -216,7 +217,7 @@ export const GenericSelector = ({
                   <div className={styles.listItemIcon}>{icon}</div>
                   <div className={styles.listItemLabel}>{label}</div>
                   <div className={styles.listItemArrow}>
-                    <ArrowRightSmallIcon />
+                    <ArrowRightSmallIcon className={mirrorInRtl} />
                   </div>
                 </li>
               );

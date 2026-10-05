@@ -94,10 +94,16 @@ export class AuthController {
     validators.assertValidEmail(input.data.email);
 
     try {
-      return await this.runtime.executeAuthSessionCommandV1<PreflightResponse>({
-        action: 'login_preflight',
-        email: input.data.email,
-      });
+      const result =
+        await this.runtime.executeAuthSessionCommandV1<PreflightResponse>({
+          action: 'login_preflight',
+          email: input.data.email,
+        });
+      // do not advertise magic links when no mailer is configured
+      if (!this.magicLink.available) {
+        result.methods.magicLink.available = false;
+      }
+      return result;
     } catch (error) {
       if (String(error).includes('email_domain_verification_unavailable')) {
         throw new NetworkError();

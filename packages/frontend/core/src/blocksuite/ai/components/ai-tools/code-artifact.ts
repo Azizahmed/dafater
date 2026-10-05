@@ -1,4 +1,5 @@
 import { CodeBlockHighlighter } from '@blocksuite/affine/blocks/code';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { ColorScheme } from '@blocksuite/affine/model';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -46,6 +47,7 @@ interface CodeArtifactToolResult {
 export class CodeHighlighter extends SignalWatcher(WithDisposable(LitElement)) {
   static override styles = css`
     .code-highlighter {
+      direction: ltr;
     }
 
     /* Container */
@@ -433,6 +435,10 @@ export class CodeArtifactTool extends ArtifactTool<
       cursor: pointer;
     }
 
+    .code-artifact-toggle-container .toggle-button:dir(rtl) {
+      font-family: inherit;
+    }
+
     .code-artifact-toggle-container .toggle-button:hover {
       background: ${unsafeCSSVarV2('layer/background/hoverOverlay')};
     }
@@ -548,7 +554,7 @@ export class CodeArtifactTool extends ArtifactTool<
           blobs: {},
         }),
       }));
-      this.notificationService.toast('Copied HTML to clipboard');
+      this.notificationService.toast(t('Copied HTML to clipboard'));
     };
 
     const downloadHTML = () => {
@@ -580,7 +586,7 @@ export class CodeArtifactTool extends ArtifactTool<
           { text: new Text(html), language: 'html', preview: true },
           parentId
         );
-        this.notificationService.toast('Inserted to current doc');
+        this.notificationService.toast(t('Inserted to current doc'));
       } catch (e) {
         console.error(e);
       }
@@ -609,7 +615,7 @@ export class CodeArtifactTool extends ArtifactTool<
           })}
           @click=${setCodeMode}
         >
-          Code
+          ${t('Code')}
         </div>
         <div
           class=${classMap({
@@ -618,7 +624,7 @@ export class CodeArtifactTool extends ArtifactTool<
           })}
           @click=${setPreviewMode}
         >
-          Preview
+          ${t('Preview')}
         </div>
       </div>
       <div style="flex: 1"></div>
@@ -628,12 +634,12 @@ export class CodeArtifactTool extends ArtifactTool<
           height: '20',
           style: `color: ${unsafeCSSVarV2('icon/primary')}`,
         })}
-        Insert
+        ${t('Insert')}
       </button>
-      <icon-button @click=${downloadHTML} title="Download HTML">
+      <icon-button @click=${downloadHTML} title=${t('Download HTML')}>
         ${DownloadIcon({ width: '20', height: '20' })}
       </icon-button>
-      <icon-button @click=${copyHTML} title="Copy HTML">
+      <icon-button @click=${copyHTML} title=${t('Copy HTML')}>
         ${CopyIcon({ width: '20', height: '20' })}
       </icon-button>
     `;
@@ -646,7 +652,7 @@ export class CodeArtifactTool extends ArtifactTool<
       (this.data.result as any).type === 'error'
     ) {
       return html`<tool-call-failed
-        .name=${'Code artifact failed'}
+        .name=${t('Code artifact failed')}
         .icon=${ToolIcon()}
       ></tool-call-failed>`;
     }

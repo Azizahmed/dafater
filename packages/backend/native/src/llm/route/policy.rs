@@ -67,20 +67,19 @@ pub(crate) struct RoutePolicyInput<'a> {
 }
 
 pub(crate) fn decide(input: RoutePolicyInput<'_>) -> RouteDecision {
-  if input.deployment == Deployment::SelfHosted && !input.byok_enabled {
-    return RouteDecision::NoRoute(RouteDecisionReason::ByokDisabled);
-  }
+  // Dafater: a self-hosted server whose BYOK is disabled still routes to the
+  // administrator-managed profiles (`copilot.providers.profiles`); only the
+  // BYOK profiles are skipped.
+  let byok_allowed = input.deployment == Deployment::Cloud || input.byok_enabled;
 
-  if input.target_override_managed {
-    if input.deployment != Deployment::Cloud {
-      return RouteDecision::Denied(RouteDecisionReason::ExplicitTargetUnavailable);
-    }
-    if !input.access_available {
-      return RouteDecision::Denied(RouteDecisionReason::AccessUnavailable);
-    }
+  if input.target_override_managed && !input.access_available {
+    return RouteDecision::Denied(RouteDecisionReason::AccessUnavailable);
   }
 
   if let Some(target) = input.target_override {
+    if !input.target_override_managed && !byok_allowed {
+      return RouteDecision::NoRoute(RouteDecisionReason::ByokDisabled);
+    }
     let mut selected = compatible_targets(&input, input.target_override_managed);
     selected.retain(|candidate| {
       let profile = &input.profiles[candidate.profile_index];
@@ -93,20 +92,20 @@ pub(crate) fn decide(input: RoutePolicyInput<'_>) -> RouteDecision {
       RouteDecision::Ready(selected)
     };
   }
-  let byok = compatible_targets(&input, false);
-  if !byok.is_empty() {
-    return RouteDecision::Ready(byok);
+  if byok_allowed {
+    let byok = compatible_targets(&input, false);
+    if !byok.is_empty() {
+      return RouteDecision::Ready(byok);
+    }
   }
   if !input.access_available {
     return RouteDecision::Denied(RouteDecisionReason::AccessUnavailable);
   }
-  if input.deployment == Deployment::Cloud {
-    let managed = compatible_targets(&input, true);
-    if managed.is_empty() {
-      RouteDecision::NoRoute(RouteDecisionReason::ManagedPresetUnavailable)
-    } else {
-      RouteDecision::Ready(managed)
-    }
+  let managed = compatible_targets(&input, true);
+  if !managed.is_empty() {
+    RouteDecision::Ready(managed)
+  } else if input.deployment == Deployment::Cloud {
+    RouteDecision::NoRoute(RouteDecisionReason::ManagedPresetUnavailable)
   } else {
     RouteDecision::NoRoute(RouteDecisionReason::NoCompatibleTarget)
   }
@@ -179,13 +178,28 @@ mod tests {
         vec![profile("managed", ProfileSource::Managed, "A", ModelOutput::Text)],
         true,
       ),
+      // Dafater: self-hosted servers use administrator-managed profiles even
+      // when BYOK is disabled; BYOK profiles are skipped in that case.
       (
         Deployment::SelfHosted,
         false,
         vec![profile("managed", ProfileSource::Managed, "A", ModelOutput::Text)],
+        true,
+      ),
+      (
+        Deployment::SelfHosted,
+        true,
+        vec![profile("managed", ProfileSource::Managed, "A", ModelOutput::Text)],
+        true,
+      ),
+      (
+        Deployment::SelfHosted,
+        false,
+        vec![profile("byok", ProfileSource::Server, "B", ModelOutput::Text)],
         false,
       ),
       (Deployment::SelfHosted, true, vec![], false),
+      (Deployment::SelfHosted, false, vec![], false),
       (
         Deployment::Cloud,
         true,
@@ -236,6 +250,74 @@ mod tests {
         target_override_managed: false,
       }),
       RouteDecision::Denied(RouteDecisionReason::AccessUnavailable)
+    ));
+  }
+
+  #[test]
+  fn self_hosted_without_byok_routes_to_managed_profiles() {
+    let slot = catalog::slot("chat.default").unwrap();
+    let profiles = vec![
+      profile("byok", ProfileSource::Server, "B", ModelOutput::Text),
+      profile("managed", ProfileSource::Managed, "A", ModelOutput::Text),
+    ];
+    fn input<'a>(
+      slot: &'a CatalogSlot,
+      profiles: &'a [AuthorizedProviderProfile],
+      target_override: Option<&'a TargetOverride>,
+      target_override_managed: bool,
+      access_available: bool,
+    ) -> RoutePolicyInput<'a> {
+      RoutePolicyInput {
+        slot,
+        deployment: Deployment::SelfHosted,
+        byok_enabled: false,
+        access_available,
+        profiles,
+        target_override,
+        target_override_managed,
+      }
+    }
+
+    let RouteDecision::Ready(candidates) = decide(input(&slot, &profiles, None, false, true)) else {
+      panic!("managed profile should be routable on self-hosted servers");
+    };
+    assert_eq!(candidates.len(), 1);
+    assert_eq!(profiles[candidates[0].profile_index].profile_id, "managed");
+
+    let byok_target = TargetOverride {
+      profile_id: "byok".to_string(),
+      model_id: "B".to_string(),
+    };
+    assert!(matches!(
+      decide(input(&slot, &profiles, Some(&byok_target), false, true)),
+      RouteDecision::NoRoute(RouteDecisionReason::ByokDisabled)
+    ));
+
+    let managed_target = TargetOverride {
+      profile_id: "managed".to_string(),
+      model_id: "A".to_string(),
+    };
+    assert!(matches!(
+      decide(input(&slot, &profiles, Some(&managed_target), true, true)),
+      RouteDecision::Ready(_)
+    ));
+    assert!(matches!(
+      decide(input(&slot, &profiles, None, false, false)),
+      RouteDecision::Denied(RouteDecisionReason::AccessUnavailable)
+    ));
+
+    let image_only = vec![profile("managed", ProfileSource::Managed, "A", ModelOutput::Image)];
+    assert!(matches!(
+      decide(RoutePolicyInput {
+        slot: &slot,
+        deployment: Deployment::SelfHosted,
+        byok_enabled: false,
+        access_available: true,
+        profiles: &image_only,
+        target_override: None,
+        target_override_managed: false,
+      }),
+      RouteDecision::NoRoute(RouteDecisionReason::NoCompatibleTarget)
     ));
   }
 

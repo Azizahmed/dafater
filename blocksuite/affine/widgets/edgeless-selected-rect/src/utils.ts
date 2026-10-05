@@ -17,6 +17,7 @@ import {
 } from '@blocksuite/affine-model';
 import { BlockSuiteError, ErrorCode } from '@blocksuite/global/exceptions';
 import { Bound, normalizeDegAngle, type XYWH } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { assertType } from '@blocksuite/global/utils';
 import type { BlockComponent } from '@blocksuite/std';
 import type {
@@ -142,7 +143,7 @@ export class AutoCompleteFrameOverlay extends AutoCompleteTargetOverlay {
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('Frame', x + titleWidth / 2, titleY + titleHeight / 2);
+    ctx.fillText(t('Frame'), x + titleWidth / 2, titleY + titleHeight / 2);
 
     // frame stroke
     ctx.globalAlpha = 0.4;

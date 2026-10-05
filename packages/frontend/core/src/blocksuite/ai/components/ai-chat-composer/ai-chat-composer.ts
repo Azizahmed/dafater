@@ -11,6 +11,7 @@ import type {
 } from '@affine/core/modules/cloud';
 import type { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import type { EditorHost } from '@blocksuite/affine/std';
 import { ShadowlessElement } from '@blocksuite/affine/std';
@@ -191,7 +192,7 @@ export class AIChatComposer extends SignalWatcher(
       <div class="chat-panel-footer">
         <ai-chat-composer-tip
           .tips=${[
-            html`<span>AI outputs can be misleading or wrong</span>`,
+            html`<span>${t('AI outputs can be misleading or wrong')}</span>`,
           ].filter(Boolean)}
           .loop=${false}
         ></ai-chat-composer-tip>
@@ -312,7 +313,7 @@ export class AIChatComposer extends SignalWatcher(
       case 'favorite':
         return {
           sourceId: item.favoriteId,
-          name: item.name ?? 'Favorites',
+          name: item.name ?? t('Favorites'),
           state: 'finished',
         };
     }
@@ -414,7 +415,7 @@ export class AIChatComposer extends SignalWatcher(
     const index = findChipIndex(this.chips, chip);
     if (index !== -1) {
       if (!silent) {
-        this.notificationService.toast('chip already exists');
+        this.notificationService.toast(t('chip already exists'));
       }
       return;
     }
@@ -504,7 +505,7 @@ export class AIChatComposer extends SignalWatcher(
     } catch (e) {
       this.updateChip(chip, {
         state: 'failed',
-        tooltip: e instanceof Error ? e.message : 'Add context doc error',
+        tooltip: e instanceof Error ? e.message : t('Add context doc error'),
       });
     }
   };
@@ -525,7 +526,7 @@ export class AIChatComposer extends SignalWatcher(
     } catch (e) {
       this.updateChip(chip, {
         state: 'failed',
-        tooltip: e instanceof Error ? e.message : 'Add context file error',
+        tooltip: e instanceof Error ? e.message : t('Add context file error'),
       });
     }
   };
@@ -546,7 +547,7 @@ export class AIChatComposer extends SignalWatcher(
     } catch (e) {
       this.updateChip(chip, {
         state: 'failed',
-        tooltip: e instanceof Error ? e.message : 'Add context tag error',
+        tooltip: e instanceof Error ? e.message : t('Add context tag error'),
       });
     }
   };
@@ -568,7 +569,7 @@ export class AIChatComposer extends SignalWatcher(
       this.updateChip(chip, {
         state: 'failed',
         tooltip:
-          e instanceof Error ? e.message : 'Add context collection error',
+          e instanceof Error ? e.message : t('Add context collection error'),
       });
     }
   };
@@ -586,7 +587,7 @@ export class AIChatComposer extends SignalWatcher(
       this.updateChip(chip, {
         state: 'failed',
         tooltip:
-          e instanceof Error ? e.message : 'Add context attachment error',
+          e instanceof Error ? e.message : t('Add context attachment error'),
       });
     }
   };
@@ -619,7 +620,9 @@ export class AIChatComposer extends SignalWatcher(
     const oldImages = this.chatContextValue.images;
     if (oldImages.length + images.length > MAX_IMAGE_COUNT) {
       this.notificationService.toast(
-        `You can only upload up to ${MAX_IMAGE_COUNT} images`
+        t('You can only upload up to {count} images', {
+          count: MAX_IMAGE_COUNT,
+        })
       );
     }
     this.updateContext({

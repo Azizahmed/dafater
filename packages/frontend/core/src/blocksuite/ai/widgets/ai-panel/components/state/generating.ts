@@ -2,6 +2,7 @@ import {
   AIStarIconWithAnimation,
   AIStopIcon,
 } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import type { ColorScheme } from '@blocksuite/affine/model';
 import { baseTheme } from '@toeverything/theme';
@@ -88,7 +89,7 @@ export class AIPanelGenerating extends WithDisposable(LitElement) {
       }
       <div class="generating-tip" data-testid="ai-generating">
         <div class="left">${generatingIcon}</div>
-        <div class="text">AI is generating...</div>
+        <div class="text">${t('AI is generating...')}</div>
         <div @click=${this.stopGenerating} class="right" data-testid="ai-stop">
           <span class="stop-icon">${AIStopIcon}</span>
           <span class="esc-label">ESC</span>

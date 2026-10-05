@@ -61,6 +61,9 @@ const editLinkStyle = css`
     border-radius: 4px;
     background: transparent;
   }
+  .affine-edit-area:dir(rtl) {
+    grid-template-columns: max-content auto;
+  }
   .affine-edit-area:focus-within {
     border-color: var(--affine-blue-700);
     box-shadow: var(--affine-active-shadow);
@@ -80,6 +83,10 @@ const editLinkStyle = css`
 
   .affine-edit-input {
     grid-area: input;
+  }
+
+  #text-input {
+    unicode-bidi: plaintext;
   }
 
   .affine-confirm-button {
@@ -152,6 +159,9 @@ export const linkPopupStyle = css`
   ${fontSMStyle('.affine-link-popover-input')}
   .affine-link-popover-input::placeholder {
     color: var(--affine-placeholder-color);
+  }
+  #link-input:not(:placeholder-shown) {
+    direction: ltr;
   }
   .affine-link-popover-input:focus {
     border-color: var(--affine-blue-700);

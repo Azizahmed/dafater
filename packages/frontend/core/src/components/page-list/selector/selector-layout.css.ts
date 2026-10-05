@@ -16,7 +16,9 @@ export const search = style({
   width: '100%',
   height: '100%',
   outline: 'none',
-  padding: '20px 20px 20px 24px',
+  paddingBlock: '20px 20px',
+  paddingInlineStart: '24px',
+  paddingInlineEnd: '20px',
 
   fontSize: 20,
   lineHeight: '24px',
@@ -33,8 +35,8 @@ export const footer = style({
   borderTop: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
   minHeight: 64,
   padding: '20px 24px',
-  borderBottomLeftRadius: 'inherit',
-  borderBottomRightRadius: 'inherit',
+  borderEndStartRadius: 'inherit',
+  borderEndEndRadius: 'inherit',
 
   display: 'flex',
   justifyContent: 'space-between',

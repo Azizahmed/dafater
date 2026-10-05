@@ -19,9 +19,9 @@ export const root = style({
   flexDirection: 'column',
   gap: 22,
   paddingTop: 0,
-  paddingRight: 16,
+  paddingInlineEnd: 16,
   paddingBottom: 'calc(env(safe-area-inset-bottom) + 20px)',
-  paddingLeft: 16,
+  paddingInlineStart: 16,
   boxSizing: 'border-box',
 });
 
@@ -100,7 +100,7 @@ export const baseSettingItemAction = style([
   bodyRegular,
   {
     color: cssVarV2('text/placeholder'),
-    marginLeft: 12,
+    marginInlineStart: 12,
     minWidth: 0,
     flexShrink: 1,
     display: 'flex',

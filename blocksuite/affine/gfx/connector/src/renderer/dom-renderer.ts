@@ -2,6 +2,7 @@ import {
   DomElementRendererExtension,
   type DomRenderer,
 } from '@blocksuite/affine-block-surface';
+import { isRTL } from '@blocksuite/affine-gfx-text';
 import {
   type ConnectorElementModel,
   ConnectorMode,
@@ -223,7 +224,12 @@ function renderConnectorLabel(
     },
   } = model;
 
+  const text = model.text ? model.text.toString() : '';
+  // Explicit, so the label does not inherit the direction of the UI.
+  const rtl = isRTL(text);
+
   const labelElement = getOrCreateLabelElement(retained);
+  labelElement.dir = rtl ? 'rtl' : 'ltr';
   labelElement.style.position = 'absolute';
   labelElement.style.left = `${lx * zoom}px`;
   labelElement.style.top = `${ly * zoom}px`;
@@ -233,10 +239,11 @@ function renderConnectorLabel(
   labelElement.style.overflow = 'hidden';
   labelElement.style.display = 'flex';
   labelElement.style.alignItems = 'center';
+  // `textAlign` is physical; flex-start is the right side in RTL.
   labelElement.style.justifyContent =
     textAlign === 'center'
       ? 'center'
-      : textAlign === 'right'
+      : (textAlign === 'right') !== rtl
         ? 'flex-end'
         : 'flex-start';
 
@@ -256,7 +263,7 @@ function renderConnectorLabel(
   labelElement.style.wordWrap = 'break-word';
 
   // Add text content
-  labelElement.textContent = model.text ? model.text.toString() : '';
+  labelElement.textContent = text;
 }
 
 /**

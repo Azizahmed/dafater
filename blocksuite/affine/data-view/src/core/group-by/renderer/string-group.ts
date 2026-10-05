@@ -3,6 +3,7 @@ import {
   popMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { css, html } from 'lit';
 
 import { BaseGroup } from './base.js';
@@ -41,7 +42,9 @@ export class StringGroupView extends BaseGroup<string, NonNullable<unknown>> {
 
   protected override render(): unknown {
     if (!this.value) {
-      const displayName = `No ${this.group.property.name$.value}`;
+      const displayName = t('No {name}', {
+        name: this.group.property.name$.value,
+      });
       return html` <div>${displayName}</div>`;
     }
     return html` <div

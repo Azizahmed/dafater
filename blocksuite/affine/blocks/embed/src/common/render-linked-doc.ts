@@ -8,6 +8,7 @@ import {
 } from '@blocksuite/affine-model';
 import { NotificationProvider } from '@blocksuite/affine-shared/services';
 import { matchModels } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import type { BlockStdScope } from '@blocksuite/std';
 import {
   type BlockModel,
@@ -91,17 +92,17 @@ export function getDocContentWithMaxLength(doc: Store, maxlength = 500) {
   const texts = [];
 
   for (const model of noteChildren) {
-    let t = model.text?.toString();
-    if (t?.length) {
+    let text = model.text?.toString();
+    if (text?.length) {
       const c: number = count + Math.max(0, texts.length - 1);
 
-      if (t.length + c > maxlength) {
-        t = t.substring(0, maxlength - c);
+      if (text.length + c > maxlength) {
+        text = text.substring(0, maxlength - c);
         reached = true;
       }
 
-      texts.push(t);
-      count += t.length;
+      texts.push(text);
+      count += text.length;
 
       if (reached) {
         break;
@@ -129,19 +130,19 @@ export function promptDocTitle(std: BlockStdScope, autofill?: string) {
   if (!notification) return Promise.resolve(undefined);
 
   return notification.prompt({
-    title: 'Create linked doc',
-    message: 'Enter a title for the new doc.',
-    placeholder: 'Untitled',
+    title: t('Create linked doc'),
+    message: t('Enter a title for the new doc.'),
+    placeholder: t('Untitled'),
     autofill,
-    confirmText: 'Confirm',
-    cancelText: 'Cancel',
+    confirmText: t('Confirm'),
+    cancelText: t('Cancel'),
   });
 }
 
 export function notifyDocCreated(std: BlockStdScope) {
   std.getOptional(NotificationProvider)?.notifyWithUndoAction({
-    title: 'Linked doc created',
-    message: 'You can click undo to recovery block content',
+    title: t('Linked doc created'),
+    message: t('You can click undo to recovery block content'),
     accent: 'info',
     duration: 10 * 1000,
   });

@@ -1,4 +1,5 @@
 import { ArrowRightIcon, EnterIcon } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { ColorScheme } from '@blocksuite/affine/model';
 import {
@@ -40,8 +41,10 @@ export class AIItem extends WithDisposable(LitElement) {
     >
       <span class="item-icon">${item.icon}</span>
       <div class="item-name">
-        ${item.name}${
-          item.beta ? html`<div class="item-beta">(Beta)</div>` : nothing
+        ${t(item.name)}${
+          item.beta
+            ? html`<div class="item-beta">${t('(Beta)')}</div>`
+            : nothing
         }
       </div>
       ${

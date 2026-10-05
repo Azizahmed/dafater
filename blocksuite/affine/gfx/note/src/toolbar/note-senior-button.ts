@@ -8,6 +8,7 @@ import {
   ThemeProvider,
 } from '@blocksuite/affine-shared/services';
 import { EdgelessToolbarToolMixin } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import { computed } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
@@ -188,7 +189,7 @@ export class EdgelessNoteSeniorButton extends EdgelessToolbarToolMixin(
         this.popper
           ? ''
           : html`<affine-tooltip-content-with-shortcut
-              data-tip="${'Note'}"
+              data-tip="${t('Note')}"
               data-shortcut="${'N'}"
             ></affine-tooltip-content-with-shortcut>`
       }
@@ -216,5 +217,5 @@ export class EdgelessNoteSeniorButton extends EdgelessToolbarToolMixin(
   accessor childType = 'text';
 
   @state()
-  accessor tip = 'Note';
+  accessor tip = t('Note');
 }

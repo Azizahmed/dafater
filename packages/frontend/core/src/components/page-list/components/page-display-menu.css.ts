@@ -6,12 +6,12 @@ export const menu = style({
 });
 
 export const headerDisplayButton = style({
-  marginLeft: '16px',
+  marginInlineStart: '16px',
   ['WebkitAppRegion' as string]: 'no-drag',
 });
 
 export const subMenuTrigger = style({
-  paddingRight: '8px',
+  paddingInlineEnd: '8px',
 });
 
 export const subMenuItem = style({

@@ -6,7 +6,9 @@ const hiddenSelectionBackground = '#fff';
 
 export const tableContainer = css({
   display: 'block',
-  padding: '10px 0 18px 10px',
+  padding: '10px 0 18px',
+  // Room for the row handles, which sit on the first column's start edge.
+  paddingInlineStart: '10px',
   overflowX: 'auto',
   overflowY: 'visible',
   userSelect: 'none',

@@ -6,6 +6,7 @@ import {
   preflightWebZipImport,
 } from '@affine/core/desktop/dialogs/import/web-limits';
 import { DebugLogger } from '@affine/debug';
+import { I18n } from '@affine/i18n';
 import { snapshotFile } from '@blocksuite/affine/shared/utils';
 import {
   BearTransformer,
@@ -192,7 +193,10 @@ async function snapshotReadableFiles(files: File[]) {
       const reason = error instanceof Error ? error.message : String(error);
       warnings.push({
         code: 'file-unreadable',
-        message: `Skipped unreadable file: ${sourcePath}. ${reason}`,
+        message: I18n.t('com.affine.import.warning.file-unreadable', {
+          path: sourcePath,
+          reason,
+        }),
         sourcePath,
       });
     }

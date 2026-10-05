@@ -3,6 +3,7 @@ import {
   popFilterableSimpleMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { ShadowlessElement } from '@blocksuite/std';
 import { computed } from '@preact/signals-core';
@@ -86,7 +87,7 @@ export class TableGroupHeader extends SignalWatcher(
     const ele = e.currentTarget as HTMLElement;
     popFilterableSimpleMenu(popupTargetFromElement(ele), [
       menu.action({
-        name: 'Ungroup',
+        name: t('Ungroup'),
         hide: () => group.value == null,
         select: () => {
           group.rows.forEach(row => {
@@ -95,7 +96,7 @@ export class TableGroupHeader extends SignalWatcher(
         },
       }),
       menu.action({
-        name: 'Delete Cards',
+        name: t('Delete Cards'),
         select: () => {
           this.tableViewManager.rowsDelete(group.rows.map(row => row.rowId));
           this.requestUpdate();
@@ -111,7 +112,7 @@ export class TableGroupHeader extends SignalWatcher(
     }
     return html`
       <div
-        style="position: sticky;left: 0;width: max-content;padding: 6px 0;margin-bottom: 4px;display:flex;align-items:center;gap: 12px;max-width: 400px"
+        style="position: sticky;inset-inline-start: 0;width: max-content;padding: 6px 0;margin-bottom: 4px;display:flex;align-items:center;gap: 12px;max-width: 400px"
       >
         ${GroupTitle(group, {
           groupHover: this.gridGroup.data.headerHover$.value,

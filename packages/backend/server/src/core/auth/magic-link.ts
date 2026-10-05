@@ -28,6 +28,14 @@ export class MagicLinkAuthService {
     private readonly sender: MailSender
   ) {}
 
+  /**
+   * Magic links need a working mailer. A self-hosted server without SMTP
+   * (the default Dafater setup) signs up and signs in with passwords only.
+   */
+  get available() {
+    return this.sender.configured;
+  }
+
   async send(
     email: string,
     callbackUrl = '/magic-link',
@@ -51,9 +59,7 @@ export class MagicLinkAuthService {
           email,
           callbackUrl: callbackUrlObj.toString(),
           clientNonce,
-          serverName:
-            this.config.server.name ??
-            (env.selfhosted ? 'AFFiNE Self-hosted' : 'AFFiNE Cloud'),
+          serverName: this.config.server.name ?? 'Dafater',
           source,
         });
       return { email: canonicalEmail };

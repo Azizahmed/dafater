@@ -27,7 +27,7 @@ const contentHide = keyframes({
 
 export const anchor = style({
   position: 'fixed',
-  right: '28px',
+  insetInlineEnd: '28px',
   top: '80px',
   zIndex: cssVar('zIndexModal'),
 });
@@ -45,7 +45,9 @@ export const contentContainer = style({
   alignItems: 'center',
   justifyContent: 'space-between',
   border: `0.5px solid ${cssVar('borderColor')}`,
-  padding: '8px 12px 8px 8px',
+  paddingBlock: '8px 8px',
+  paddingInlineStart: '8px',
+  paddingInlineEnd: '12px',
   zIndex: `calc(${cssVar('zIndexModal')} + 1)`,
   willChange: 'transform, opacity',
   selectors: {
@@ -137,7 +139,7 @@ export const arrowButton = style({
   borderRadius: 0,
   selectors: {
     '&:first-child': {
-      borderRight: '1px solid',
+      borderInlineEnd: '1px solid',
       borderColor: cssVarV2('layer/insideBorder/border'),
     },
   },

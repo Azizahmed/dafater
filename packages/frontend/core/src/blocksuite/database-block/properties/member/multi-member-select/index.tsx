@@ -1,4 +1,5 @@
 import { Avatar, notify } from '@affine/component';
+import { t } from '@blocksuite/affine/global/i18n';
 import {
   type ExistedUserInfo,
   type UserListService,
@@ -85,8 +86,8 @@ class MemberManager {
     if (this.ops.multiple) {
       if (this.selectedMembers.value.includes(memberId)) {
         notify.error({
-          title: 'Member already exists',
-          message: 'The member has already been selected',
+          title: t('Member already exists'),
+          message: t('The member has already been selected'),
         });
         return;
       }
@@ -246,7 +247,7 @@ export const MemberPreview = ({
         size={16}
       />
       <div className={styles.memberName}>
-        {userInfo.removed ? 'Deleted user' : userInfo.name || 'Unnamed'}
+        {userInfo.removed ? t('Deleted user') : userInfo.name || t('Unnamed')}
       </div>
       {onDelete && (
         <div className={styles.memberDeleteIcon} onClick={onDelete}>
@@ -333,7 +334,7 @@ export const MultiMemberSelect: React.FC<MemberManagerOptions> = props => {
         <input
           ref={inputRef}
           className={styles.memberSearchInput}
-          placeholder={selectedMembers.length > 0 ? '' : 'Search members...'}
+          placeholder={selectedMembers.length > 0 ? '' : t('Search members...')}
           value={memberManager.userListService.searchText$.value}
           onChange={handleInputChange}
         />
@@ -345,7 +346,7 @@ export const MultiMemberSelect: React.FC<MemberManagerOptions> = props => {
             Loading...
           </div>
         ) : filteredMemberList.length === 0 ? (
-          <div className={styles.noResultContainer}>No results</div>
+          <div className={styles.noResultContainer}>{t('No results')}</div>
         ) : (
           filteredMemberList.map(member => (
             <MemberListItem

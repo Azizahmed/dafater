@@ -10,6 +10,7 @@
   "type": "module",
   "exports": {
     "./onboarding.zip": "./onboarding/onboarding.zip",
+    "./onboarding.ar.zip": "./onboarding/onboarding.ar.zip",
     "./edgeless": "./edgeless-templates.gen.ts",
     "./stickers": "./stickers-templates.gen.ts",
     "./build-edgeless": "./build-edgeless.mjs"

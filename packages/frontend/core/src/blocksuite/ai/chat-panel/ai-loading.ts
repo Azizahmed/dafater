@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -54,7 +55,7 @@ export class AILoading extends WithDisposable(LitElement) {
     return html`
       <div class="generating-tip">
         <div class="left">${AIStarIconWithAnimation}</div>
-        <div class="text">AI is generating...</div>
+        <div class="text">${t('AI is generating...')}</div>
       </div>
     `;
   }

@@ -5,6 +5,7 @@ import type { CommentAttachment } from '@affine/core/modules/comment/types';
 import { PeekViewService } from '@affine/core/modules/peek-view';
 import { downloadResourceWithUrl } from '@affine/core/utils/resource';
 import { DebugLogger } from '@affine/debug';
+import { useI18n } from '@affine/i18n';
 import { getAttachmentFileIconRC } from '@blocksuite/affine/components/icons';
 import { type RichText, selectTextModel } from '@blocksuite/affine/rich-text';
 import { ViewportElementExtension } from '@blocksuite/affine/shared/services';
@@ -131,6 +132,7 @@ const AttachmentPreviewItem: React.FC<{
   handleAttachmentClick,
   handleAttachmentRemove,
 }) => {
+  const t = useI18n();
   const isImg = isImageAttachment(attachment);
   const Icon = !isImg
     ? getAttachmentFileIconRC(
@@ -156,7 +158,9 @@ const AttachmentPreviewItem: React.FC<{
       {!isImg && (
         <div className={styles.fileInfo}>
           <span className={styles.fileName}>
-            {attachment.filename || attachment.file?.name || 'File'}
+            {attachment.filename ||
+              attachment.file?.name ||
+              t['com.affine.comment.attachment.default-name']()}
           </span>
           <span className={styles.fileSize}>
             {attachment.size ? bytes(attachment.size) : ''}
@@ -200,6 +204,7 @@ export const CommentEditor = forwardRef<CommentEditorRef, CommentEditorProps>(
     if (!defaultSnapshotOrDoc) {
       throw new Error('Either defaultSnapshot or doc must be provided');
     }
+    const t = useI18n();
     const specs = usePatchSpecs(!!readonly);
     const doc = useSnapshotDoc(defaultSnapshotOrDoc, readonly);
     const snapshotHelper = useService(SnapshotHelper);
@@ -267,7 +272,7 @@ export const CommentEditor = forwardRef<CommentEditorRef, CommentEditorProps>(
           } catch (e: any) {
             logger.error('uploadCommentAttachment failed', { error: e });
             notify.error({
-              title: 'Failed to upload attachment',
+              title: t['com.affine.comment.attachment.upload-failed'](),
               message: e.message,
             });
             pending.localUrl && URL.revokeObjectURL(pending.localUrl);
@@ -281,7 +286,7 @@ export const CommentEditor = forwardRef<CommentEditorRef, CommentEditorProps>(
           }
         }
       },
-      [attachments?.length, setAttachments, uploadCommentAttachment]
+      [attachments?.length, setAttachments, t, uploadCommentAttachment]
     );
 
     const handlePaste = useCallback(
@@ -359,7 +364,11 @@ export const CommentEditor = forwardRef<CommentEditorRef, CommentEditorProps>(
           return {
             index: currentIndex,
             url: attachment.url || attachment.localUrl || '',
-            caption: attachment.file?.name || `Image ${currentIndex + 1}`,
+            caption:
+              attachment.file?.name ||
+              t['com.affine.comment.attachment.image-caption']({
+                index: String(currentIndex + 1),
+              }),
             previous:
               currentIndex > 0
                 ? () => getImageData(currentIndex - 1)
@@ -386,7 +395,7 @@ export const CommentEditor = forwardRef<CommentEditorRef, CommentEditorProps>(
             console.error('Failed to open image preview', error);
           });
       },
-      [attachments, peekViewService]
+      [attachments, peekViewService, t]
     );
 
     const handleAttachmentClick = useCallback(
@@ -410,14 +419,14 @@ export const CommentEditor = forwardRef<CommentEditorRef, CommentEditorProps>(
           ).catch(e => {
             console.error('Failed to download attachment', e);
             notify.error({
-              title: 'Failed to download attachment',
+              title: t['com.affine.comment.attachment.download-failed'](),
               message: e.message,
             });
           });
-          toast('The attachment is being downloaded to your computer.');
+          toast(t['com.affine.comment.attachment.downloading']());
         }
       },
-      [attachments, handleImagePreview]
+      [attachments, handleImagePreview, t]
     );
 
     // upload attachments and call original onCommit

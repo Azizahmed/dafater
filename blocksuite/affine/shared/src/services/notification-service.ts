@@ -1,4 +1,5 @@
 import { createIdentifier, type ServiceProvider } from '@blocksuite/global/di';
+import { t } from '@blocksuite/global/i18n';
 import { EditorLifeCycleExtension } from '@blocksuite/std';
 import { type ExtensionType, StoreIdentifier } from '@blocksuite/store';
 import type { TemplateResult } from 'lit';
@@ -108,7 +109,7 @@ function notifyWithUndoActionImpl(
     actions: [
       {
         key: 'notification-card-undo',
-        label: 'Undo',
+        label: t('Undo'),
         onClick: () => {
           store.undo();
           abortController.abort();

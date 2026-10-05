@@ -10,6 +10,7 @@ import {
   createFromBaseCellRenderer,
   createIcon,
 } from '@blocksuite/data-view';
+import { t } from '@blocksuite/global/i18n';
 import { EditIcon } from '@blocksuite/icons/lit';
 import { computed } from '@preact/signals-core';
 import { html, nothing, type PropertyValues } from 'lit';
@@ -120,7 +121,7 @@ export class LinkCell extends BaseCellRenderer<string, string> {
     if (title == null) {
       return;
     }
-    return title || 'Untitled';
+    return title || t('Untitled');
   });
 
   renderLink() {

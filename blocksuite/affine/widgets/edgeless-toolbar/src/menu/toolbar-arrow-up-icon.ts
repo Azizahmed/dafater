@@ -7,7 +7,7 @@ export class ToolbarArrowUpIcon extends ShadowlessElement {
     .arrow-up-icon {
       position: absolute;
       top: -2px;
-      right: -2px;
+      inset-inline-end: -2px;
     }
   `;
 

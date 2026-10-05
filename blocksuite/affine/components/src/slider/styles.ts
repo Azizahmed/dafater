@@ -3,6 +3,8 @@ import { css } from 'lit';
 
 export const styles = css`
   :host {
+    /* Points are laid out and hit-tested from the left edge. */
+    direction: ltr;
     display: block;
     touch-action: none;
   }

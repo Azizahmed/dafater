@@ -26,6 +26,6 @@ export const progressTrack = style({
 });
 export const progressBar = style({
   height: 'inherit',
-  borderTopRightRadius: 5,
-  borderBottomRightRadius: 5,
+  borderStartEndRadius: 5,
+  borderEndEndRadius: 5,
 });

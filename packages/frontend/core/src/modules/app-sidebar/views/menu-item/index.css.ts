@@ -8,13 +8,15 @@ export const root = style({
   display: 'inline-flex',
   alignItems: 'center',
   borderRadius: '4px',
-  textAlign: 'left',
+  textAlign: 'start',
   color: 'inherit',
   width: '100%',
   minHeight: '30px',
   userSelect: 'none',
   cursor: 'pointer',
-  padding: '0 2px 0 0',
+  paddingBlock: '0 0',
+  paddingInlineStart: '0',
+  paddingInlineEnd: '2px',
   fontSize: cssVar('fontSm'),
   marginTop: '4px',
   position: 'relative',
@@ -37,14 +39,17 @@ export const root = style({
     //     'linear-gradient(0deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.04)), rgba(0, 0, 0, 0.04)',
     // },
     '&[data-collapsible="true"]': {
-      paddingLeft: '4px',
-      paddingRight: '4px',
+      paddingInlineStart: '4px',
+      paddingInlineEnd: '4px',
     },
     '&[data-collapsible="false"]:is([data-active="true"], :hover)': {
       width: 'calc(100% + 8px + 8px)',
       transform: 'translateX(-8px)',
-      paddingLeft: '8px',
-      paddingRight: '10px',
+      paddingInlineStart: '8px',
+      paddingInlineEnd: '10px',
+    },
+    '&:dir(rtl)[data-collapsible="false"]:is([data-active="true"], :hover)': {
+      transform: 'translateX(8px)',
     },
     [`${linkItemRoot}:first-of-type &`]: {
       marginTop: '0px',
@@ -58,7 +63,7 @@ export const content = style({
   flex: 1,
 });
 export const postfix = style({
-  right: '4px',
+  insetInlineEnd: '4px',
   position: 'absolute',
   opacity: 0,
   pointerEvents: 'none',

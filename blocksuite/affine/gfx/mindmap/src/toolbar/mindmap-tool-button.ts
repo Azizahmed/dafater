@@ -18,6 +18,7 @@ import {
   EdgelessToolbarToolMixin,
 } from '@blocksuite/affine-widget-edgeless-toolbar';
 import type { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import { computed } from '@preact/signals-core';
 import { css, html, LitElement, nothing } from 'lit';
@@ -234,7 +235,7 @@ export class EdgelessMindmapToolButton extends EdgelessToolbarToolMixin(
       standardWidth: 100,
       clickToDrag: false,
       onOverlayCreated: (overlay, { data }) => {
-        const tool = this.draggableTools.find(t => t.name === data.name);
+        const tool = this.draggableTools.find(item => item.name === data.name);
         if (!tool) return;
 
         // recover the rotation
@@ -306,7 +307,9 @@ export class EdgelessMindmapToolButton extends EdgelessToolbarToolMixin(
             this.edgeless.std.get(EditPropsStore).recordLastProps('mindmap', {
               style: next.style,
             });
-            const tool = this.draggableTools.find(t => t.name === 'mindmap');
+            const tool = this.draggableTools.find(
+              item => item.name === 'mindmap'
+            );
             this.draggableController.updateElementInfo({
               data: tool,
               preview: next.icon,
@@ -351,7 +354,7 @@ export class EdgelessMindmapToolButton extends EdgelessToolbarToolMixin(
     return html`<edgeless-toolbar-button
       class="edgeless-mindmap-button"
       ?withHover=${true}
-      .tooltip=${popper ? '' : 'Others'}
+      .tooltip=${popper ? '' : t('Others')}
       .tooltipOffset=${4}
       @click=${this._toggleMenu}
       style="width: 100%; height: 100%; display: inline-block"
@@ -360,7 +363,7 @@ export class EdgelessMindmapToolButton extends EdgelessToolbarToolMixin(
         <div class="basket-wrapper ${active ? 'active' : ''}">
           ${repeat(
             this.draggableTools,
-            t => t.name,
+            item => item.name,
             tool => {
               const isBeingDragged = draggingElement?.data.name === tool.name;
               const variables = toolConfig2StyleObj(tool.config);

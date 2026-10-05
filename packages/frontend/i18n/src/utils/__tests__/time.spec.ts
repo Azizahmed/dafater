@@ -348,53 +348,45 @@ describe('humanTime', () => {
     ).toBe('Oct 8, 2024');
   });
 
-  test('chinese', async () => {
+  test('arabic', async () => {
     getOrCreateI18n();
-    await I18n.changeLanguage('zh-Hans');
-    expect(i18nTime('2024-10-10 13:30:28.005')).toBe('2024年10月10日 13:30:28');
-    expect(
-      i18nTime('2024-10-10 13:30:28.005', {
-        absolute: {
-          accuracy: 'day',
-        },
-      })
-    ).toBe('2024年10月10日');
-    expect(
-      i18nTime('2024-10-10 13:30:28.005', {
+    await I18n.changeLanguage('ar');
+    const results = {
+      full: i18nTime('2024-10-10 13:30:28.005'),
+      day: i18nTime('2024-10-10 13:30:28.005', {
+        absolute: { accuracy: 'day' },
+      }),
+      seconds: i18nTime('2024-10-10 13:30:28.005', {
         now: '2024-10-10 13:30:30',
         relative: true,
-      })
-    ).toBe('1秒前');
-    expect(
-      i18nTime('2024-10-9 13:30:30', {
+      }),
+      yesterday: i18nTime('2024-10-9 13:30:30', {
         now: '2024-10-10 13:30:30',
         relative: true,
-      })
-    ).toBe('昨天');
-    expect(
-      i18nTime('2024-10-8 13:30:30', {
+      }),
+      weekday: i18nTime('2024-10-8 13:30:30', {
         now: '2024-10-10 13:30:30',
-        relative: {
-          weekday: true,
-        },
-      })
-    ).toBe('星期二');
-    expect(
-      i18nTime('2024-10-8 13:30:30', {
+        relative: { weekday: true },
+      }),
+      week: i18nTime('2024-10-8 13:30:30', {
         now: '2024-10-10 13:30:30',
-        relative: {
-          accuracy: 'week',
-        },
-      })
-    ).toBe('本周');
-    expect(
-      i18nTime('2024-10-8 13:30:30', {
+        relative: { accuracy: 'week' },
+      }),
+      month: i18nTime('2024-10-8 13:30:30', {
         now: '2024-10-10 13:30:30',
-        relative: {
-          accuracy: 'month',
-        },
-      })
-    ).toBe('本月');
+        relative: { accuracy: 'month' },
+      }),
+    };
+    expect(results).toEqual({
+      full: '10 أكتوبر 2024، 1:30:28 م',
+      day: '10 أكتوبر 2024',
+      seconds: 'قبل ثانية واحدة',
+      yesterday: 'أمس',
+      weekday: 'الثلاثاء',
+      week: 'هذا الأسبوع',
+      month: 'هذا الشهر',
+    });
+    await I18n.changeLanguage('en');
   });
 
   test('invalid time', () => {

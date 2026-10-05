@@ -152,6 +152,29 @@ export class UserModel extends BaseModel {
     return user;
   }
 
+  /**
+   * Finish the sign up of an existing but not yet registered user, e.g.
+   * someone who was invited into a workspace before having an account.
+   */
+  async completeSignUp(
+    id: string,
+    data: { password: string; name?: string; emailVerifiedAt?: Date }
+  ) {
+    const user = await this.db.user.update({
+      where: { id },
+      data: {
+        password: await this.crypto.encryptPassword(data.password),
+        registered: true,
+        emailVerifiedAt: data.emailVerifiedAt,
+        ...(data.name ? { name: data.name } : {}),
+      },
+    });
+
+    this.logger.debug(`User [${user.id}] completed sign up`);
+    this.event.emitDetached('user.updated', user);
+    return user;
+  }
+
   async importUsers(inputs: CreateUserInput[]) {
     return await Promise.allSettled(
       inputs.map(async input => {

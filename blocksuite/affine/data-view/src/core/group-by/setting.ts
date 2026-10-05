@@ -3,6 +3,7 @@ import {
   menu,
   type MenuConfig,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { DeleteIcon, InvisibleIcon, ViewIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -31,16 +32,16 @@ import type { GroupRenderProps } from './types.js';
 const dateModeLabel = (key?: string) => {
   switch (key) {
     case 'date-relative':
-      return 'Relative';
+      return t('Relative');
     case 'date-day':
-      return 'Day';
+      return t('Day');
     case 'date-week-mon':
     case 'date-week-sun':
-      return 'Week';
+      return t('Week');
     case 'date-month':
-      return 'Month';
+      return t('Month');
     case 'date-year':
-      return 'Year';
+      return t('Year');
     default:
       return '';
   }
@@ -203,10 +204,10 @@ export class GroupSetting extends SignalWatcher(
         <div
           style="padding:0 4px;font-size:12px;color:var(--affine-text-secondary-color);line-height:20px;"
         >
-          Groups
+          ${t('Groups')}
         </div>
         <div class="properties-group-op" @click="${clickChangeAll}">
-          ${isAllShowed ? 'Hide All' : 'Show All'}
+          ${isAllShowed ? t('Hide All') : t('Show All')}
         </div>
       </div>
 
@@ -297,7 +298,7 @@ export const buildGroupSelectItems = (
           hide: () =>
             view instanceof KanbanSingleView || !group.property$.value,
           class: { 'delete-item': true },
-          name: 'Remove Grouping',
+          name: t('Remove Grouping'),
           select: () => {
             group.changeGroup(undefined);
             onSelect(undefined);
@@ -325,10 +326,10 @@ export const buildGroupSettingItems = (
     menu.group({
       items: [
         menu.action({
-          name: 'Group By',
+          name: t('Group By'),
           postfix: html`
             <div
-              style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
+              style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-inline-start:8px;"
               class="dv-icon-16"
             >
               ${renderUniLit(icon, {})} ${gProp.name$.value}
@@ -348,13 +349,13 @@ export const buildGroupSettingItems = (
             items: [
               menu.dynamic(() => [
                 menu.subMenu({
-                  name: 'Date by',
+                  name: t('Date by'),
                   openOnHover: false,
                   middleware: dropdownSubMenuMiddleware,
                   autoHeight: true,
                   postfix: html`
                     <div
-                      style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:30px;"
+                      style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-inline-start:30px;"
                     >
                       ${dateModeLabel(group.groupInfo$.value?.config.name)}
                     </div>
@@ -378,7 +379,7 @@ export const buildGroupSettingItems = (
                           ] as [string, string][]
                         ).map(([label, key]): MenuConfig =>
                           menu.action({
-                            name: label,
+                            name: t(label),
                             label: () => {
                               const isSelected =
                                 group.groupInfo$.value?.config.name === key;
@@ -388,7 +389,7 @@ export const buildGroupSettingItems = (
                                     ? 'var(--affine-text-emphasis-color)'
                                     : 'var(--affine-text-secondary-color)'
                                 }"
-                                >${label}</span
+                                >${t(label)}</span
                               >`;
                             },
                             isSelected:
@@ -413,16 +414,16 @@ export const buildGroupSettingItems = (
                   items: [
                     menu.dynamic(() => [
                       menu.subMenu({
-                        name: 'Start week on',
+                        name: t('Start week on'),
                         postfix: html`
                           <div
-                            style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
+                            style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-inline-start:8px;"
                           >
                             ${
                               group.groupInfo$.value?.config.name ===
                               'date-week-mon'
-                                ? 'Monday'
-                                : 'Sunday'
+                                ? t('Monday')
+                                : t('Sunday')
                             }
                           </div>
                         `,
@@ -436,7 +437,7 @@ export const buildGroupSettingItems = (
                                 ] as [string, string][]
                               ).map(([label, key]) =>
                                 menu.action({
-                                  name: label,
+                                  name: t(label),
                                   label: () => {
                                     const isSelected =
                                       group.groupInfo$.value?.config.name ===
@@ -447,7 +448,7 @@ export const buildGroupSettingItems = (
                                           ? 'var(--affine-text-emphasis-color)'
                                           : 'var(--affine-text-secondary-color)'
                                       }"
-                                      >${label}</span
+                                      >${t(label)}</span
                                     >`;
                                   },
                                   isSelected:
@@ -471,22 +472,26 @@ export const buildGroupSettingItems = (
             items: [
               menu.dynamic(() => [
                 menu.subMenu({
-                  name: 'Sort',
+                  name: t('Sort'),
                   openOnHover: false,
                   middleware: dropdownSubMenuMiddleware,
                   autoHeight: true,
                   postfix: html`
                     <div
-                      style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-left:8px;"
+                      style="display:flex;align-items:center;gap:4px;font-size:14px;line-height:20px;color:var(--affine-text-secondary-color);margin-inline-start:8px;"
                     >
-                      ${group.sortAsc$.value ? 'Oldest first' : 'Newest first'}
+                      ${
+                        group.sortAsc$.value
+                          ? t('Oldest first')
+                          : t('Newest first')
+                      }
                     </div>
                   `,
                   options: {
                     items: [
                       menu.dynamic(() => [
                         menu.action({
-                          name: 'Oldest first',
+                          name: t('Oldest first'),
                           label: () => {
                             const isSelected = group.sortAsc$.value;
                             return html`<span
@@ -495,7 +500,7 @@ export const buildGroupSettingItems = (
                                   ? 'var(--affine-text-emphasis-color)'
                                   : 'var(--affine-text-secondary-color)'
                               }"
-                              >Oldest first</span
+                              >${t('Oldest first')}</span
                             >`;
                           },
                           isSelected: group.sortAsc$.value,
@@ -505,7 +510,7 @@ export const buildGroupSettingItems = (
                           },
                         }),
                         menu.action({
-                          name: 'Newest first',
+                          name: t('Newest first'),
                           label: () => {
                             const isSelected = !group.sortAsc$.value;
                             return html`<span
@@ -514,7 +519,7 @@ export const buildGroupSettingItems = (
                                   ? 'var(--affine-text-emphasis-color)'
                                   : 'var(--affine-text-secondary-color)'
                               }"
-                              >Newest first</span
+                              >${t('Newest first')}</span
                             >`;
                           },
                           isSelected: !group.sortAsc$.value,
@@ -537,7 +542,7 @@ export const buildGroupSettingItems = (
       items: [
         menu.dynamic(() => [
           menu.action({
-            name: 'Hide empty groups',
+            name: t('Hide empty groups'),
             isSelected: group.hideEmpty$.value,
             select: () => {
               group.setHideEmpty(!group.hideEmpty$.value);
@@ -562,7 +567,7 @@ export const buildGroupSettingItems = (
     menu.group({
       items: [
         menu.action({
-          name: 'Remove grouping',
+          name: t('Remove grouping'),
           prefix: DeleteIcon(),
           class: { 'delete-item': true },
           hide: () => !(view instanceof TableSingleView),

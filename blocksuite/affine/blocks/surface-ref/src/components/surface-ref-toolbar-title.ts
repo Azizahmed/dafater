@@ -21,7 +21,7 @@ export class SurfaceRefToolbarTitle extends ShadowlessElement {
     surface-ref-toolbar-title {
       display: flex;
       padding: 2px 4px;
-      margin-right: auto;
+      margin-inline-end: auto;
       align-items: center;
       gap: 4px;
       border-radius: 4px;

@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
 import { ShadowlessElement } from '@blocksuite/affine/std';
@@ -36,8 +37,8 @@ export class ToolCallCard extends WithDisposable(ShadowlessElement) {
         font-size: 14px;
         font-weight: 500;
         line-height: 24px;
-        margin-left: 0px;
-        margin-right: auto;
+        margin-inline-start: 0px;
+        margin-inline-end: auto;
         color: ${unsafeCSSVarV2('icon/activated')};
         overflow: hidden;
         text-overflow: ellipsis;
@@ -46,7 +47,7 @@ export class ToolCallCard extends WithDisposable(ShadowlessElement) {
 
       .loading-dots {
         display: inline;
-        margin-left: 2px;
+        margin-inline-start: 2px;
         color: ${unsafeCSSVarV2('icon/activated')};
       }
     }
@@ -84,7 +85,7 @@ export class ToolCallCard extends WithDisposable(ShadowlessElement) {
   `;
 
   @property({ attribute: false })
-  accessor name: string = 'Tool calling';
+  accessor name: string = t('Tool calling');
 
   @property({ attribute: false })
   accessor icon: TemplateResult<1> = ToolIcon();

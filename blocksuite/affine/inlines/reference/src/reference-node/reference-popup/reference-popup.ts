@@ -9,6 +9,7 @@ import {
 import { fontXSStyle, panelBaseStyle } from '@blocksuite/affine-shared/styles';
 import type { AffineTextAttributes } from '@blocksuite/affine-shared/types';
 import { stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { DoneIcon, ResetIcon } from '@blocksuite/icons/lit';
 import { type BlockStdScope, ShadowlessElement } from '@blocksuite/std';
@@ -73,6 +74,9 @@ export class ReferencePopup extends SignalWatcher(
     }
     input:focus {
       outline: none;
+    }
+    input#alias-title {
+      unicode-bidi: plaintext;
     }
 
     ${fontXSStyle('editor-icon-button.save .label')}
@@ -179,28 +183,28 @@ export class ReferencePopup extends SignalWatcher(
           <input
             id="alias-title"
             type="text"
-            placeholder="Add a custom title"
+            placeholder=${t('Add a custom title')}
             .value=${live(this.title$.value)}
             @input=${this._updateTitle}
           />
           <editor-icon-button
-            aria-label="Reset"
+            aria-label=${t('Reset')}
             class="reset"
             .iconContainerPadding=${4}
-            .tooltip=${'Reset'}
+            .tooltip=${t('Reset')}
             @click=${this._onReset}
           >
             ${ResetIcon({ width: '16px', height: '16px' })}
           </editor-icon-button>
           <editor-toolbar-separator></editor-toolbar-separator>
           <editor-icon-button
-            aria-label="Save"
+            aria-label=${t('Save')}
             class="save"
             .active=${true}
             @click=${this._onSave}
           >
             ${DoneIcon({ width: '16px', height: '16px' })}
-            <span class="label">Save</span>
+            <span class="label">${t('Save')}</span>
           </editor-icon-button>
         </div>
       </div>

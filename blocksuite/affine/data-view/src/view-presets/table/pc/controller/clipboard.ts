@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import type { UIEventStateContext } from '@blocksuite/std';
 import type { ReactiveController } from 'lit';
 
@@ -57,12 +58,16 @@ export class TableClipboardController implements ReactiveController {
       .then(() => {
         if (area[0]?.row) {
           this.notification.toast(
-            `${area.length} row${area.length > 1 ? 's' : ''} copied to clipboard`
+            area.length > 1
+              ? t('{count} rows copied to clipboard', { count: area.length })
+              : t('{count} row copied to clipboard', { count: area.length })
           );
         } else {
           const count = area.flatMap(row => row.cells).length;
           this.notification.toast(
-            `${count} cell${count > 1 ? 's' : ''} copied to clipboard`
+            count > 1
+              ? t('{count} cells copied to clipboard', { count })
+              : t('{count} cell copied to clipboard', { count })
           );
         }
       })

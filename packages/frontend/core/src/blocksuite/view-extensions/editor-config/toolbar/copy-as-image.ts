@@ -5,6 +5,7 @@ import { apis } from '@affine/electron-api';
 import { I18n } from '@affine/i18n';
 import type { MenuContext } from '@blocksuite/affine/components/toolbar';
 import { Bound, getCommonBound } from '@blocksuite/affine/global/gfx';
+import { t } from '@blocksuite/affine/global/i18n';
 import type { BlockStdScope } from '@blocksuite/affine/std';
 import {
   type GfxBlockElementModel,
@@ -108,16 +109,8 @@ export function copyAsImage(std: BlockStdScope) {
   if (!apis) {
     notify.error({
       title: I18n.t('com.affine.copy.asImage.notAvailable.title'),
-      message: I18n.t('com.affine.copy.asImage.notAvailable.message'),
-      actions: [
-        {
-          key: 'download',
-          label: I18n.t('com.affine.copy.asImage.notAvailable.action'),
-          onClick: () => {
-            window.open('https://affine.pro/download');
-          },
-        },
-      ],
+      message: I18n.t('com.affine.dafater.copy-as-image.unavailable'),
+      // Dafater: no "download the app" action (pointed at affine.pro)
     });
     return;
   }
@@ -219,7 +212,7 @@ export function copyAsImage(std: BlockStdScope) {
 export function createCopyAsPngMenuItem(framework: FrameworkProvider) {
   return {
     icon: CopyAsImgaeIcon({ width: '20', height: '20' }),
-    label: 'Copy as Image',
+    label: t('Copy as Image'),
     type: 'copy-as-image',
     when: (ctx: MenuContext) => {
       if (ctx.isEmpty()) return false;

@@ -89,6 +89,6 @@ export const feedback = style({
 });
 
 export const arrowRightIcon = style({
-  marginLeft: 'auto',
-  marginRight: 0,
+  marginInlineStart: 'auto',
+  marginInlineEnd: 0,
 });

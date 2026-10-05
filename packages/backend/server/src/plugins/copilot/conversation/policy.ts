@@ -14,8 +14,11 @@ export class ConversationPolicy {
   ) {}
 
   async getQuota(userId: string) {
-    const quota = await this.quota.getUserQuota(userId);
-    const limit = quota.copilotActionLimit;
+    // Dafater: AI on a self-hosted server runs on the administrator's own
+    // provider, so signed-in users have no copilot action limit.
+    const limit = env.selfhosted
+      ? undefined
+      : (await this.quota.getUserQuota(userId)).copilotActionLimit;
 
     const used = await this.models.copilotSession.countUserMessages(userId);
 

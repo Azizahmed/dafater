@@ -1,12 +1,7 @@
 import { Skeleton } from '@affine/component';
-import {
-  AuthService,
-  ServerService,
-  UserCopilotQuotaService,
-  UserQuotaService,
-} from '@affine/core/modules/cloud';
+import { AuthService, UserQuotaService } from '@affine/core/modules/cloud';
+import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
-import { cssVar } from '@toeverything/theme';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import { type ReactNode, useEffect } from 'react';
 
@@ -71,18 +66,20 @@ const Loading = () => {
 };
 
 const UsagePanel = () => {
-  const serverService = useService(ServerService);
-  const serverFeatures = useLiveData(serverService.server.features$);
+  const t = useI18n();
 
   return (
-    <SettingGroup title="Storage" contentStyle={{ padding: '10px 16px' }}>
+    <SettingGroup
+      title={t['Storage']()}
+      contentStyle={{ padding: '10px 16px' }}
+    >
       <CloudUsage />
-      {serverFeatures?.copilot ? <AiUsage /> : null}
     </SettingGroup>
   );
 };
 
 const CloudUsage = () => {
+  const t = useI18n();
   const quota = useService(UserQuotaService).quota;
 
   const color = useLiveData(quota.color$);
@@ -101,52 +98,9 @@ const CloudUsage = () => {
 
   return (
     <Progress
-      name="Cloud"
+      name={t['com.affine.workspace-card.status.cloud']()}
       percent={percent}
       desc={`${usedFormatted}/${maxFormatted}`}
-      color={color}
-    />
-  );
-};
-const AiUsage = () => {
-  const copilotQuotaService = useService(UserCopilotQuotaService);
-
-  const copilotActionLimit = useLiveData(
-    copilotQuotaService.copilotQuota.copilotActionLimit$
-  );
-  const copilotActionUsed = useLiveData(
-    copilotQuotaService.copilotQuota.copilotActionUsed$
-  );
-  const loading = copilotActionLimit === null || copilotActionUsed === null;
-  const loadError = useLiveData(copilotQuotaService.copilotQuota.error$);
-
-  useEffect(() => {
-    copilotQuotaService.copilotQuota.revalidate();
-  }, [copilotQuotaService]);
-
-  if (loading || loadError) {
-    return <Loading />;
-  }
-
-  if (copilotActionLimit === 'unlimited') {
-    return null;
-  }
-
-  const percent = Math.min(
-    100,
-    Math.max(
-      0.5,
-      Number(((copilotActionUsed / copilotActionLimit) * 100).toFixed(4))
-    )
-  );
-
-  const color = percent > 80 ? cssVar('errorColor') : cssVar('processingColor');
-
-  return (
-    <Progress
-      name="AI"
-      percent={percent}
-      desc={`${copilotActionUsed}/${copilotActionLimit}`}
       color={color}
     />
   );

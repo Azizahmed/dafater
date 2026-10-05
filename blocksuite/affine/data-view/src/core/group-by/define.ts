@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import hash from '@emotion/hash';
 import {
   addDays,
@@ -13,7 +14,8 @@ import {
 } from 'date-fns';
 
 import type { TypeInstance } from '../logical/type.js';
-import { t } from '../logical/type-presets.js';
+import { t as types } from '../logical/type-presets.js';
+import { formatLocalizedDate } from '../utils/date-locale.js';
 import { createUniComponentFromWebComponent } from '../utils/uni-component/uni-component.js';
 import { BooleanGroupView } from './renderer/boolean-group.js';
 import { DateGroupView } from './renderer/date-group.js';
@@ -38,8 +40,16 @@ export const ungroups = {
 const WEEK_OPTS_MON = { weekStartsOn: 1 } as const;
 const WEEK_OPTS_SUN = { weekStartsOn: 0 } as const;
 
-const rangeLabel = (a: Date, b: Date) =>
-  `${fmt(a, 'MMM d yyyy')} – ${fmt(b, 'MMM d yyyy')}`;
+const formatDay = (date: Date) =>
+  formatLocalizedDate(date, 'MMM d yyyy', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+const formatMonth = (date: Date) =>
+  formatLocalizedDate(date, 'MMM yyyy', { month: 'short', year: 'numeric' });
+
+const rangeLabel = (a: Date, b: Date) => `${formatDay(a)} – ${formatDay(b)}`;
 
 function buildDateCfg(
   name: string,
@@ -48,7 +58,7 @@ function buildDateCfg(
 ): GroupByConfig {
   return createGroupByConfig({
     name,
-    matchType: t.date.instance(),
+    matchType: types.date.instance(),
     groupName: (_t, v) => groupName(v),
     defaultKeys: _t => [ungroups],
     valuesGroup: (v: number | null, _t) => grouper(v),
@@ -94,24 +104,24 @@ const dateRelativeCfg = buildDateCfg(
     const daysDiff = differenceInCalendarDays(d, today);
 
     // Handle specific days
-    if (isToday(d)) return 'Today';
-    if (isTomorrow(d)) return 'Tomorrow';
-    if (isYesterday(d)) return 'Yesterday';
+    if (isToday(d)) return t('Today');
+    if (isTomorrow(d)) return t('Tomorrow');
+    if (isYesterday(d)) return t('Yesterday');
 
     // Handle future dates
     if (daysDiff > 0) {
-      if (daysDiff <= 7) return 'Next 7 days';
-      if (daysDiff <= 30) return 'Next 30 days';
+      if (daysDiff <= 7) return t('Next 7 days');
+      if (daysDiff <= 30) return t('Next 30 days');
       // Show month/year for future dates beyond 30 days
-      return fmt(new Date(v), 'MMM yyyy');
+      return formatMonth(new Date(v));
     }
 
     // Handle past dates
     const daysAgo = -daysDiff;
-    if (daysAgo <= 7) return 'Last 7 days';
-    if (daysAgo <= 30) return 'Last 30 days';
+    if (daysAgo <= 7) return t('Last 7 days');
+    if (daysAgo <= 30) return t('Last 30 days');
     // Show month/year for past dates beyond 30 days
-    return fmt(new Date(v), 'MMM yyyy');
+    return formatMonth(new Date(v));
   }
 );
 
@@ -122,7 +132,7 @@ const dateDayCfg = buildDateCfg(
     const d = startOfDay(new Date(v));
     return [{ key: `${+d}`, value: +d }];
   },
-  v => (v ? fmt(new Date(v), 'MMM d yyyy') : '')
+  v => (v ? formatDay(new Date(v)) : '')
 );
 
 const dateWeekSunCfg = buildDateCfg(
@@ -152,7 +162,7 @@ const dateMonthCfg = buildDateCfg(
     const m = startOfMonth(new Date(v));
     return [{ key: `${+m}`, value: +m }];
   },
-  v => (v ? fmt(new Date(v), 'MMM yyyy') : '')
+  v => (v ? formatMonth(new Date(v)) : '')
 );
 
 const dateYearCfg = buildDateCfg(
@@ -168,14 +178,14 @@ const dateYearCfg = buildDateCfg(
 export const groupByMatchers: GroupByConfig[] = [
   createGroupByConfig({
     name: 'select',
-    matchType: t.tag.instance(),
+    matchType: types.tag.instance(),
     groupName: (type, value: string | null) => {
-      if (t.tag.is(type) && type.data)
+      if (types.tag.is(type) && type.data)
         return type.data.find(v => v.id === value)?.value ?? '';
       return '';
     },
     defaultKeys: type =>
-      t.tag.is(type) && type.data
+      types.tag.is(type) && type.data
         ? [ungroups, ...type.data.map(v => ({ key: v.id, value: v.id }))]
         : [ungroups],
     valuesGroup: (value, _t) =>
@@ -186,14 +196,18 @@ export const groupByMatchers: GroupByConfig[] = [
 
   createGroupByConfig({
     name: 'multi-select',
-    matchType: t.array.instance(t.tag.instance()),
+    matchType: types.array.instance(types.tag.instance()),
     groupName: (type, value: string | null) => {
-      if (t.array.is(type) && t.tag.is(type.element) && type.element.data)
+      if (
+        types.array.is(type) &&
+        types.tag.is(type.element) &&
+        type.element.data
+      )
         return type.element.data.find(v => v.id === value)?.value ?? '';
       return '';
     },
     defaultKeys: type =>
-      t.array.is(type) && t.tag.is(type.element) && type.element.data
+      types.array.is(type) && types.tag.is(type.element) && type.element.data
         ? [
             ungroups,
             ...type.element.data.map(v => ({ key: v.id, value: v.id })),
@@ -219,7 +233,7 @@ export const groupByMatchers: GroupByConfig[] = [
 
   createGroupByConfig({
     name: 'text',
-    matchType: t.string.instance(),
+    matchType: types.string.instance(),
     groupName: (_t, v) => `${v ?? ''}`,
     defaultKeys: _t => [ungroups],
     valuesGroup: (v, _t) =>
@@ -230,7 +244,7 @@ export const groupByMatchers: GroupByConfig[] = [
 
   createGroupByConfig({
     name: 'number',
-    matchType: t.number.instance(),
+    matchType: types.number.instance(),
     groupName: (_t, v) => `${v ?? ''}`,
     defaultKeys: _t => [ungroups],
     valuesGroup: (v, _t) =>
@@ -244,7 +258,7 @@ export const groupByMatchers: GroupByConfig[] = [
 
   createGroupByConfig({
     name: 'boolean',
-    matchType: t.boolean.instance(),
+    matchType: types.boolean.instance(),
     groupName: (_t, v) => `${v?.toString() ?? ''}`,
     defaultKeys: _t => [
       { key: 'true', value: true },

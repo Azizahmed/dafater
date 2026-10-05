@@ -19,6 +19,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { openSingleFileWith } from '@blocksuite/affine-shared/utils';
 import { Bound, type IVec } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import type { BlockComponent } from '@blocksuite/std';
 import type { TemplateResult } from 'lit';
 import * as Y from 'yjs';
@@ -79,7 +80,7 @@ export const getMindmapRender =
 
     const root: MindMapNode = {
       children: [],
-      text: 'Mind Map',
+      text: t('Mind Map'),
       xywh: `[${rootX},${rootY},${rootW},${rootH}]`,
     };
 
@@ -88,7 +89,7 @@ export const getMindmapRender =
       const nodeY = centerVertical - nodeH / 2 + (i - 1) * 50;
       root.children.push({
         children: [],
-        text: 'Text',
+        text: t('Text'),
         xywh: `[${nodeX},${nodeY},${nodeW},${nodeH}]`,
       });
     }

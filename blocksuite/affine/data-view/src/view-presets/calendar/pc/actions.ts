@@ -2,6 +2,7 @@ import {
   popMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import {
   CalendarPanelIcon,
   DateTimeIcon,
@@ -11,20 +12,23 @@ import {
 import { html } from 'lit';
 
 import type { DataViewRootUILogic } from '../../../core/data-view.js';
+import { dateTimeFormat } from '../../../core/utils/date-locale.js';
 import type { CalendarSingleView } from '../calendar-view-manager.js';
 import type { CalendarEntry } from '../types.js';
 
-const dateTimeFormatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-});
+const dateTimeFormatter = () =>
+  dateTimeFormat({
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
 
-const dateFormatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: 'medium',
-});
+const dateFormatter = () =>
+  dateTimeFormat({
+    dateStyle: 'medium',
+  });
 
 export const formatEntryTime = (entry: CalendarEntry) => {
-  const formatter = entry.allDay ? dateFormatter : dateTimeFormatter;
+  const formatter = entry.allDay ? dateFormatter() : dateTimeFormatter();
   const start = formatter.format(new Date(entry.startAt));
   if (!entry.endAt) {
     return start;
@@ -59,7 +63,7 @@ export const openCalendarEntry = (
               <span class="calendar-event-popover-icon"
                 >${CalendarPanelIcon()}</span
               >
-              <span>${entry.calendarName ?? 'Calendar event'}</span>
+              <span>${entry.calendarName ?? t('Calendar event')}</span>
             </div>
             <div class="calendar-event-popover-row">
               <span class="calendar-event-popover-icon">${DateTimeIcon()}</span>

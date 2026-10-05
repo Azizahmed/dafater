@@ -19,7 +19,9 @@ export const Preferences = () => {
           'com.affine.settings.editorSettings.preferences.export.description'
         ]()}
       >
-        <Button>Export</Button>
+        <Button>
+          {t['com.affine.settings.editorSettings.preferences.export.button']()}
+        </Button>
       </SettingRow>
       <SettingRow
         name={t[
@@ -29,7 +31,7 @@ export const Preferences = () => {
           'com.affine.settings.editorSettings.preferences.import.description'
         ]()}
       >
-        <Button>Import</Button>
+        <Button>{t['Import']()}</Button>
       </SettingRow>
     </SettingWrapper>
   );

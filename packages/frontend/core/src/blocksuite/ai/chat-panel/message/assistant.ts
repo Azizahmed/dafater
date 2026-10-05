@@ -2,6 +2,7 @@ import type { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import type { PeekViewService } from '@affine/core/modules/peek-view';
 import type { AppThemeService } from '@affine/core/modules/theme';
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { isInsidePageEditor } from '@blocksuite/affine/shared/utils';
 import {
@@ -113,7 +114,7 @@ export class ChatMessageAssistant extends WithDisposable(ShadowlessElement) {
       <chat-assistant-avatar .status=${this.status}></chat-assistant-avatar>
       ${
         isWithDocs
-          ? html`<span class="message-info">with your docs</span>`
+          ? html`<span class="message-info">${t('with your docs')}</span>`
           : nothing
       }
     </div>`;

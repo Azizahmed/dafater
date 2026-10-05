@@ -72,6 +72,83 @@ fn enabled_by_default() -> bool {
   true
 }
 
+/// Dafater: config keys of an OpenAI-compatible managed profile, i.e. an
+/// `openai` profile with a custom `baseURL` (OpenRouter, Ollama, LM Studio,
+/// vLLM, ...). The server administrator configures it from the app settings.
+pub(crate) const OPENAI_COMPATIBLE_DIALECTS: [&str; 2] = ["responses", "chat_completions"];
+
+impl CopilotManagedProfileConfig {
+  fn config_text(&self, field: &str) -> Option<&str> {
+    self
+      .config
+      .get(field)
+      .and_then(serde_json::Value::as_str)
+      .map(str::trim)
+      .filter(|value| !value.is_empty())
+  }
+
+  /// An `openai` profile pointing at a custom `baseURL`.
+  pub(crate) fn is_openai_compatible(&self) -> bool {
+    self.provider == "openai" && self.config_text("baseURL").is_some()
+  }
+
+  fn config_flag(&self, field: &str) -> bool {
+    self
+      .config
+      .get(field)
+      .and_then(serde_json::Value::as_bool)
+      .unwrap_or(false)
+  }
+
+  /// Whether the model behind an OpenAI-compatible profile accepts images.
+  pub(crate) fn vision(&self) -> bool {
+    self.config_flag("vision")
+  }
+
+  /// `config.dialect` for OpenAI profiles; defaults to Chat Completions for
+  /// custom endpoints (the widest-supported OpenAI-compatible API) and to the
+  /// Responses API for api.openai.com.
+  pub(crate) fn openai_dialect(&self) -> Option<llm_adapter::target::OpenAiDialect> {
+    use llm_adapter::target::OpenAiDialect;
+    if self.provider != "openai" {
+      return None;
+    }
+    Some(match self.config_text("dialect") {
+      Some("responses") => OpenAiDialect::Responses,
+      Some("chat_completions") => OpenAiDialect::ChatCompletions,
+      _ if self.is_openai_compatible() => OpenAiDialect::ChatCompletions,
+      _ => OpenAiDialect::Responses,
+    })
+  }
+
+  /// `config.allowPrivateNetwork` lets the administrator point the profile at
+  /// a provider on the local network (e.g. Ollama on localhost).
+  pub(crate) fn egress_policy(&self) -> llm_adapter::target::EgressPolicy {
+    if self.config_flag("allowPrivateNetwork") {
+      llm_adapter::target::EgressPolicy::AllowPrivate
+    } else {
+      llm_adapter::target::EgressPolicy::PublicOnly
+    }
+  }
+
+  /// The model sent upstream when this profile serves a built-in route:
+  /// `config.modelMap[builtIn] ?? config.defaultModel ?? models[0]`.
+  pub(crate) fn upstream_model(&self, built_in_model_id: Option<&str>) -> Option<&str> {
+    built_in_model_id
+      .and_then(|model_id| self.config.get("modelMap")?.get(model_id)?.as_str())
+      .map(str::trim)
+      .filter(|value| !value.is_empty())
+      .or_else(|| self.config_text("defaultModel"))
+      .or_else(|| {
+        self
+          .models
+          .first()
+          .map(|model| model.trim())
+          .filter(|value| !value.is_empty())
+      })
+  }
+}
+
 #[derive(Clone, Default, Deserialize, serde::Serialize, schemars::JsonSchema)]
 #[serde(rename_all = "camelCase", default)]
 pub(crate) struct CopilotRuntimeConfigFile {
@@ -118,8 +195,30 @@ struct CopilotManagedProviderSettingsFile {
   base_url: Option<String>,
   #[serde(skip_serializing_if = "Option::is_none")]
   google_auth_options: Option<CopilotGoogleAuthOptionsFile>,
+  /// OpenAI API style used with a custom `baseURL`.
+  #[serde(skip_serializing_if = "Option::is_none")]
+  dialect: Option<CopilotOpenAiDialectFile>,
+  /// Upstream model per built-in model id (OpenAI-compatible profiles).
+  #[serde(skip_serializing_if = "Option::is_none")]
+  model_map: Option<std::collections::BTreeMap<String, String>>,
+  /// Upstream model used for every built-in route (OpenAI-compatible profiles).
+  #[serde(skip_serializing_if = "Option::is_none")]
+  default_model: Option<String>,
+  /// Allow `baseURL` to resolve to a private/loopback address (Ollama, LM Studio).
+  #[serde(skip_serializing_if = "Option::is_none")]
+  allow_private_network: Option<bool>,
+  /// The upstream model accepts image input.
+  #[serde(skip_serializing_if = "Option::is_none")]
+  vision: Option<bool>,
   #[serde(flatten)]
   additional: Map<String, serde_json::Value>,
+}
+
+#[derive(Clone, Copy, Deserialize, serde::Serialize, schemars::JsonSchema)]
+#[serde(rename_all = "snake_case")]
+enum CopilotOpenAiDialectFile {
+  Responses,
+  ChatCompletions,
 }
 
 #[derive(Clone, Deserialize, serde::Serialize, schemars::JsonSchema)]
@@ -282,6 +381,8 @@ pub(in crate::runtime) fn validate_copilot_config(config: &CopilotRuntimeConfig)
         "managed copilot profile models must be non-empty",
       ));
     }
+    validate_openai_compatible_config(profile)?;
+    let openai_compatible = profile.is_openai_compatible();
     if profile.enabled {
       let required = MANAGED_PROFILE_REQUIREMENTS
         .iter()
@@ -289,6 +390,10 @@ pub(in crate::runtime) fn validate_copilot_config(config: &CopilotRuntimeConfig)
         .map(|(_, fields)| *fields)
         .ok_or_else(|| RuntimeError::invalid_state("unsupported managed copilot provider"))?;
       for field in required {
+        // Dafater: local OpenAI-compatible servers (Ollama, LM Studio) need no key.
+        if openai_compatible && *field == "apiKey" {
+          continue;
+        }
         if profile
           .config
           .get(*field)
@@ -325,8 +430,12 @@ pub(in crate::runtime) fn validate_copilot_config(config: &CopilotRuntimeConfig)
           "managed copilot profile models must be non-empty and unique",
         ));
       }
-      provider_default_capability_upper_bound(&profile.provider, model)
-        .ok_or_else(|| RuntimeError::invalid_state("managed copilot profile model is unsupported"))?;
+      // Dafater: OpenAI-compatible endpoints serve arbitrary model names, so
+      // their capabilities are synthesized at route time instead.
+      if !openai_compatible {
+        provider_default_capability_upper_bound(&profile.provider, model)
+          .ok_or_else(|| RuntimeError::invalid_state("managed copilot profile model is unsupported"))?;
+      }
       if profile.enabled
         && let Some(existing_profile) = managed_models.insert(model.as_str(), profile.id.as_str())
       {
@@ -335,6 +444,48 @@ pub(in crate::runtime) fn validate_copilot_config(config: &CopilotRuntimeConfig)
           profile.id
         )));
       }
+    }
+  }
+  Ok(())
+}
+
+/// Dafater: type checks for the OpenAI-compatible profile keys. The JSON
+/// schema covers the file/admin path; this also covers config that reached the
+/// runtime through other paths (e.g. `config.json`).
+fn validate_openai_compatible_config(profile: &CopilotManagedProfileConfig) -> RuntimeResult<()> {
+  let config = &profile.config;
+  if let Some(dialect) = config.get("dialect")
+    && !dialect
+      .as_str()
+      .is_some_and(|dialect| OPENAI_COMPATIBLE_DIALECTS.contains(&dialect))
+  {
+    return Err(RuntimeError::invalid_state(
+      "managed copilot profile dialect must be \"responses\" or \"chat_completions\"",
+    ));
+  }
+  if let Some(model_map) = config.get("modelMap")
+    && !model_map.as_object().is_some_and(|model_map| {
+      model_map
+        .values()
+        .all(|model| model.as_str().is_some_and(|model| !model.trim().is_empty()))
+    })
+  {
+    return Err(RuntimeError::invalid_state(
+      "managed copilot profile modelMap must map model ids to non-empty model names",
+    ));
+  }
+  if let Some(default_model) = config.get("defaultModel")
+    && !default_model.as_str().is_some_and(|model| !model.trim().is_empty())
+  {
+    return Err(RuntimeError::invalid_state(
+      "managed copilot profile defaultModel must be a non-empty string",
+    ));
+  }
+  for field in ["allowPrivateNetwork", "vision"] {
+    if config.get(field).is_some_and(|value| !value.is_boolean()) {
+      return Err(RuntimeError::invalid_state(format!(
+        "managed copilot profile {field} must be a boolean"
+      )));
     }
   }
   Ok(())

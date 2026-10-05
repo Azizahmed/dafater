@@ -91,8 +91,8 @@ export const capability = style({
   padding: '14px 16px',
   fontSize: cssVar('fontXs'),
   color: cssVarV2('text/secondary'),
-  borderRight: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
-  selectors: { '&:last-child': { borderRight: 0 } },
+  borderInlineEnd: `1px solid ${cssVarV2('layer/insideBorder/border')}`,
+  selectors: { '&:last-child': { borderInlineEnd: 0 } },
 });
 export const modal = style({
   width: 500,

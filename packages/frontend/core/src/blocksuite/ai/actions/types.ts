@@ -16,6 +16,7 @@ import type { AIEmbeddingStatus } from '../provider';
 import type { PromptKey } from '../provider/prompt';
 
 export const translateLangs = [
+  'Arabic',
   'English',
   'Brazilian Portuguese',
   'Spanish',

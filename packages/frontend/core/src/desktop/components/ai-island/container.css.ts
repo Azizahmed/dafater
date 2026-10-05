@@ -2,7 +2,7 @@ import { style } from '@vanilla-extract/css';
 
 export const islandContainer = style({
   position: 'absolute',
-  right: 16,
+  insetInlineEnd: 16,
   bottom: 16,
   zIndex: 1,
   display: 'flex',

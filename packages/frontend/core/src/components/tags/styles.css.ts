@@ -31,7 +31,7 @@ export const tagsMenu = style({
   padding: 0,
   position: 'relative',
   top: 'calc(-3.5px + var(--radix-popper-anchor-height) * -1)',
-  left: '-3.5px',
+  insetInlineStart: '-3.5px',
   width: 'calc(var(--radix-popper-anchor-width) + 16px)',
   overflow: 'hidden',
   minWidth: 400,

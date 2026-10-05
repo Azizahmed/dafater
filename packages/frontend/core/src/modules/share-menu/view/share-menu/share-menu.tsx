@@ -1,13 +1,8 @@
-import { Tabs, Tooltip, useConfirmModal } from '@affine/component';
+import { Tabs, Tooltip } from '@affine/component';
 import { Button } from '@affine/component/ui/button';
 import { Menu } from '@affine/component/ui/menu';
-import { ServerService } from '@affine/core/modules/cloud';
-import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
-import { WorkspacePermissionService } from '@affine/core/modules/permissions';
-import { WorkspaceQuotaService } from '@affine/core/modules/quota';
 import { ShareInfoService } from '@affine/core/modules/share-doc';
 import type { WorkspaceMetadata } from '@affine/core/modules/workspace';
-import { ServerDeploymentType, SubscriptionPlan } from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
 import type { Store } from '@blocksuite/affine/store';
 import { LockIcon, PublishIcon } from '@blocksuite/icons/rc';
@@ -18,7 +13,6 @@ import {
   type Ref,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 
@@ -50,77 +44,14 @@ export const ShareMenuContent = (props: ShareMenuProps) => {
   const t = useI18n();
   const [currentTab, setCurrentTab] = useState(ShareMenuTab.Share);
 
-  const serverService = useService(ServerService);
-  const isSelfhosted = useLiveData(
-    serverService.server.config$.selector(
-      c => c.type === ServerDeploymentType.Selfhosted
-    )
-  );
-  const workspaceQuotaService = useService(WorkspaceQuotaService);
-  const quota = useLiveData(workspaceQuotaService.quota.quota$);
-  const hittingPaywall = useMemo(() => {
-    if (isSelfhosted) {
-      return false;
-    }
-    if (quota) {
-      const { name } = quota;
-      return name.toLowerCase() === SubscriptionPlan.Free.toLowerCase();
-    }
-    return true;
-  }, [isSelfhosted, quota]);
-
-  const permissionService = useService(WorkspacePermissionService);
-  const isOwner = useLiveData(permissionService.permission.isOwner$);
-
-  const workspaceDialogService = useService(WorkspaceDialogService);
+  // Dafater has no plans: doc permissions are never behind a paywall, so the
+  // upstream "upgrade to Pro" paywall modal is never shown.
+  const hittingPaywall = false;
+  const openPaywallModal = useCallback(() => {}, []);
 
   const onValueChange = useCallback((value: string) => {
     setCurrentTab(value as ShareMenuTab);
   }, []);
-
-  useEffect(() => {
-    workspaceQuotaService.quota.revalidate();
-  }, [workspaceQuotaService]);
-
-  const { openConfirmModal } = useConfirmModal();
-
-  const onConfirm = useCallback(() => {
-    if (!isOwner) {
-      return;
-    }
-    workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
-    });
-    return;
-  }, [isOwner, workspaceDialogService]);
-
-  const openPaywallModal = useCallback(() => {
-    openConfirmModal({
-      title:
-        t[
-          `com.affine.share-menu.paywall.${isOwner ? 'owner' : 'member'}.title`
-        ](),
-      description:
-        t[
-          `com.affine.share-menu.paywall.${isOwner ? 'owner' : 'member'}.description`
-        ](),
-      confirmText:
-        t[
-          `com.affine.share-menu.paywall.${isOwner ? 'owner' : 'member'}.confirm`
-        ](),
-      onConfirm: onConfirm,
-      cancelText: t['Cancel'](),
-      cancelButtonOptions: {
-        style: {
-          visibility: isOwner ? 'visible' : 'hidden',
-        },
-      },
-      confirmButtonOptions: {
-        variant: isOwner ? 'primary' : 'custom',
-      },
-    });
-  }, [isOwner, onConfirm, openConfirmModal, t]);
 
   if (currentTab === ShareMenuTab.Members) {
     return (

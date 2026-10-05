@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import type { HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
 import { forwardRef, memo } from 'react';
 
+import { mirrorInRtl } from '../../../styles';
 import { IconButton } from '../../button';
 import * as styles from './calendar.css';
 import type { DateCell } from './types';
@@ -148,7 +149,7 @@ export const NavButtons = memo(function NavButtons({
         data-testid="date-picker-nav-prev"
         onClick={onPrev}
       >
-        <ArrowLeftSmallIcon />
+        <ArrowLeftSmallIcon className={mirrorInRtl} />
       </IconButton>
 
       {children ?? <div className={styles.headerNavGapFallback} />}
@@ -160,7 +161,7 @@ export const NavButtons = memo(function NavButtons({
         data-testid="date-picker-nav-next"
         onClick={onNext}
       >
-        <ArrowRightSmallIcon />
+        <ArrowRightSmallIcon className={mirrorInRtl} />
       </IconButton>
     </div>
   );

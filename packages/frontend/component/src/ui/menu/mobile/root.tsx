@@ -11,6 +11,7 @@ import {
   useState,
 } from 'react';
 
+import { mirrorInRtl } from '../../../styles';
 import { observeResize } from '../../../utils';
 import { Button } from '../../button';
 import { Modal } from '../../modal';
@@ -189,7 +190,7 @@ export const MobileMenu = ({
                   data-testid="mobile-menu-back-button"
                   variant="plain"
                   className={styles.backButton}
-                  prefix={<ArrowLeftSmallIcon />}
+                  prefix={<ArrowLeftSmallIcon className={mirrorInRtl} />}
                   onClick={() => {
                     removeSubMenu(sub.id);
                   }}

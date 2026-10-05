@@ -1,4 +1,5 @@
 import { Button } from '@affine/component';
+import { Trans, useI18n } from '@affine/i18n';
 import clsx from 'clsx';
 import { debounce } from 'lodash-es';
 import type { CSSProperties } from 'react';
@@ -36,6 +37,7 @@ export const EdgelessSwitch = ({
   onBack,
   onNext,
 }: EdgelessSwitchProps) => {
+  const t = useI18n();
   // const windowRef = useRef<HTMLDivElement>(null);
   const docRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -230,7 +232,7 @@ export const EdgelessSwitch = ({
                 size="extraLarge"
                 onClick={onBack}
               >
-                Back
+                {t['com.affine.backButton']()}
               </Button>
               <EdgelessSwitchButtons
                 mode={mode}
@@ -238,7 +240,7 @@ export const EdgelessSwitch = ({
                 onSwitchToEdgelessMode={onSwitchToEdgelessMode}
               />
               <Button size="extraLarge" variant="primary" onClick={onNextClick}>
-                Next
+                {t['com.affine.onboarding.next']()}
               </Button>
             </header>
 
@@ -256,11 +258,13 @@ export const EdgelessSwitch = ({
             <Logo />
           </div>
           <h1 className={clsx(styles.wellDoneTitle, styles.wellDoneEnterAnim)}>
-            Well Done !
+            {t['com.affine.onboarding.well-done.title']()}
           </h1>
           <p className={clsx(styles.wellDoneContent, styles.wellDoneEnterAnim)}>
-            You have the flexibility to switch between Page and Edgeless
-            <br /> Mode at any point during content creation.
+            <Trans
+              i18nKey="com.affine.onboarding.well-done.description"
+              components={{ br: <br /> }}
+            />
           </p>
           <Button
             className={styles.wellDoneEnterAnim}
@@ -269,7 +273,7 @@ export const EdgelessSwitch = ({
             size="extraLarge"
             style={{ marginTop: 40 }}
           >
-            Get Started
+            {t['com.affine.onboarding.get-started']()}
           </Button>
         </div>
       </div>

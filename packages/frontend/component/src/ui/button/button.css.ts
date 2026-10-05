@@ -179,7 +179,7 @@ export const button = style({
       height: '100%',
       position: 'absolute',
       top: 0,
-      left: 0,
+      insetInlineStart: 0,
       borderRadius: 'inherit',
       boxShadow: `0 0 0 1px ${cssVarV2('layer/insideBorder/primaryBorder')}`,
     },

@@ -8,12 +8,14 @@ export const headerTitleCell = style({
 export const tableHeader = style({
   display: 'flex',
   alignItems: 'center',
-  padding: '10px 6px 10px 16px',
+  paddingBlock: '10px 10px',
+  paddingInlineStart: '16px',
+  paddingInlineEnd: '6px',
   position: 'sticky',
   overflow: 'hidden',
   zIndex: 1,
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
   background: cssVar('backgroundPrimaryColor'),
   transition: 'box-shadow 0.2s ease-in-out',
   transform: 'translateY(-0.5px)', // fix sticky look through issue

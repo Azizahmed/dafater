@@ -1,4 +1,7 @@
-import { DefaultServerService } from '@affine/core/modules/cloud';
+import {
+  DefaultServerService,
+  getSelfHostedServerName,
+} from '@affine/core/modules/cloud';
 import { DesktopApiService } from '@affine/core/modules/desktop-api';
 import { WorkspacesService } from '@affine/core/modules/workspace';
 import {
@@ -78,8 +81,13 @@ export const Component = ({
   const createCloudWorkspace = useCallback(() => {
     if (createOnceRef.current) return;
     createOnceRef.current = true;
-    // TODO: support selfhosted
-    buildShowcaseWorkspace(workspacesService, 'affine-cloud', 'AFFiNE Cloud')
+    // the built-in Dafater server (internal id `affine-cloud`)
+    const server = defaultServerService.server;
+    buildShowcaseWorkspace(
+      workspacesService,
+      server.id,
+      getSelfHostedServerName(server.config$.value.serverName)
+    )
       .then(({ meta, defaultDocId }) => {
         if (defaultDocId) {
           jumpToPage(meta.id, defaultDocId);
@@ -88,7 +96,13 @@ export const Component = ({
         }
       })
       .catch(err => console.error('Failed to create cloud workspace', err));
-  }, [defaultIndexRoute, jumpToPage, openPage, workspacesService]);
+  }, [
+    defaultIndexRoute,
+    defaultServerService,
+    jumpToPage,
+    openPage,
+    workspacesService,
+  ]);
 
   useLayoutEffect(() => {
     if (!navigating) {

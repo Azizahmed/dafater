@@ -1,4 +1,5 @@
 import { toast } from '@affine/component';
+import { t } from '@blocksuite/affine/global/i18n';
 
 import type { ChatChip } from './type';
 
@@ -24,7 +25,11 @@ export async function addFilesToChat(
   await Promise.all(
     others.map(async file => {
       if (file.size > MAX_ATTACHMENT_SIZE) {
-        toast(`${file.name} is too large, please upload a file less than 50MB`);
+        toast(
+          t('{name} is too large, please upload a file less than 50MB', {
+            name: file.name,
+          })
+        );
         return;
       }
       await addChip({

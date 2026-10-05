@@ -6,7 +6,7 @@ const dotColor = createVar();
 export const root = style({
   position: 'absolute',
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
   width: '100%',
   height: '100%',
   pointerEvents: 'none',
@@ -19,7 +19,7 @@ export const dotBg = style({
   position: 'absolute',
   zIndex: -1,
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
   backgroundImage: `linear-gradient(to bottom, transparent 0%, ${bgColor} 90%),
      radial-gradient(${dotColor} 2px, transparent 2px),
      radial-gradient(${dotColor} 2px, transparent 2px)`,

@@ -5,6 +5,7 @@ import {
   InvalidOauthCallbackCode,
   InvalidOauthCallbackState,
   InvalidOauthResponse,
+  Mutex,
   OauthStateExpired,
   OnEvent,
   SignUpForbidden,
@@ -16,6 +17,7 @@ import type {
 } from '../../core/auth/session-issuer';
 import { BackendRuntimeProvider } from '../../core/backend-runtime';
 import { ServerFeature, ServerService } from '../../core/config';
+import { Models } from '../../models';
 import { OAuthProviderName } from './config';
 
 type NativeOAuthCallback =
@@ -40,7 +42,9 @@ export class OAuthService {
 
   constructor(
     private readonly runtime: BackendRuntimeProvider,
-    private readonly server: ServerService
+    private readonly server: ServerService,
+    private readonly models: Models,
+    private readonly mutex: Mutex
   ) {}
 
   get providers() {
@@ -96,10 +100,29 @@ export class OAuthService {
     clientNonce?: string;
     issue: SessionIssueInput;
   }) {
-    return await this.call<NativeOAuthCallback>({
+    const result = await this.call<NativeOAuthCallback>({
       action: 'oauth_callback',
       ...input,
     });
+    if (result.type === 'login' && result.created) {
+      await this.promoteFirstAccount(result.user.id);
+    }
+    return result;
+  }
+
+  /**
+   * Dafater: the first account on a server becomes its administrator, also
+   * when it is created by signing in with Google (or another provider).
+   */
+  private async promoteFirstAccount(userId: string) {
+    await using lock = await this.mutex.acquire('createFirstAdmin');
+    if (!lock) return;
+    if ((await this.models.user.count()) !== 1) return;
+    await this.models.userFeature.add(
+      userId,
+      'administrator',
+      'first account (oauth)'
+    );
   }
 
   private async call<T>(input: Record<string, unknown>) {

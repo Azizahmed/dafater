@@ -20,6 +20,12 @@ export class TableHotkeysController implements ReactiveController {
     return this.logic.ui$.value;
   }
 
+  /** Left and right arrows move visually, so they swap in RTL tables. */
+  private get rtl() {
+    const host = this.host;
+    return !!host && getComputedStyle(host).direction === 'rtl';
+  }
+
   private _handleDeleteOrBackspace() {
     const selection = this.selectionController.selection;
     if (!selection) {
@@ -217,7 +223,7 @@ export class TableHotkeysController implements ReactiveController {
           ) {
             return false;
           }
-          this.selectionController.focusToCell('left');
+          this.selectionController.focusToCell(this.rtl ? 'right' : 'left');
           context.get('keyboardState').raw.preventDefault();
           return true;
         },
@@ -230,7 +236,7 @@ export class TableHotkeysController implements ReactiveController {
           ) {
             return false;
           }
-          this.selectionController.focusToCell('right');
+          this.selectionController.focusToCell(this.rtl ? 'left' : 'right');
           context.get('keyboardState').raw.preventDefault();
           return true;
         },
@@ -316,7 +322,11 @@ export class TableHotkeysController implements ReactiveController {
             return false;
           }
 
-          this.selectionController.selectionAreaLeft();
+          if (this.rtl) {
+            this.selectionController.selectionAreaRight();
+          } else {
+            this.selectionController.selectionAreaLeft();
+          }
 
           context.get('keyboardState').raw.preventDefault();
           return true;
@@ -333,7 +343,11 @@ export class TableHotkeysController implements ReactiveController {
             return false;
           }
 
-          this.selectionController.selectionAreaRight();
+          if (this.rtl) {
+            this.selectionController.selectionAreaLeft();
+          } else {
+            this.selectionController.selectionAreaRight();
+          }
 
           context.get('keyboardState').raw.preventDefault();
           return true;

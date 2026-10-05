@@ -1,5 +1,6 @@
 import type { FrameBlockModel } from '@blocksuite/affine-model';
 import { createButtonPopper } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { LayerIcon } from '@blocksuite/icons/lit';
 import type { BlockComponent } from '@blocksuite/std';
@@ -48,7 +49,7 @@ export class EdgelessFrameOrderButton extends WithDisposable(LitElement) {
       <edgeless-tool-icon-button
         class="edgeless-frame-order-button"
         .iconSize=${'24px'}
-        .tooltip=${this.popperShow ? '' : 'Frame Order'}
+        .tooltip=${this.popperShow ? '' : t('Frame Order')}
         @click=${() => {
           if (readonly) return;
           this._edgelessFrameOrderPopper?.toggle();

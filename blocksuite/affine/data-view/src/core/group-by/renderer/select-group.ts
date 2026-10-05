@@ -3,6 +3,7 @@ import {
   popMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { css, html } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
@@ -64,7 +65,7 @@ export class SelectGroupView extends BaseGroup<
               height: '20px',
             });
             return menu.action({
-              name: name,
+              name: t(name),
               isSelected: this.tag?.color === color,
               prefix: html` <div style=${styles}></div>`,
               select: () => {
@@ -84,7 +85,9 @@ export class SelectGroupView extends BaseGroup<
   protected override render(): unknown {
     const tag = this.tag;
     if (!tag) {
-      const displayName = `No ${this.group.property.name$.value}`;
+      const displayName = t('No {name}', {
+        name: this.group.property.name$.value,
+      });
       return html` <div
         style="font-size: 14px;color: var(--affine-text-primary-color);line-height: 22px;"
       >

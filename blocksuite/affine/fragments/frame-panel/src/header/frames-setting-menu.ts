@@ -3,6 +3,7 @@ import {
   DocModeProvider,
   EditPropsStore,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import type { EditorHost } from '@blocksuite/std';
 import { css, html, LitElement, type PropertyValues } from 'lit';
@@ -132,10 +133,10 @@ export class FramesSettingMenu extends WithDisposable(LitElement) {
       }}
     >
       <div class="frames-setting-menu-item">
-        <div class="setting-label">Preview Settings</div>
+        <div class="setting-label">${t('Preview Settings')}</div>
       </div>
       <div class="frames-setting-menu-item action">
-        <div class="action-label">Fill Screen</div>
+        <div class="action-label">${t('Fill Screen')}</div>
         <div class="toggle-button">
           <toggle-switch
             .on=${this.fillScreen}
@@ -147,10 +148,10 @@ export class FramesSettingMenu extends WithDisposable(LitElement) {
       <menu-divider></menu-divider>
 
       <div class="frames-setting-menu-item">
-        <div class="setting-label">Playback Settings</div>
+        <div class="setting-label">${t('Playback Settings')}</div>
       </div>
       <div class="frames-setting-menu-item action">
-        <div class="action-label">Dark background</div>
+        <div class="action-label">${t('Dark background')}</div>
         <div class="toggle-button">
           <toggle-switch
             .on=${this.blackBackground}
@@ -159,7 +160,7 @@ export class FramesSettingMenu extends WithDisposable(LitElement) {
         </div>
       </div>
       <div class="frames-setting-menu-item action">
-        <div class="action-label">Hide toolbar</div>
+        <div class="action-label">${t('Hide toolbar')}</div>
         <div class="toggle-button">
           <toggle-switch
             .on=${this.hideToolbar}

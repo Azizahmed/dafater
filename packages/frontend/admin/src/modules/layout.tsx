@@ -206,7 +206,7 @@ export const LeftPanel = ({
           </Button>
         </SheetTrigger>
         <SheetHeader className="hidden">
-          <SheetTitle>AFFiNE</SheetTitle>
+          <SheetTitle>Dafater</SheetTitle>
           <SheetDescription>
             Admin panel for managing accounts, AI, config, and settings
           </SheetDescription>
@@ -223,7 +223,7 @@ export const LeftPanel = ({
               )}
             >
               <Logo />
-              AFFiNE
+              Dafater
             </div>
             <Separator />
             <Nav />
@@ -265,7 +265,7 @@ export const LeftPanel = ({
           >
             <Logo />
           </span>
-          {!isCollapsed && 'AFFiNE'}
+          {!isCollapsed && 'Dafater'}
         </div>
         <Nav isCollapsed={isCollapsed} />
       </div>

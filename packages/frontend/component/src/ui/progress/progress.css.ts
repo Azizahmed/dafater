@@ -29,7 +29,7 @@ export const sliderRoot = style({
   width: '100%',
   position: 'absolute',
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
 });
 
 export const thumb = style({
@@ -52,7 +52,7 @@ export const thumb = style({
 export const label = style({
   width: '40px',
   fontSize: cssVar('fontSm'),
-  textAlign: 'right',
+  textAlign: 'end',
 });
 
 export const indicator = style({
@@ -64,8 +64,8 @@ export const indicator = style({
   selectors: {
     [`${root}:hover &, &:has(${thumb}:is(:focus-visible, :focus-within, :active))`]:
       {
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
+        borderStartEndRadius: 0,
+        borderEndEndRadius: 0,
       },
     [`[data-state="complete"]&`]: {
       background: cssVarV2('status/success'),

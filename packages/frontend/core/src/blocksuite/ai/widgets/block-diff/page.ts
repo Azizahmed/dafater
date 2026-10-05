@@ -1,4 +1,5 @@
 import { track } from '@affine/track';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WidgetComponent, WidgetViewExtension } from '@blocksuite/affine/std';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import {
@@ -128,7 +129,7 @@ export class AffineBlockDiffWidgetForPage extends WidgetComponent {
               ${CloseIcon({
                 style: `color: ${unsafeCSSVarV2('icon/secondary')}`,
               })}
-              Reject all
+              ${t('Reject all')}
             </div>
             <div
               class="ai-block-diff-all-option"
@@ -137,7 +138,7 @@ export class AffineBlockDiffWidgetForPage extends WidgetComponent {
               ${DoneIcon({
                 style: `color: ${unsafeCSSVarV2('icon/activated')}`,
               })}
-              Accept all
+              ${t('Accept all')}
             </div>
           </div>
         `;

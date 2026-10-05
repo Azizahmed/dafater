@@ -48,7 +48,7 @@ export const descriptionStyle = style({
 
 export const IconButtonStyle = style({
   flexShrink: 0,
-  marginLeft: '8px',
+  marginInlineStart: '8px',
   fontSize: '20px',
   display: 'flex',
   alignItems: 'center',
@@ -58,7 +58,7 @@ export const IconButtonStyle = style({
 export const OwnerStyle = style({
   color: cssVarV2('text/secondary'),
   fontSize: cssVar('fontSm'),
-  marginLeft: '8px',
+  marginInlineStart: '8px',
 });
 
 export const avatarsContainerStyle = style({

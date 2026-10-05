@@ -1,4 +1,5 @@
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { EmbedIcon } from '@blocksuite/icons/lit';
 import { baseTheme } from '@toeverything/theme';
@@ -118,7 +119,7 @@ export class EmbedIframeIdleCard extends WithDisposable(LitElement) {
       <div class=${cardClasses} style=${cardStyle}>
         <span class="icon"> ${EmbedIcon()} </span>
         <span class="text">
-          Embed anything (Google Drive, Google Docs, Spotify, Miro…)
+          ${t('Embed anything (Google Drive, Google Docs, Spotify, Miro…)')}
         </span>
       </div>
     `;

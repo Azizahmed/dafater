@@ -87,11 +87,13 @@ export const MindMapSettings = () => {
       const isSelected = style === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {t['com.affine.settings.editorSettings.edgeless.mind-map.style-n']({
+            n: String(value),
+          })}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const getElements = useCallback((doc: Store) => {
     const surface = getSurfaceBlock(doc);
@@ -115,7 +117,11 @@ export const MindMapSettings = () => {
           items={styleItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {`Style ${settings.mindmap.style}`}
+              {t[
+                'com.affine.settings.editorSettings.edgeless.mind-map.style-n'
+              ]({
+                n: String(settings.mindmap.style),
+              })}
             </MenuTrigger>
           }
         />

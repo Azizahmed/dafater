@@ -9,3 +9,7 @@ export const compareByOrder = <T extends { order: string }>(
   a: T,
   b: T
 ): number => (a.order === b.order ? 0 : a.order > b.order ? 1 : -1);
+
+/** Whether the element is laid out right-to-left (an Arabic table). */
+export const isRtl = (element: Element): boolean =>
+  getComputedStyle(element).direction === 'rtl';

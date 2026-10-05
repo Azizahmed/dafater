@@ -38,8 +38,13 @@ export const switchStyle = style({
       height: dotSizeVar,
       borderRadius: '50%',
       top: '50%',
+      insetInlineStart: 0,
       background: cssVar('toggleCircleBackgroundColor'),
       transform: `translate(${switchPaddingVar}, -50%)`,
+    },
+    // The knob starts at the inline start and moves towards the inline end.
+    '&:dir(rtl):before': {
+      transform: `translate(calc(-1 * ${switchPaddingVar}), -50%)`,
     },
   },
 });
@@ -49,6 +54,9 @@ export const switchCheckedStyle = style({
     '&:before': {
       borderColor: cssVar('pureBlack10'),
       transform: `translate(calc(${switchHeightVar} - ${switchPaddingVar}), -50%)`,
+    },
+    '&:dir(rtl):before': {
+      transform: `translate(calc(${switchPaddingVar} - ${switchHeightVar}), -50%)`,
     },
   },
 });

@@ -10,6 +10,7 @@ import type { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import type { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import type { AppThemeService } from '@affine/core/modules/theme';
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { type NotificationService } from '@blocksuite/affine/shared/services';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -125,12 +126,12 @@ export class PlaygroundChat extends SignalWatcher(
       }
 
       .chat-panel-add {
-        margin-left: 8px;
-        margin-right: auto;
+        margin-inline-start: 8px;
+        margin-inline-end: auto;
       }
 
       .chat-panel-delete {
-        margin-left: 8px;
+        margin-inline-start: 8px;
         display: none;
       }
 
@@ -334,14 +335,14 @@ export class PlaygroundChat extends SignalWatcher(
           ${
             isSynchronizing
               ? html`<span data-testid="chat-panel-embedding-progress"
-                  >Synchronizing sources</span
+                  >${t('Synchronizing sources')}</span
                 >`
-              : 'AFFiNE AI'
+              : t('Dafater AI')
           }
         </div>
         <div class="chat-panel-add" @click=${this.addChat}>
           ${NewPageIcon()}
-          <affine-tooltip>Add chat</affine-tooltip>
+          <affine-tooltip>${t('Add chat')}</affine-tooltip>
         </div>
         <ai-history-clear
           .doc=${this.doc}

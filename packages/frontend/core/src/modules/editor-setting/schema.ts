@@ -51,6 +51,8 @@ const AffineEditorSettingSchema = z.object({
   // linux only:
   enableMiddleClickPaste: z.boolean().default(false),
   codeBlockLineNumbers: z.boolean().default(true),
+  // Ctrl + Right/Left Shift sets the paragraph direction (arabase).
+  textDirectionShortcut: z.boolean().default(true),
 });
 
 export const EditorSettingSchema = BSEditorSettingSchema.merge(

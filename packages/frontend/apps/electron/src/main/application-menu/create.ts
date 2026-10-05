@@ -36,7 +36,7 @@ export function createApplicationMenu() {
             label: app.name,
             submenu: [
               {
-                label: `About ${app.getName()}`,
+                label: 'About Dafater',
                 click: async () => {
                   await showMainWindow();
                   applicationMenuSubjects.openInSettingModal$.next({
@@ -249,37 +249,25 @@ export function createApplicationMenu() {
     {
       role: 'help',
       submenu: [
-        {
-          label: 'Learn More',
-          click: async () => {
-            // oxlint-disable-next-line no-var-requires
-            const { shell } = require('electron');
-            await shell.openExternal('https://affine.pro/');
-          },
-        },
+        // Dafater: no "Learn More" / "Documentation" links to AFFiNE's sites
         {
           label: 'Open log file',
           click: async () => {
             await revealLogFile();
           },
         },
-        {
-          label: 'Check for Updates',
-          click: async () => {
-            await initAndShowMainWindow();
-            await checkForUpdates();
-          },
-        },
-        {
-          label: 'Documentation',
-          click: async () => {
-            // oxlint-disable-next-line no-var-requires
-            const { shell } = require('electron');
-            await shell.openExternal(
-              'https://docs.affine.pro/docs/hello-bonjour-aloha-你好'
-            );
-          },
-        },
+        // "Check for Updates" only when the build has an update feed
+        ...(BUILD_CONFIG.enableUpdater
+          ? [
+              {
+                label: 'Check for Updates',
+                click: async () => {
+                  await initAndShowMainWindow();
+                  await checkForUpdates();
+                },
+              },
+            ]
+          : []),
       ],
     },
   ];

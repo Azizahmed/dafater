@@ -1,6 +1,7 @@
 import { DocDisplayMetaProvider } from '@blocksuite/affine-shared/services';
 import type { AffineTextAttributes } from '@blocksuite/affine-shared/types';
 import type { InsertToPosition } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { type DeltaInsert, Text } from '@blocksuite/store';
 import { computed, type ReadonlySignal, signal } from '@preact/signals-core';
 import { Doc } from 'yjs';
@@ -450,14 +451,14 @@ export class CalendarSingleView extends SingleViewBase<CalendarStoredViewData> {
   getDocDisplayTitle(docId: string) {
     return (
       this.manager.dataSource.serviceGet(DocDisplayMetaProvider)?.title(docId)
-        .value ?? 'Untitled'
+        .value ?? t('Untitled')
     );
   }
 
   createStartDateColumn() {
     const id = this.propertyAdd('end', {
       type: 'date',
-      name: 'Date',
+      name: t('Date'),
     });
     if (id) {
       this.setStartDateColumn(id);
@@ -472,7 +473,7 @@ export class CalendarSingleView extends SingleViewBase<CalendarStoredViewData> {
   createEndDateColumn() {
     const id = this.propertyAdd('end', {
       type: 'date',
-      name: 'End Date',
+      name: t('End Date'),
     });
     if (id) {
       this.setEndDateColumn(id);

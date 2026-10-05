@@ -102,7 +102,7 @@ struct NativeSignInView: View {
           .font(.system(size: 24, weight: .bold))
           .foregroundStyle(palette.primaryText)
       }
-      Text("AFFiNE Cloud")
+      Text("Dafater Cloud")
         .font(.system(size: 23, weight: .bold))
         .foregroundStyle(palette.primaryText)
     }
@@ -171,7 +171,7 @@ struct NativeSignInView: View {
       FooterLinkButton(systemName: "globe", title: "Connect to a Self-Hosted Instance", palette: palette) {
         viewModel.openSelfHosted()
       }
-      FooterLinkButton(systemName: "person.crop.square", title: "Start AFFiNE without an account", palette: palette) {
+      FooterLinkButton(systemName: "person.crop.square", title: "Start Dafater without an account", palette: palette) {
         viewModel.close()
       }
     }
@@ -277,7 +277,7 @@ struct NativeSignInView: View {
   private var legalText: some View {
     VStack(alignment: palette.usesDarkStyle ? .leading : .center, spacing: 3) {
       Text("By clicking \"Continue with Google/Email\" above, you")
-      Text("acknowledge that you agree to AFFiNE's")
+      Text("acknowledge that you agree to Dafater's")
       HStack(spacing: 3) {
         LegalLinkButton(title: "Terms of Conditions", palette: palette) {
           openLegalURL("https://affine.pro/terms")

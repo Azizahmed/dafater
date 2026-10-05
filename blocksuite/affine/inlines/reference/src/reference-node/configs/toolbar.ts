@@ -10,6 +10,7 @@ import {
   cloneReferenceInfoWithoutAliases,
   isInsideBlockByFlavour,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { DeleteIcon } from '@blocksuite/icons/lit';
 import { BlockSelection } from '@blocksuite/std';
 import { signal } from '@preact/signals-core';
@@ -37,7 +38,7 @@ export const builtinInlineReferenceToolbarConfig = {
 
         const originalTitle =
           ctx.std.get(DocDisplayMetaProvider).title(target.referenceInfo.pageId)
-            .value || 'Untitled';
+            .value || t('Untitled');
         const open = (event: MouseEvent) => target.open({ event });
 
         return html`<affine-linked-doc-title

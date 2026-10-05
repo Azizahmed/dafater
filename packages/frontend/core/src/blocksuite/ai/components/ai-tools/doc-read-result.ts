@@ -1,4 +1,5 @@
 import type { PeekViewService } from '@affine/core/modules/peek-view';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { PageIcon, ViewIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -33,9 +34,9 @@ interface DocReadToolResult {
 }
 
 const getFailedName = (result: ToolError | null) => {
-  return getToolErrorDisplayName(result, 'Document read failed', {
-    'Workspace Sync Required': 'Enable workspace sync to read this document',
-    'Document Sync Pending': 'Wait for document sync to finish',
+  return getToolErrorDisplayName(result, t('Document read failed'), {
+    'Workspace Sync Required': t('Enable workspace sync to read this document'),
+    'Document Sync Pending': t('Wait for document sync to finish'),
   });
 };
 
@@ -52,7 +53,7 @@ export class DocReadResult extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     // TODO: get document name by doc_id
     return html`<tool-call-card
-      .name=${`Reading document`}
+      .name=${t('Reading document')}
       .icon=${ViewIcon()}
       .width=${this.width}
     ></tool-call-card>`;
@@ -71,7 +72,7 @@ export class DocReadResult extends WithDisposable(ShadowlessElement) {
     }
     // TODO: better markdown rendering
     return html`<tool-result-card
-      .name=${`Read "${result.title}"`}
+      .name=${t('Read "{title}"', { title: result.title })}
       .icon=${ViewIcon()}
       .width=${this.width}
       .results=${[

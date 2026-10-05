@@ -1,3 +1,5 @@
+import { I18n } from '@affine/i18n';
+
 export type WebImportLimits = {
   maxTotalBytes: number;
   maxEntryBytes: number;
@@ -27,14 +29,14 @@ export async function preflightWebZipImport(
 ) {
   if (file.size > limits.maxTotalBytes) {
     throw new WebImportLimitError(
-      'This import is too large for the web app. Please import it in the desktop client.'
+      I18n['com.affine.import.web-limit.too-large']()
     );
   }
 
   const entries = readZipDirectory(new Uint8Array(await file.arrayBuffer()));
   if (entries.length > limits.maxEntryCount) {
     throw new WebImportLimitError(
-      'This import has too many files for the web app. Please import it in the desktop client.'
+      I18n['com.affine.import.web-limit.too-many-files']()
     );
   }
 
@@ -43,14 +45,14 @@ export async function preflightWebZipImport(
   ).length;
   if (documentCount > limits.maxDocumentCount) {
     throw new WebImportLimitError(
-      'This import has too many documents for the web app. Please import it in the desktop client.'
+      I18n['com.affine.import.web-limit.too-many-documents']()
     );
   }
 
   for (const entry of entries) {
     if (entry.uncompressedSize > limits.maxEntryBytes) {
       throw new WebImportLimitError(
-        'This import contains a file that is too large for the web app. Please import it in the desktop client.'
+        I18n['com.affine.import.web-limit.file-too-large']()
       );
     }
     if (
@@ -58,7 +60,7 @@ export async function preflightWebZipImport(
       entry.name.toLowerCase().endsWith('.zip')
     ) {
       throw new WebImportLimitError(
-        'This import contains a nested zip. Please import it in the desktop client.'
+        I18n['com.affine.import.web-limit.nested-zip']()
       );
     }
   }
@@ -71,12 +73,12 @@ export async function preflightWebFilesImport(
   const totalBytes = files.reduce((total, file) => total + file.size, 0);
   if (totalBytes > limits.maxTotalBytes) {
     throw new WebImportLimitError(
-      'This import is too large for the web app. Please import it in the desktop client.'
+      I18n['com.affine.import.web-limit.too-large']()
     );
   }
   if (files.length > limits.maxEntryCount) {
     throw new WebImportLimitError(
-      'This import has too many files for the web app. Please import it in the desktop client.'
+      I18n['com.affine.import.web-limit.too-many-files']()
     );
   }
 
@@ -84,13 +86,13 @@ export async function preflightWebFilesImport(
   for (const file of files) {
     if (file.size > limits.maxEntryBytes) {
       throw new WebImportLimitError(
-        'This import contains a file that is too large for the web app. Please import it in the desktop client.'
+        I18n['com.affine.import.web-limit.file-too-large']()
       );
     }
     const path = file.webkitRelativePath || file.name;
     if (path.toLowerCase().endsWith('.zip')) {
       throw new WebImportLimitError(
-        'This import contains a nested zip. Please import it in the desktop client.'
+        I18n['com.affine.import.web-limit.nested-zip']()
       );
     }
     if (isWebImportDocument(path)) {
@@ -99,7 +101,7 @@ export async function preflightWebFilesImport(
   }
   if (documentCount > limits.maxDocumentCount) {
     throw new WebImportLimitError(
-      'This import has too many documents for the web app. Please import it in the desktop client.'
+      I18n['com.affine.import.web-limit.too-many-documents']()
     );
   }
 }

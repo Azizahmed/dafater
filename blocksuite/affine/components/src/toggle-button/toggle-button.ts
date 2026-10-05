@@ -23,8 +23,7 @@ export class ToggleButton extends WithDisposable(ShadowlessElement) {
       width: 16px;
       height: 16px;
       top: calc((1em - 16px) / 2 + 5px);
-      left: 0;
-      transform: translateX(-100%);
+      inset-inline-end: 100%;
       border-radius: 4px;
       cursor: pointer;
       opacity: 0;
@@ -59,6 +58,11 @@ export class ToggleButton extends WithDisposable(ShadowlessElement) {
       svg {
         color: ${unsafeCSSVarV2('icon/primary', '#77757D')};
       }
+    }
+
+    /* The collapsed chevron points to the inline end. */
+    .toggle-icon:dir(rtl) svg {
+      transform: scaleX(-1);
     }
   `;
 

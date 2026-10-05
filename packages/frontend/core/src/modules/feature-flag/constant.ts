@@ -105,8 +105,6 @@ export const AFFINE_FLAGS = {
       'com.affine.settings.workspace.experimental-features.enable-emoji-folder-icon.description',
 
     feedbackType: 'discord',
-    feedbackLink:
-      'https://discord.com/channels/959027316334407691/1280014319865696351/1280014319865696351',
     configurable: false,
     defaultState: true,
   },
@@ -117,8 +115,6 @@ export const AFFINE_FLAGS = {
     description:
       'com.affine.settings.workspace.experimental-features.enable-emoji-doc-icon.description',
     feedbackType: 'discord',
-    feedbackLink:
-      'https://discord.com/channels/959027316334407691/1280014319865696351',
     configurable: false,
     defaultState: true,
   },
@@ -188,43 +184,41 @@ export const AFFINE_FLAGS = {
     configurable: !isMobile,
     defaultState: true,
   },
-  enable_editor_rtl: {
-    category: 'affine',
-    displayName:
-      'com.affine.settings.workspace.experimental-features.enable-editor-rtl.name',
-    description:
-      'com.affine.settings.workspace.experimental-features.enable-editor-rtl.description',
-    configurable: isCanaryBuild,
-    defaultState: false,
-  },
   enable_mobile_ai_button: {
     category: 'affine',
-    displayName: 'Enable AI Button',
-    description: 'Enable AI Button on mobile',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-mobile-ai-button.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-mobile-ai-button.description',
     configurable: isMobile && isIOS,
     defaultState: isMobile && isIOS,
   },
   enable_mermaid_wasm_native_renderer: {
     category: 'affine',
-    displayName: 'Enable Native Mermaid Renderer',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-mermaid-native-renderer.name',
     description:
-      'Use the new Mermaid renderer backend. Web uses WASM, desktop uses native, and mobile always uses native. The native renderer is more than 10x faster, but its styling/aesthetic quality and the types of graphics it supports are not as good as the JS version.',
+      'com.affine.settings.workspace.experimental-features.enable-mermaid-native-renderer.description',
     configurable: !isIOS && !isAndroid,
     defaultState: isIOS || isAndroid,
   },
   enable_turbo_renderer: {
     category: 'blocksuite',
     bsFlag: 'enable_turbo_renderer',
-    displayName: 'Enable Turbo Renderer',
-    description: 'Enable experimental edgeless turbo renderer',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-turbo-renderer.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-turbo-renderer.description',
     configurable: isCanaryBuild,
     defaultState: false,
   },
   enable_dom_renderer: {
     category: 'blocksuite',
     bsFlag: 'enable_dom_renderer',
-    displayName: 'Enable DOM Renderer',
-    description: 'Enable DOM renderer for graphics elements',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-dom-renderer.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-dom-renderer.description',
     configurable: true,
     defaultState: false,
   },
@@ -250,8 +244,10 @@ export const AFFINE_FLAGS = {
   },
   enable_setting_subpage_animation: {
     category: 'affine',
-    displayName: 'Enable Setting Subpage Animation',
-    description: 'Apply animation for setting subpage open/close',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-setting-subpage-animation.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-setting-subpage-animation.description',
     configurable: isCanaryBuild,
     defaultState: false,
   },
@@ -266,16 +262,19 @@ export const AFFINE_FLAGS = {
   },
   enable_view_analytics_panel: {
     category: 'affine',
-    displayName: 'Enable View Analytics Panel',
-    description: 'Show the View analytics tab in the right sidebar.',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-view-analytics-panel.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-view-analytics-panel.description',
     configurable: true,
     defaultState: false,
   },
   enable_two_step_journal_confirmation: {
     category: 'affine',
-    displayName: 'Enable Two Step Journal Confirmation',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-two-step-journal-confirmation.name',
     description:
-      'When enabled, you must confirm the journal before you can create a new journal.',
+      'com.affine.settings.workspace.experimental-features.enable-two-step-journal-confirmation.description',
     configurable: isCanaryBuild,
     defaultState: isCanaryBuild,
   },
@@ -290,33 +289,39 @@ export const AFFINE_FLAGS = {
   },
   enable_battery_save_mode: {
     category: 'affine',
-    displayName: 'Enable Battery Save Mode (Require Restart)',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-battery-save-mode.name',
     description:
-      'Limit indexing and other compute-intensive tasks on this device, may experience longer loading time and latency in search and other features, in exchange for quietness.',
+      'com.affine.settings.workspace.experimental-features.enable-battery-save-mode.description',
     configurable: true,
     defaultState: isMobile,
   },
   enable_disk_sync: {
     category: 'affine',
-    displayName: 'Enable Disk Markdown Sync',
-    description: 'Sync workspace pages with Markdown files in a local folder.',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-disk-sync.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-disk-sync.description',
     configurable: BUILD_CONFIG.isElectron && isCanaryBuild,
     defaultState: false,
   },
   enable_mobile_database_editing: {
     category: 'blocksuite',
     bsFlag: 'enable_mobile_database_editing',
-    displayName: 'Enable Mobile Database Editing',
-    description: 'Enable mobile database editing',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-mobile-database-editing.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-mobile-database-editing.description',
     configurable: isMobile,
     defaultState: false,
   },
   enable_pdfmake_export: {
     category: 'blocksuite',
     bsFlag: 'enable_pdfmake_export',
-    displayName: 'Enable PDF Export',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-pdfmake-export.name',
     description:
-      'Experimental export PDFs support, it may contain the wrong style.',
+      'com.affine.settings.workspace.experimental-features.enable-pdfmake-export.description',
     configurable: true,
     defaultState: false,
   },

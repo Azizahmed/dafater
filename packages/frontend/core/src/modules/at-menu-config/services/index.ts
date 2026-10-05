@@ -487,7 +487,7 @@ export class AtMenuConfigService extends Service {
                     actions: [
                       {
                         key: 'invite',
-                        label: 'Invite',
+                        label: I18n['Invite'](),
                         onClick: async () => {
                           track.$.sharePanel.$.inviteUserDocRole({
                             control: 'member list',
@@ -553,7 +553,7 @@ export class AtMenuConfigService extends Service {
 
     const inviteItem: LinkedMenuItem = {
       key: 'invite',
-      name: 'Invite...',
+      name: I18n['com.affine.editor.at-menu.invite'](),
       icon: UserIcon(),
       action: () => {
         close();

@@ -15,7 +15,7 @@ struct ShareExtensionView: View {
           content
         }
       }
-      .navigationTitle("AFFiNE")
+      .navigationTitle("Dafater")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .cancellationAction) {
@@ -38,7 +38,7 @@ struct ShareExtensionView: View {
   private var content: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 20) {
-        Text("Choose a workspace in AFFiNE. This item will stay saved until then.")
+        Text("Choose a workspace in Dafater. This item will stay saved until then.")
           .font(.footnote)
           .foregroundStyle(.secondary)
 

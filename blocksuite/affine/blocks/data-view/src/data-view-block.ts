@@ -34,6 +34,7 @@ import {
   uniMap,
 } from '@blocksuite/data-view';
 import { widgetPresets } from '@blocksuite/data-view/widget-presets';
+import { t } from '@blocksuite/global/i18n';
 import { MoreHorizontalIcon } from '@blocksuite/icons/lit';
 import { type BlockComponent } from '@blocksuite/std';
 import { RANGE_SYNC_EXCLUDE_ATTR } from '@blocksuite/std/inline';
@@ -96,14 +97,14 @@ export class DataViewBlockComponent extends CaptionedBlockComponent<DataViewBloc
         items: [
           menu.input({
             initialValue: this.model.props.title,
-            placeholder: 'Untitled',
+            placeholder: t('Untitled'),
             onChange: text => {
               this.model.props.title = text;
             },
           }),
           menu.action({
             prefix: CopyIcon,
-            name: 'Copy',
+            name: t('Copy'),
             select: () => {
               const slice = Slice.fromModels(this.store, [this.model]);
               this.std.clipboard.copySlice(slice).catch(console.error);
@@ -117,7 +118,7 @@ export class DataViewBlockComponent extends CaptionedBlockComponent<DataViewBloc
                 class: {
                   'delete-item': true,
                 },
-                name: 'Delete Database',
+                name: t('Delete Database'),
                 select: () => {
                   this.model.children.slice().forEach(block => {
                     this.store.deleteBlock(block);

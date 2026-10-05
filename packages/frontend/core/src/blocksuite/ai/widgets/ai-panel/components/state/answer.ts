@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import type { EditorHost } from '@blocksuite/affine/std';
 import { baseTheme } from '@toeverything/theme';
@@ -85,7 +86,7 @@ export class AIPanelAnswer extends WithDisposable(LitElement) {
     const responseGroup = filterAIItemGroup(this.host, this.config.responses);
     return html`
       <div class="answer">
-        <div class="answer-head">Answer</div>
+        <div class="answer-head">${t('Answer')}</div>
         <div class="answer-body" data-testid="answer-content">
           <slot></slot>
         </div>

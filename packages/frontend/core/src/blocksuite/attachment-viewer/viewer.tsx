@@ -1,4 +1,5 @@
 import { IconButton, Menu, MenuItem } from '@affine/component';
+import { useI18n } from '@affine/i18n';
 import type { AttachmentBlockModel } from '@blocksuite/affine/model';
 import {
   //EditIcon,
@@ -23,13 +24,15 @@ const items = [
   */
   {
     name: 'Download',
+    i18nKey: 'com.affine.attachment.download',
     icon: <LocalDataIcon />,
     action: download,
   },
 ];
 
-export const MenuItems = ({ model }: { model: AttachmentBlockModel }) =>
-  items.map(({ name, icon, action }) => (
+export const MenuItems = ({ model }: { model: AttachmentBlockModel }) => {
+  const t = useI18n();
+  return items.map(({ name, i18nKey, icon, action }) => (
     <MenuItem
       key={name}
       onClick={() => {
@@ -37,9 +40,10 @@ export const MenuItems = ({ model }: { model: AttachmentBlockModel }) =>
       }}
       prefixIcon={icon}
     >
-      {name}
+      {t.t(i18nKey)}
     </MenuItem>
   ));
+};
 
 export interface TitlebarProps {
   model: AttachmentBlockModel;

@@ -1,4 +1,5 @@
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
 import { ShadowlessElement } from '@blocksuite/affine/std';
@@ -9,7 +10,6 @@ import { repeat } from 'lit/directives/repeat.js';
 
 import type { AIChatRuntime, AIChatSnapshot } from '../../runtime/chat';
 
-const DEFAULT_TAB_TITLE = 'New chat';
 const TITLE_MAX_LENGTH = 28;
 
 type RenderTabItem =
@@ -26,7 +26,7 @@ function deriveTabTitle(session: CopilotChatHistoryFragment): string {
   if (explicit) return truncate(explicit);
   const firstUserMessage = session.messages?.find(m => m.role === 'user');
   const raw = firstUserMessage?.content?.trim();
-  if (!raw) return DEFAULT_TAB_TITLE;
+  if (!raw) return t('New chat');
   const newlineIdx = raw.indexOf('\n');
   return truncate(newlineIdx === -1 ? raw : raw.slice(0, newlineIdx));
 }
@@ -77,7 +77,8 @@ export class AIChatTabs extends WithDisposable(ShadowlessElement) {
       flex-shrink: 0;
       max-width: 180px;
       height: 26px;
-      padding: 0 6px 0 10px;
+      padding-block: 0;
+      padding-inline: 10px 6px;
       border-radius: 6px;
       cursor: pointer;
       color: ${unsafeCSSVarV2('text/secondary')};
@@ -178,7 +179,9 @@ export class AIChatTabs extends WithDisposable(ShadowlessElement) {
     if (el.scrollWidth <= el.clientWidth) return;
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       e.preventDefault();
-      el.scrollLeft += e.deltaY;
+      // RTL scrollLeft runs from 0 towards negative values.
+      const isRtl = getComputedStyle(el).direction === 'rtl';
+      el.scrollLeft += isRtl ? -e.deltaY : e.deltaY;
     }
   };
 
@@ -194,11 +197,11 @@ export class AIChatTabs extends WithDisposable(ShadowlessElement) {
         title=${title}
         @click=${() => this._handleSelect(session.sessionId)}
       >
-        <span class="tab-title">${title}</span>
+        <span class="tab-title" dir="auto">${title}</span>
         <button
           class="tab-close"
           data-testid="ai-chat-tab-close"
-          aria-label="Close tab"
+          aria-label=${t('Close tab')}
           @click=${(e: Event) => this._handleClose(e, session.sessionId)}
         >
           ${CloseIcon()}
@@ -215,9 +218,9 @@ export class AIChatTabs extends WithDisposable(ShadowlessElement) {
         data-kind="draft"
         data-active=${active}
         data-testid="ai-chat-draft-tab"
-        title=${DEFAULT_TAB_TITLE}
+        title=${t('New chat')}
       >
-        <span class="tab-title">${DEFAULT_TAB_TITLE}</span>
+        <span class="tab-title">${t('New chat')}</span>
       </div>
     `;
   }

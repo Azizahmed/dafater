@@ -4,6 +4,7 @@ import { useGuard } from '@affine/core/components/guard';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
 import { DocService, DocsService } from '@affine/core/modules/doc';
 import { WorkspaceService } from '@affine/core/modules/workspace';
+import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
 import { useLiveData, useService } from '@toeverything/infra';
 import clsx from 'clsx';
@@ -22,6 +23,7 @@ const inputAttrs = {
 } as HTMLAttributes<HTMLInputElement>;
 export const BlocksuiteHeaderTitle = (props: BlockSuiteHeaderTitleProps) => {
   const { inputHandleRef } = props;
+  const t = useI18n();
   const workspaceService = useService(WorkspaceService);
   const isSharedMode = workspaceService.workspace.openOptions.isSharedMode;
   const docsService = useService(DocsService);
@@ -45,7 +47,7 @@ export const BlocksuiteHeaderTitle = (props: BlockSuiteHeaderTitleProps) => {
       onChange={onChange}
       editable={!isSharedMode && canEdit}
       exitible={true}
-      placeholder="Untitled"
+      placeholder={t['Untitled']()}
       data-testid="title-edit-button"
       handleRef={inputHandleRef}
       inputAttrs={inputAttrs}

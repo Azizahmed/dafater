@@ -157,7 +157,7 @@ export const PageWidthGroupHeader = ({
         ? t[
             'com.affine.settings.editorSettings.page.default-page-width.standard'
           ]()
-        : 'Default';
+        : t['com.affine.all-docs.group.default']();
 
   return (
     <PlainTextDocGroupHeader groupId={groupId} docCount={docCount}>

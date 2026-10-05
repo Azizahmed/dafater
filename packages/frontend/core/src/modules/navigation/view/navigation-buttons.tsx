@@ -1,4 +1,4 @@
-import { IconButton } from '@affine/component';
+import { IconButton, mirrorInRtl } from '@affine/component';
 import { useI18n } from '@affine/i18n';
 import { ArrowLeftSmallIcon, ArrowRightSmallIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
@@ -64,7 +64,7 @@ const ElectronNavigationButtons = () => {
         onClick={handleBack}
         size={24}
       >
-        <ArrowLeftSmallIcon />
+        <ArrowLeftSmallIcon className={mirrorInRtl} />
       </IconButton>
       <IconButton
         tooltip={t['Go Forward']()}
@@ -76,7 +76,7 @@ const ElectronNavigationButtons = () => {
         onClick={handleForward}
         size={24}
       >
-        <ArrowRightSmallIcon />
+        <ArrowRightSmallIcon className={mirrorInRtl} />
       </IconButton>
     </div>
   );

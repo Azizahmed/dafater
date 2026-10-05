@@ -146,7 +146,7 @@ export const SystemPropertyTypes = {
   },
   shared: {
     icon: CloudWorkspaceIcon,
-    name: 'Shared',
+    name: 'com.affine.filter.is-public',
     filterMethod: {
       is: 'com.affine.filter.is',
     },

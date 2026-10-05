@@ -370,7 +370,7 @@ export const WorkspacePropertyTypes = {
   },
   unknown: {
     icon: PropertyIcon,
-    name: 'Unknown',
+    name: 'com.affine.page-properties.property.unknown',
     renameable: false,
   },
 } as {

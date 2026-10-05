@@ -1,4 +1,5 @@
 import { stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { ViewBarIcon } from '@blocksuite/icons/lit';
 import type { BlockStdScope } from '@blocksuite/std';
@@ -124,7 +125,7 @@ export class MobileZoomRuler extends WithDisposable(LitElement) {
         <span class="divider"></span>
         <button
           class="fit-button"
-          aria-label="Fit to screen"
+          aria-label=${t('Fit to screen')}
           ?disabled=${locked}
           @click=${() => this.gfx.fitToScreen()}
         >

@@ -5,6 +5,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import {
   DeleteIcon,
@@ -64,22 +65,24 @@ export class MobileTableColumnHeader extends SignalWatcher(
   };
 
   private popMenu(ele?: HTMLElement) {
+    // "Before" is on the right in a right-to-left table.
+    const rtl = getComputedStyle(this).direction === 'rtl';
     popMenu(popupTargetFromElement(ele ?? this), {
       options: {
         title: {
-          text: 'Property settings',
+          text: t('Property settings'),
         },
         items: [
           inputConfig(this.column),
           typeConfig(this.column),
           // Number format begin
           menu.subMenu({
-            name: 'Number Format',
+            name: t('Number Format'),
             hide: () =>
               !this.column.dataUpdate || this.column.type$.value !== 'number',
             options: {
               title: {
-                text: 'Number Format',
+                text: t('Number Format'),
               },
               items: [
                 numberFormatConfig(this.column),
@@ -91,7 +94,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
                       style="font-size: var(--affine-font-base); scale: 1.2;"
                       >${format.symbol}</span
                     >`,
-                    name: format.label,
+                    name: t(format.label),
                     select: () => {
                       if (data.format === format.type) return;
                       this.column.dataUpdate(() => ({
@@ -107,7 +110,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Hide In View',
+                name: t('Hide In View'),
                 prefix: ViewIcon(),
                 hide: () => !this.column.hideCanSet,
                 select: () => {
@@ -119,8 +122,8 @@ export class MobileTableColumnHeader extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Insert Left Column',
-                prefix: InsertLeftIcon(),
+                name: rtl ? t('Insert Right Column') : t('Insert Left Column'),
+                prefix: rtl ? InsertRightIcon() : InsertLeftIcon(),
                 select: () => {
                   this.tableViewManager.propertyAdd({
                     id: this.column.id,
@@ -142,8 +145,8 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Insert Right Column',
-                prefix: InsertRightIcon(),
+                name: rtl ? t('Insert Left Column') : t('Insert Right Column'),
+                prefix: rtl ? InsertLeftIcon() : InsertRightIcon(),
                 select: () => {
                   this.tableViewManager.propertyAdd({
                     id: this.column.id,
@@ -164,8 +167,8 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Move Left',
-                prefix: MoveLeftIcon(),
+                name: rtl ? t('Move Right') : t('Move Left'),
+                prefix: rtl ? MoveRightIcon() : MoveLeftIcon(),
                 hide: () => this.column.isFirst$.value,
                 select: () => {
                   const pre = this.column.prev$.value;
@@ -179,8 +182,8 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Move Right',
-                prefix: MoveRightIcon(),
+                name: rtl ? t('Move Left') : t('Move Right'),
+                prefix: rtl ? MoveLeftIcon() : MoveRightIcon(),
                 hide: () => this.column.isLast$.value,
                 select: () => {
                   const next = this.column.next$.value;
@@ -198,7 +201,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Duplicate',
+                name: t('Duplicate'),
                 prefix: DuplicateIcon(),
                 hide: () => !this.column.canDuplicate,
                 select: () => {
@@ -206,7 +209,7 @@ export class MobileTableColumnHeader extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Delete',
+                name: t('Delete'),
                 prefix: DeleteIcon(),
                 hide: () => !this.column.canDelete,
                 select: () => {

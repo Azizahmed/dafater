@@ -67,6 +67,10 @@ export const embedCardModalStyles = css`
     padding-top: 4px;
     padding-bottom: 4px;
   }
+  /* URLs are always left-to-right; the placeholder follows the UI. */
+  input.embed-card-modal-input.link:not(:placeholder-shown) {
+    direction: ltr;
+  }
   textarea.embed-card-modal-input {
     padding-top: 6px;
     padding-bottom: 6px;

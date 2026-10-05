@@ -1,6 +1,7 @@
 import { renderMermaidSvg } from '@affine/core/modules/code-block-preview-renderer/bridge';
 import type { MermaidRenderTheme } from '@affine/core/modules/mermaid/renderer';
 import { CodeBlockPreviewExtension } from '@blocksuite/affine/blocks/code';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import type { CodeBlockModel } from '@blocksuite/affine/model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -102,7 +103,7 @@ export class MermaidPreview extends SignalWatcher(
     .mermaid-controls {
       position: absolute;
       top: 8px;
-      right: 8px;
+      inset-inline-end: 8px;
       display: flex;
       gap: 4px;
       z-index: 10;
@@ -140,7 +141,7 @@ export class MermaidPreview extends SignalWatcher(
     .mermaid-scale-info {
       position: absolute;
       bottom: 8px;
-      left: 8px;
+      inset-inline-start: 8px;
       background: ${unsafeCSSVarV2('layer/background/overlayPanel')};
       border: 1px solid ${unsafeCSSVarV2('layer/insideBorder/border')};
       border-radius: 4px;
@@ -438,11 +439,13 @@ export class MermaidPreview extends SignalWatcher(
             'loading',
             () =>
               html`<div class="mermaid-preview-loading">
-                <div style="text-align: center; padding: 20px;">
+                <div dir="auto" style="text-align: center; padding: 20px;">
                   <div style="margin-bottom: 8px;">
-                    Rendering Mermaid diagram...
+                    ${t('Rendering Mermaid diagram...')}
                   </div>
-                  <div style="font-size: 10px; opacity: 0.6;">Please wait</div>
+                  <div style="font-size: 10px; opacity: 0.6;">
+                    ${t('Please wait')}
+                  </div>
                 </div>
               </div>`,
           ],
@@ -450,12 +453,12 @@ export class MermaidPreview extends SignalWatcher(
             'error',
             () =>
               html`<div class="mermaid-preview-error">
-                <div style="text-align: center; padding: 20px;">
+                <div dir="auto" style="text-align: center; padding: 20px;">
                   <div style="margin-bottom: 8px;">
-                    Failed to render diagram
+                    ${t('Failed to render diagram')}
                   </div>
                   <div style="font-size: 10px; opacity: 0.6;">
-                    Please check if your Mermaid code has syntax errors
+                    ${t('Please check if your Mermaid code has syntax errors')}
                   </div>
                 </div>
               </div>`,
@@ -464,10 +467,12 @@ export class MermaidPreview extends SignalWatcher(
             'fallback',
             () =>
               html`<div class="mermaid-preview-fallback">
-                <div style="text-align: center; padding: 20px;">
-                  <div style="margin-bottom: 8px;">Mermaid preview feature</div>
+                <div dir="auto" style="text-align: center; padding: 20px;">
+                  <div style="margin-bottom: 8px;">
+                    ${t('Mermaid preview feature')}
+                  </div>
                   <div style="font-size: 10px; opacity: 0.6;">
-                    This feature is not supported in your browser
+                    ${t('This feature is not supported in your browser')}
                   </div>
                 </div>
               </div>`,
@@ -498,21 +503,21 @@ export class MermaidPreview extends SignalWatcher(
                     <button
                       class="mermaid-control-button"
                       @click=${this._zoomIn}
-                      title="Zoom in"
+                      title=${t('Zoom in')}
                     >
                       +
                     </button>
                     <button
                       class="mermaid-control-button"
                       @click=${this._zoomOut}
-                      title="Zoom out"
+                      title=${t('Zoom out')}
                     >
                       −
                     </button>
                     <button
                       class="mermaid-control-button"
                       @click=${this._resetTransform}
-                      title="Reset view"
+                      title=${t('Reset view')}
                     >
                       ⟳
                     </button>

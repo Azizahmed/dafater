@@ -3,6 +3,7 @@ import {
   popFilterableSimpleMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import {
   PlusIcon,
@@ -65,7 +66,7 @@ const styles = css`
 
   .data-view-table-group-add-row-button {
     position: sticky;
-    left: ${8 + LEFT_TOOL_BAR_WIDTH}px;
+    inset-inline-start: ${8 + LEFT_TOOL_BAR_WIDTH}px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -175,7 +176,7 @@ export class TableGroup extends SignalWatcher(
     const ele = e.currentTarget as HTMLElement;
     popFilterableSimpleMenu(popupTargetFromElement(ele), [
       menu.action({
-        name: 'Ungroup',
+        name: t('Ungroup'),
         hide: () => group.value == null,
         select: () => {
           group.rows.forEach(row => {
@@ -184,7 +185,7 @@ export class TableGroup extends SignalWatcher(
         },
       }),
       menu.action({
-        name: 'Delete Cards',
+        name: t('Delete Cards'),
         select: () => {
           this.view.rowsDelete(group.rows.map(row => row.rowId));
           this.requestUpdate();
@@ -200,14 +201,14 @@ export class TableGroup extends SignalWatcher(
 
     return html`
       <div
-        style="position: sticky;left: 0;width: max-content;padding: 6px 0;margin-bottom: 4px;display:flex;align-items:center;gap: 8px;max-width: 400px"
+        style="position: sticky;inset-inline-start: 0;width: max-content;padding: 6px 0;margin-bottom: 4px;display:flex;align-items:center;gap: 8px;max-width: 400px"
       >
         <div
           class=${`group-toggle-btn ${this.collapsed$.value ? '' : 'expanded'}`}
           role="button"
           aria-expanded=${this.collapsed$.value ? 'false' : 'true'}
           aria-label=${
-            this.collapsed$.value ? 'Expand group' : 'Collapse group'
+            this.collapsed$.value ? t('Expand group') : t('Collapse group')
           }
           tabindex="0"
           @click=${this._toggleCollapse}
@@ -358,7 +359,9 @@ export class TableGroup extends SignalWatcher(
                 data-test-id="affine-database-add-row-button"
                 role="button"
               >
-                ${PlusIcon()}<span style="font-size: 12px">New Record</span>
+                ${PlusIcon()}<span style="font-size: 12px"
+                  >${t('New Record')}</span
+                >
               </div>
             </div>`
       }

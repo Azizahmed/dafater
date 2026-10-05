@@ -11,6 +11,7 @@ import type { RichText } from '@blocksuite/affine-rich-text';
 import { ThemeProvider } from '@blocksuite/affine-shared/services';
 import { getSelectedRect } from '@blocksuite/affine-shared/utils';
 import { Bound, toRadian, Vec } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import {
   type BlockComponent,
@@ -134,6 +135,11 @@ export class EdgelessTextEditor extends WithDisposable(ShadowlessElement) {
     .edgeless-text-editor .inline-editor span {
       word-break: normal !important;
       overflow-wrap: anywhere !important;
+    }
+
+    /* Each line takes its direction from its text, like the canvas. */
+    .edgeless-text-editor .inline-editor v-line > div {
+      unicode-bidi: plaintext;
     }
 
     .edgeless-text-editor-placeholder {
@@ -470,7 +476,7 @@ export class EdgelessTextEditor extends WithDisposable(ShadowlessElement) {
       ${
         isEmpty
           ? html`<span class="edgeless-text-editor-placeholder">
-              Type from here
+              ${t('Type from here')}
             </span>`
           : nothing
       }

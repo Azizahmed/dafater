@@ -1,6 +1,9 @@
 use llm_adapter::{
-  capability::provider_default_capability_upper_bound,
-  target::{BackendEndpoint, OpenAiDialect},
+  capability::{
+    AttachmentKind, AttachmentSource, DeclaredModelCapability, ModelFeature, ModelInput, ModelOutput,
+    provider_default_capability_upper_bound,
+  },
+  target::BackendEndpoint,
 };
 use sqlx::{FromRow, PgPool, Row};
 
@@ -8,10 +11,10 @@ use super::super::{LocalLeasePayload, RuntimeError, RuntimeResult, token_hash};
 use crate::{
   llm::{
     CopilotAccessProjection,
-    byok::{ByokEndpoint, ByokPolicy, ByokProfileDefinition, local_aad, server_aad},
-    route::{self, AuthorizedProviderProfile, CatalogSlot, CredentialRef, ProfileSource},
+    byok::{ByokEndpoint, ByokModelDeclaration, ByokPolicy, ByokProfileDefinition, local_aad, server_aad},
+    route::{self, AuthorizedProviderProfile, CatalogSlot, CredentialRef, ProfileSource, RouteOperation},
   },
-  runtime::{BackendRuntimeConfig, CopilotManagedProfileConfig, CopilotRuntimeConfig},
+  runtime::{BackendRuntimeConfig, CopilotManagedProfileConfig, CopilotRuntimeConfig, Deployment},
 };
 
 #[derive(FromRow)]
@@ -53,6 +56,7 @@ pub(super) async fn load_profiles(
   }
   profiles.extend(load_managed_profiles(
     &config.copilot,
+    config.deployment,
     input.slot,
     input.built_in_route_id,
     input.access.managed_tier,
@@ -171,62 +175,123 @@ async fn load_local_profiles(
 
 fn load_managed_profiles(
   config: &CopilotRuntimeConfig,
+  deployment: Deployment,
   slot: &CatalogSlot,
   built_in_route_id: Option<&str>,
   managed_tier: route::CopilotManagedTier,
   managed_target_id: Option<&str>,
 ) -> RuntimeResult<Vec<AuthorizedProviderProfile>> {
-  let targets = if let Some(target_id) = managed_target_id {
-    vec![
-      route::managed_selected_target(built_in_route_id, target_id, managed_tier)
-        .ok_or_else(|| RuntimeError::invalid_input("managed_target_unavailable"))?,
-    ]
-  } else if let Some(targets) = route::managed_targets(slot, built_in_route_id, managed_tier) {
-    targets
-  } else {
-    return Ok(Vec::new());
+  let targets = match managed_target_id {
+    Some(target_id) => match route::managed_selected_target(built_in_route_id, target_id, managed_tier) {
+      Some(model_id) => Some(vec![model_id]),
+      // Dafater: a self-hosted server serves its administrator-configured
+      // model; an unknown built-in model choice falls back to the defaults.
+      None if deployment == Deployment::SelfHosted => route::managed_targets(slot, built_in_route_id, managed_tier),
+      None => return Err(RuntimeError::invalid_input("managed_target_unavailable")),
+    },
+    None => route::managed_targets(slot, built_in_route_id, managed_tier),
   };
-  targets
+  let mut profiles = Vec::new();
+  for (index, model_id) in targets.iter().flatten().enumerate() {
+    let matches = config
+      .providers
+      .profiles
+      .iter()
+      .filter(|profile| profile.enabled && profile.models.iter().any(|model| model == model_id))
+      .collect::<Vec<_>>();
+    let Some(profile) = matches.first() else {
+      continue;
+    };
+    if matches.len() > 1 {
+      return Err(RuntimeError::invalid_state(
+        "built-in managed route model matches multiple profiles",
+      ));
+    }
+    let capabilities = provider_default_capability_upper_bound(&profile.provider, model_id)
+      .ok_or_else(|| RuntimeError::invalid_state("built-in managed route model is incompatible with its profile"))?;
+    profiles.push(managed_authorized_profile(
+      profile,
+      model_id.clone(),
+      capabilities,
+      index as i32,
+    )?);
+  }
+  // Dafater: no profile serves the built-in model (or the route has no
+  // built-in model) → use the administrator's OpenAI-compatible profile for
+  // text/structured generation. It never claims embedding, rerank, image or
+  // audio slots; those degrade as "no compatible target".
+  if profiles.is_empty()
+    && matches!(slot.operation, RouteOperation::Chat | RouteOperation::Structured)
+    && let Some(profile) = openai_compatible_profile(config)
+  {
+    let built_in_model_id = targets.as_ref().and_then(|targets| targets.first()).map(String::as_str);
+    if let Some(model_id) = profile.upstream_model(built_in_model_id) {
+      profiles.push(managed_authorized_profile(
+        profile,
+        model_id.to_string(),
+        openai_compatible_capabilities(profile.vision()),
+        0,
+      )?);
+    }
+  }
+  Ok(profiles)
+}
+
+fn managed_authorized_profile(
+  profile: &CopilotManagedProfileConfig,
+  model_id: String,
+  capabilities: Vec<DeclaredModelCapability>,
+  sort_order: i32,
+) -> RuntimeResult<AuthorizedProviderProfile> {
+  Ok(AuthorizedProviderProfile {
+    profile_id: profile.id.clone(),
+    source: ProfileSource::Managed,
+    provider: profile.provider.clone(),
+    endpoint: managed_endpoint(profile)?,
+    openai_dialect: profile.openai_dialect(),
+    egress_policy: profile.egress_policy(),
+    models: vec![ByokModelDeclaration {
+      model_id,
+      enabled: true,
+      capabilities,
+    }],
+    sort_order,
+    credential_ref: CredentialRef::Managed {
+      profile_id: profile.id.clone(),
+    },
+  })
+}
+
+/// The first enabled `openai` profile with a custom `baseURL`.
+fn openai_compatible_profile(config: &CopilotRuntimeConfig) -> Option<&CopilotManagedProfileConfig> {
+  config
+    .providers
+    .profiles
     .iter()
-    .enumerate()
-    .map(|(index, model_id)| {
-      let matches = config
-        .providers
-        .profiles
-        .iter()
-        .filter(|profile| profile.enabled && profile.models.iter().any(|model| model == model_id))
-        .collect::<Vec<_>>();
-      let Some(profile) = matches.first() else {
-        return Ok(None);
-      };
-      if matches.len() > 1 {
-        return Err(RuntimeError::invalid_state(
-          "built-in managed route model matches multiple profiles",
-        ));
-      }
-      let capabilities = provider_default_capability_upper_bound(&profile.provider, model_id)
-        .ok_or_else(|| RuntimeError::invalid_state("built-in managed route model is incompatible with its profile"))?;
-      let endpoint = managed_endpoint(profile)?;
-      Ok(Some(AuthorizedProviderProfile {
-        profile_id: profile.id.clone(),
-        source: ProfileSource::Managed,
-        provider: profile.provider.clone(),
-        endpoint,
-        openai_dialect: (profile.provider == "openai").then_some(OpenAiDialect::Responses),
-        egress_policy: llm_adapter::target::EgressPolicy::PublicOnly,
-        models: vec![crate::llm::byok::ByokModelDeclaration {
-          model_id: model_id.clone(),
-          enabled: true,
-          capabilities,
-        }],
-        sort_order: index as i32,
-        credential_ref: CredentialRef::Managed {
-          profile_id: profile.id.clone(),
-        },
-      }))
-    })
-    .filter_map(|profile| profile.transpose())
-    .collect()
+    .find(|profile| profile.enabled && profile.is_openai_compatible())
+}
+
+/// Capabilities assumed for an arbitrary model behind an OpenAI-compatible
+/// endpoint: text (plus images when `config.vision`) in; text, JSON object and
+/// structured output out; tool calling. Never embeddings, rerank, images or
+/// audio.
+fn openai_compatible_capabilities(vision: bool) -> Vec<DeclaredModelCapability> {
+  let (input, attachment_kinds, attachment_sources) = if vision {
+    (
+      vec![ModelInput::Text, ModelInput::Image],
+      vec![AttachmentKind::Image],
+      vec![AttachmentSource::Url, AttachmentSource::Data, AttachmentSource::Bytes],
+    )
+  } else {
+    (vec![ModelInput::Text], Vec::new(), Vec::new())
+  };
+  vec![DeclaredModelCapability {
+    input,
+    output: vec![ModelOutput::Text, ModelOutput::Object, ModelOutput::Structured],
+    features: vec![ModelFeature::ToolCalling],
+    attachment_kinds,
+    attachment_sources,
+  }]
 }
 
 fn managed_endpoint(profile: &CopilotManagedProfileConfig) -> RuntimeResult<BackendEndpoint> {
@@ -315,7 +380,141 @@ pub(super) fn required_config_text<'a>(
 mod tests {
   use serde_json::json;
 
-  use super::{BackendEndpoint, CopilotManagedProfileConfig, managed_endpoint};
+  use llm_adapter::{
+    capability::{ModelFeature, ModelInput, ModelOutput},
+    target::{EgressPolicy, OpenAiDialect},
+  };
+
+  use super::{
+    BackendEndpoint, CopilotManagedProfileConfig, CopilotRuntimeConfig, Deployment, load_managed_profiles,
+    managed_endpoint,
+  };
+  use crate::llm::route::{self, CopilotManagedTier, RouteDecision, RoutePolicyInput};
+
+  fn openai_compatible_config(profile_config: serde_json::Value) -> CopilotRuntimeConfig {
+    let mut config = CopilotRuntimeConfig::default();
+    config.enabled = true;
+    config.byok.enabled = false;
+    config.providers.profiles = vec![CopilotManagedProfileConfig {
+      id: "dafater-openai-compatible".to_string(),
+      provider: "openai".to_string(),
+      enabled: true,
+      models: vec!["my-model".to_string()],
+      config: profile_config,
+    }];
+    config
+  }
+
+  fn managed(
+    config: &CopilotRuntimeConfig,
+    slot: &str,
+    built_in_route_id: Option<&str>,
+    managed_target_id: Option<&str>,
+  ) -> Vec<route::AuthorizedProviderProfile> {
+    load_managed_profiles(
+      config,
+      Deployment::SelfHosted,
+      &route::slot(slot).unwrap(),
+      built_in_route_id,
+      CopilotManagedTier::Standard,
+      managed_target_id,
+    )
+    .unwrap()
+  }
+
+  #[test]
+  fn openai_compatible_profile_serves_built_in_chat_routes() {
+    let config = openai_compatible_config(json!({
+      "apiKey": "sk-test",
+      "baseURL": "http://localhost:11434/v1/",
+      "defaultModel": "llama3.1",
+      "allowPrivateNetwork": true
+    }));
+    let profiles = managed(&config, "prompt.text", Some("Chat With AFFiNE AI"), None);
+    assert_eq!(profiles.len(), 1);
+    let profile = &profiles[0];
+    assert_eq!(profile.profile_id, "dafater-openai-compatible");
+    assert_eq!(
+      profile.endpoint,
+      BackendEndpoint::Custom("http://localhost:11434/v1".to_string())
+    );
+    assert_eq!(profile.openai_dialect, Some(OpenAiDialect::ChatCompletions));
+    assert_eq!(profile.egress_policy, EgressPolicy::AllowPrivate);
+    assert_eq!(profile.models[0].model_id, "llama3.1");
+    let capability = &profile.models[0].capabilities[0];
+    assert_eq!(capability.input, [ModelInput::Text]);
+    assert!(capability.output.contains(&ModelOutput::Structured));
+    assert!(!capability.output.contains(&ModelOutput::Embedding));
+    assert!(!capability.output.contains(&ModelOutput::Image));
+    assert_eq!(capability.features, [ModelFeature::ToolCalling]);
+
+    // custom prompts and routes without a built-in model use it as well
+    let profiles = managed(&config, "chat.default", None, None);
+    assert_eq!(profiles[0].models[0].model_id, "llama3.1");
+    let profiles = managed(&config, "chat.structured", Some("workflow:presentation"), None);
+    assert_eq!(profiles[0].models[0].model_id, "llama3.1");
+
+    // an unknown built-in model choice is ignored on self-hosted servers
+    let profiles = managed(&config, "prompt.text", Some("Chat With AFFiNE AI"), Some("missing"));
+    assert_eq!(profiles[0].models[0].model_id, "llama3.1");
+
+    // and the route policy accepts it with BYOK disabled
+    let slot = route::with_request_requirements(route::slot("prompt.text").unwrap(), true, vec![], vec![]);
+    let profiles = managed(&config, "prompt.text", Some("Chat With AFFiNE AI"), None);
+    assert!(matches!(
+      route::decide(RoutePolicyInput {
+        slot: &slot,
+        deployment: Deployment::SelfHosted,
+        byok_enabled: false,
+        access_available: true,
+        profiles: &profiles,
+        target_override: None,
+        target_override_managed: false,
+      }),
+      RouteDecision::Ready(_)
+    ));
+  }
+
+  #[test]
+  fn openai_compatible_profile_aliases_built_in_models() {
+    let config = openai_compatible_config(json!({
+      "baseURL": "https://openrouter.ai/api/v1",
+      "dialect": "responses",
+      "modelMap": { "gpt-5.6-luna": "openai/gpt-4o-mini" },
+      "vision": true
+    }));
+    let profiles = managed(&config, "prompt.text", Some("Chat With AFFiNE AI"), None);
+    assert_eq!(profiles[0].models[0].model_id, "openai/gpt-4o-mini");
+    assert_eq!(profiles[0].openai_dialect, Some(OpenAiDialect::Responses));
+    assert_eq!(profiles[0].egress_policy, EgressPolicy::PublicOnly);
+    assert!(profiles[0].models[0].capabilities[0].input.contains(&ModelInput::Image));
+
+    // not in the map, no defaultModel → profile.models[0]
+    let profiles = managed(&config, "chat.default", None, None);
+    assert_eq!(profiles[0].models[0].model_id, "my-model");
+  }
+
+  #[test]
+  fn openai_compatible_profile_never_claims_embedding_rerank_image_or_audio() {
+    let config = openai_compatible_config(json!({
+      "apiKey": "sk-test",
+      "baseURL": "https://api.example.test/v1",
+      "defaultModel": "custom"
+    }));
+    for slot in ["index.embedding", "search.rerank", "image.generate", "transcript.audio"] {
+      assert!(managed(&config, slot, None, None).is_empty(), "{slot}");
+    }
+    assert!(
+      managed(&config, "prompt.text", Some("Transcript audio structured"), None)
+        .iter()
+        .all(|profile| !profile.models[0].capabilities[0].input.contains(&ModelInput::Audio))
+    );
+
+    // a profile without baseURL is not treated as OpenAI-compatible
+    let mut config = config;
+    config.providers.profiles[0].config = json!({ "apiKey": "sk-test" });
+    assert!(managed(&config, "chat.default", None, None).is_empty());
+  }
 
   fn vertex_profile(location: &str) -> CopilotManagedProfileConfig {
     CopilotManagedProfileConfig {

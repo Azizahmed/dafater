@@ -5,6 +5,7 @@ import {
   type SlashMenuConfig,
   SlashMenuConfigIdentifier,
 } from '@blocksuite/affine-widget-slash-menu';
+import { t } from '@blocksuite/global/i18n';
 import { LinkIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 import type { ExtensionType } from '@blocksuite/store';
@@ -33,8 +34,8 @@ const bookmarkSlashMenuConfig: SlashMenuConfig = {
         const index = parentModel.children.indexOf(model) + 1;
         toggleEmbedCardCreateModal(
           host,
-          'Links',
-          'The added link will be displayed as a card view.',
+          t('Links'),
+          t('The added link will be displayed as a card view.'),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {

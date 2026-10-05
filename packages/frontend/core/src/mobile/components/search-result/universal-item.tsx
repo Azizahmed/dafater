@@ -1,6 +1,8 @@
+import { mirrorInRtl } from '@affine/component';
 import type { QuickSearchItem } from '@affine/core/modules/quicksearch';
 import { WorkbenchLink } from '@affine/core/modules/workbench';
 import { ArrowRightSmallIcon } from '@blocksuite/icons/rc';
+import clsx from 'clsx';
 
 import { SearchResLabel } from './search-res-label';
 import * as styles from './universal-item.css';
@@ -26,7 +28,10 @@ export const UniversalSearchResultItem = ({
         <SearchResLabel item={item} />
       </div>
 
-      <ArrowRightSmallIcon fontSize="16px" className={styles.suffixIcon} />
+      <ArrowRightSmallIcon
+        fontSize="16px"
+        className={clsx(styles.suffixIcon, mirrorInRtl)}
+      />
     </WorkbenchLink>
   );
 };

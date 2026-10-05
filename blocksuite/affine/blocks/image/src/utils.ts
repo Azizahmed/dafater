@@ -20,6 +20,7 @@ import {
   withTempBlobData,
 } from '@blocksuite/affine-shared/utils';
 import { Bound, type IVec, Vec } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { BlockSelection, type BlockStdScope } from '@blocksuite/std';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 import type { BlockModel } from '@blocksuite/store';
@@ -66,18 +67,18 @@ export async function downloadImageBlob(
   const { host, blobUrl, resourceController } = block;
 
   if (!blobUrl) {
-    toast(host, 'Failed to download image!');
+    toast(host, t('Failed to download image!'));
     return;
   }
 
   if (resourceController.state$.peek().downloading) {
-    toast(host, 'Download in progress...');
+    toast(host, t('Download in progress...'));
     return;
   }
 
   resourceController.updateState({ downloading: true });
 
-  toast(host, 'Downloading image...');
+  toast(host, t('Downloading image...'));
 
   const tmpLink = document.createElement('a');
   const event = new MouseEvent('click');
@@ -160,7 +161,7 @@ export async function copyImageBlob(
       ]);
     }
 
-    toast(host, 'Copied image to clipboard');
+    toast(host, t('Copied image to clipboard'));
   } catch (error) {
     console.error(error);
   }
@@ -221,7 +222,10 @@ function hasExceeded(
 
   if (exceeded) {
     const size = formatSize(maxFileSize);
-    toast(std.host, `You can only upload files less than ${size}`);
+    toast(
+      std.host,
+      t('You can only upload files less than {size}', { size: String(size) })
+    );
   }
 
   return exceeded;
@@ -235,7 +239,7 @@ async function buildPropsWith(std: BlockStdScope, file: File) {
   ]);
 
   if (!(imageSize.width * imageSize.height)) {
-    toast(std.host, 'Failed to read image size, please try another image');
+    toast(std.host, t('Failed to read image size, please try another image'));
     throw new Error('Failed to read image size');
   }
 

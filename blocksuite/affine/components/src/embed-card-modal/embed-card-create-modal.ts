@@ -3,6 +3,7 @@ import {
   VirtualKeyboardProvider,
 } from '@blocksuite/affine-shared/services';
 import { isValidUrl, stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import type { EditorHost } from '@blocksuite/std';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -29,7 +30,7 @@ export class EmbedCardCreateModal extends SignalWatcher(
     const url = this.input.value;
 
     if (!isValidUrl(url)) {
-      toast(this.host, 'Invalid link');
+      toast(this.host, t('Invalid link'));
       return;
     }
 
@@ -124,7 +125,7 @@ export class EmbedCardCreateModal extends SignalWatcher(
             class="embed-card-modal-input link"
             id="card-description"
             type="text"
-            placeholder="Input in https://..."
+            placeholder=${t('Input in https://...')}
             value=${this._linkInputValue}
             @input=${this._handleInput}
           />
@@ -139,7 +140,7 @@ export class EmbedCardCreateModal extends SignalWatcher(
             ?disabled=${!isValidUrl(this._linkInputValue)}
             @click=${this._onConfirm}
           >
-            Confirm
+            ${t('Confirm')}
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { RENDER_CARD_THROTTLE_MS } from '@blocksuite/affine-block-embed';
 import { LoadingIcon } from '@blocksuite/affine-components/icons';
 import { ThemeProvider } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { ResetIcon } from '@blocksuite/icons/lit';
 import {
@@ -161,17 +162,17 @@ export class EmbedSyncedDocCard extends WithDisposable(ShadowlessElement) {
       : isLoading
         ? LoadingIcon()
         : this.block.icon$.value;
-    const title = isLoading ? 'Loading...' : this.block.title$;
+    const title = isLoading ? t('Loading...') : this.block.title$;
 
     const showDefaultNoteContent = isLoading || error || isDeleted || isEmpty;
     const defaultNoteContent = error
-      ? 'This linked doc failed to load.'
+      ? t('This linked doc failed to load.')
       : isLoading
         ? ''
         : isDeleted
-          ? 'This linked doc is deleted.'
+          ? t('This linked doc is deleted.')
           : isEmpty
-            ? 'Preview of the page will be displayed here.'
+            ? t('Preview of the page will be displayed here.')
             : '';
 
     const dateText = this.block.docUpdatedAt.toLocaleString();
@@ -219,13 +220,13 @@ export class EmbedSyncedDocCard extends WithDisposable(ShadowlessElement) {
                       class="affine-embed-synced-doc-card-content-reload-button"
                       @click=${() => this.block.refreshData()}
                     >
-                      ${ResetIcon()} <span>Reload</span>
+                      ${ResetIcon()} <span>${t('Reload')}</span>
                     </div>
                   </div>
                 `
               : html`
                   <div class="affine-embed-synced-doc-card-content-date">
-                    <span>Updated</span>
+                    <span>${t('Updated')}</span>
 
                     <span>${dateText}</span>
                   </div>

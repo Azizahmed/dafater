@@ -250,11 +250,8 @@ export const shapeDomRenderer = (
   if (model.textDisplay && model.text) {
     const str = model.text.toString();
     const textElement = getOrCreateText(retained, element);
-    if (isRTL(str)) {
-      textElement.dir = 'rtl';
-    } else {
-      textElement.removeAttribute('dir');
-    }
+    // Explicit, so the text does not inherit the direction of the UI.
+    textElement.dir = isRTL(str) ? 'rtl' : 'ltr';
     textElement.style.position = 'absolute';
     textElement.style.inset = '0';
     textElement.style.display = 'flex';

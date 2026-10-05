@@ -131,6 +131,15 @@ export const isBlockIdEqual = (
   return id1 === id2;
 };
 
+/**
+ * Whether the element is laid out right-to-left. The direction can come from
+ * the element's own `dir` attribute or be inherited from an ancestor.
+ * Calls `getComputedStyle`, so avoid calling it in hot loops.
+ */
+export const isRtlElement = (element: Element) => {
+  return getComputedStyle(element).direction === 'rtl';
+};
+
 export const isOutOfNoteBlock = (
   editorHost: EditorHost,
   noteBlock: Element,
@@ -145,16 +154,24 @@ export const isOutOfNoteBlock = (
     (NOTE_CONTAINER_PADDING +
       (insidePageEditor ? 0 : EDGELESS_NOTE_EXTRA_PADDING)) *
     scale;
-  return rect
-    ? insidePageEditor
-      ? point.y < rect.top ||
-        point.y > rect.bottom ||
-        point.x > rect.right + padding
-      : point.y < rect.top ||
-        point.y > rect.bottom ||
-        point.x < rect.left - padding ||
-        point.x > rect.right + padding
-    : true;
+  if (!rect) return true;
+  if (insidePageEditor) {
+    // In page mode the drag handle lives in the inline-start gutter, so only
+    // the inline-end side of the note is bounded.
+    return (
+      point.y < rect.top ||
+      point.y > rect.bottom ||
+      (isRtlElement(noteBlock)
+        ? point.x < rect.left - padding
+        : point.x > rect.right + padding)
+    );
+  }
+  return (
+    point.y < rect.top ||
+    point.y > rect.bottom ||
+    point.x < rect.left - padding ||
+    point.x > rect.right + padding
+  );
 };
 
 export const getParentNoteBlock = (blockComponent: BlockComponent) => {
@@ -248,6 +265,10 @@ export const getDropResult = (
   return dropIndicator;
 };
 
+/**
+ * Extra gap between the drag handle and the block on the block's inline-start
+ * side (left for LTR blocks, right for RTL blocks).
+ */
 export function getDragHandleLeftPadding(blocks: BlockComponent[]) {
   const hasToggleList = blocks.some(
     block =>

@@ -109,7 +109,7 @@ export const blockStyles = css`
     font-size: 14px;
     font-weight: 600;
     line-height: 22px;
-    margin-left: 8px;
+    margin-inline-start: 8px;
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -328,7 +328,8 @@ export const cardStyles = css`
   }
 
   .affine-embed-synced-doc-card-banner {
-    margin: 12px 12px 0px 0px;
+    margin-block: 12px 0px;
+    margin-inline: 0px 12px;
     width: 204px;
     max-width: 100%;
     height: 102px;
@@ -437,7 +438,7 @@ export const cardStyles = css`
       justify-content: center;
       width: 100%;
       height: 267.5px;
-      margin-left: 12px;
+      margin-inline-start: 12px;
       flex-shrink: 0;
     }
     .affine-embed-synced-doc-card-banner img,
@@ -495,7 +496,7 @@ export const cardStyles = css`
     .affine-embed-synced-doc-card-banner {
       width: 340px;
       height: 170px;
-      margin-left: 12px;
+      margin-inline-start: 12px;
     }
     .affine-embed-synced-doc-card-banner img,
     .affine-embed-synced-doc-card-banner object,

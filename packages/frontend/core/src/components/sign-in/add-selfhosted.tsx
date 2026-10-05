@@ -9,7 +9,7 @@ import {
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
 import { ServersService } from '@affine/core/modules/cloud';
 import { UserFriendlyError } from '@affine/error';
-import { Trans, useI18n } from '@affine/i18n';
+import { useI18n } from '@affine/i18n';
 import { useService } from '@toeverything/infra';
 import {
   type Dispatch,
@@ -151,18 +151,8 @@ export const AddSelfhostedStep = ({
       </AuthContent>
       <AuthFooter>
         <div className={styles.authMessage}>
-          <Trans
-            i18nKey="com.affine.auth.sign.add-selfhosted.description"
-            components={{
-              1: (
-                <a
-                  href="https://docs.affine.pro/docs/self-host-affine"
-                  target="_blank"
-                  rel="noreferrer"
-                />
-              ),
-            }}
-          />
+          {/* Dafater: no link to AFFiNE's self-hosting docs */}
+          {t['com.affine.dafater.add-selfhosted.description']()}
         </div>
         <Back changeState={changeState} />
       </AuthFooter>

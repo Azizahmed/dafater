@@ -24,6 +24,7 @@ import {
   type ToolbarModuleConfig,
 } from '@blocksuite/affine-shared/services';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   AlignLeftIcon,
   ConnectorCIcon,
@@ -172,8 +173,8 @@ export const builtinMiscToolbarConfig = {
 
         return renderAlignmentMenu(ctx, models, {
           icon: AlignLeftIcon(),
-          label: 'Align objects',
-          tooltip: 'Align objects',
+          label: t('Align objects'),
+          tooltip: t('Align objects'),
         });
       },
     },
@@ -192,7 +193,8 @@ export const builtinMiscToolbarConfig = {
         const models = ctx.getSurfaceModels();
         if (!models.length) return null;
 
-        const { label, icon, tooltip } = this;
+        const { icon } = this;
+        const label = t('Draw connector');
 
         const quickConnect = (e: MouseEvent) => {
           e.stopPropagation();
@@ -211,7 +213,7 @@ export const builtinMiscToolbarConfig = {
           <editor-icon-button
             data-testid="${'draw-connector'}"
             aria-label=${label}
-            .tooltip=${tooltip}
+            .tooltip=${label}
             @click=${quickConnect}
           >
             ${icon}

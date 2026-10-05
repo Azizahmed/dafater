@@ -9,6 +9,7 @@ import {
   LinkPreviewServiceIdentifier,
   ThemeProvider,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { BlockSelection, isGfxBlockComponent } from '@blocksuite/std';
 import { html, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
@@ -97,7 +98,7 @@ export class EmbedYoutubeBlockComponent extends EmbedBlockComponent<
     const imageProxyService = this.store.get(ImageProxyService);
     const { EmbedCardBannerIcon } = getEmbedCardIcons(theme);
     const titleIcon = loading ? LoadingIcon() : YoutubeIcon;
-    const titleText = loading ? 'Loading...' : title || 'YouTube';
+    const titleText = loading ? t('Loading...') : title || 'YouTube';
     const descriptionText = loading ? null : description;
     const bannerImage =
       !loading && image

@@ -166,7 +166,7 @@ export class EdgelessPenToolButton extends EdgelessToolbarToolMixin(
     const {
       active,
       penInfo$: {
-        value: { type, color, icon, tip, shortcut },
+        value: { type, color, icon, shortcut },
       },
     } = this;
 
@@ -179,7 +179,7 @@ export class EdgelessPenToolButton extends EdgelessToolbarToolMixin(
           () => nothing,
           () =>
             html`<affine-tooltip-content-with-shortcut
-              data-tip="${tip}"
+              data-tip="${penInfoMap[type].tip}"
               data-shortcut="${shortcut}"
             ></affine-tooltip-content-with-shortcut>`
         )}

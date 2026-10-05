@@ -3,6 +3,7 @@ import {
   TelemetryProvider,
 } from '@blocksuite/affine-shared/services';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { CloseIcon } from '@blocksuite/icons/lit';
 import { baseTheme } from '@toeverything/theme';
 import { css, html, nothing, unsafeCSS } from 'lit';
@@ -23,14 +24,15 @@ export type EmbedLinkInputPopupOptions = {
   telemetrySegment?: string;
 };
 
-const DEFAULT_OPTIONS: EmbedLinkInputPopupOptions = {
+// Evaluated at render time so the texts follow the active language.
+const getDefaultOptions = (): EmbedLinkInputPopupOptions => ({
   showCloseButton: false,
   variant: 'default',
-  title: 'Embed Link',
-  description: 'Works with links of Google Drive, Spotify…',
-  placeholder: 'Paste the Embed link...',
+  title: t('Embed Link'),
+  description: t('Works with links of Google Drive, Spotify…'),
+  placeholder: t('Paste the Embed link...'),
   telemetrySegment: 'editor',
-};
+});
 
 export class EmbedIframeLinkInputPopup extends EmbedIframeLinkInputBase {
   static override styles = css`
@@ -52,7 +54,7 @@ export class EmbedIframeLinkInputPopup extends EmbedIframeLinkInputBase {
     .popup-close-button {
       position: absolute;
       top: 12px;
-      right: 12px;
+      inset-inline-end: 12px;
       width: 24px;
       height: 24px;
       display: flex;
@@ -101,6 +103,10 @@ export class EmbedIframeLinkInputPopup extends EmbedIframeLinkInputBase {
         background: ${unsafeCSSVarV2('input/background')};
       }
 
+      .link-input:not(:placeholder-shown) {
+        direction: ltr;
+      }
+
       .link-input:focus {
         border-color: var(--affine-blue-700);
         box-shadow: var(--affine-active-shadow);
@@ -147,7 +153,7 @@ export class EmbedIframeLinkInputPopup extends EmbedIframeLinkInputBase {
 
       .popup-close-button {
         top: 20px;
-        right: 16px;
+        inset-inline-end: 16px;
       }
 
       .link-input-popup-content-wrapper {
@@ -180,7 +186,7 @@ export class EmbedIframeLinkInputPopup extends EmbedIframeLinkInputBase {
 
         .description {
           font-weight: 400;
-          text-align: left;
+          text-align: start;
           order: 2;
           padding: 11px 16px;
           color: ${unsafeCSSVarV2('text/secondary')};
@@ -233,7 +239,7 @@ export class EmbedIframeLinkInputPopup extends EmbedIframeLinkInputBase {
   }
 
   override render() {
-    const options = { ...DEFAULT_OPTIONS, ...this.options };
+    const options = { ...getDefaultOptions(), ...this.options };
     const { showCloseButton, variant, title, description, placeholder } =
       options;
 
@@ -272,7 +278,7 @@ export class EmbedIframeLinkInputPopup extends EmbedIframeLinkInputBase {
             @click=${this.onConfirm}
             ?disabled=${this.isInputEmpty()}
           >
-            Confirm
+            ${t('Confirm')}
           </div>
         </div>
       </div>

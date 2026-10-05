@@ -40,32 +40,44 @@ export function getBuildConfig(
         isAdmin: distribution === 'admin',
 
         appBuildType: 'stable' as const,
+        // Dafater is Arabic-first: fresh installs start in Arabic (RTL).
+        defaultLanguage: 'ar',
         appVersion: pkg.version,
         // editorVersion: pkg.dependencies['@blocksuite/affine'],
         editorVersion: pkg.version,
-        githubUrl: 'https://github.com/toeverything/AFFiNE',
-        changelogUrl: 'https://affine.pro/what-is-new',
-        downloadUrl: 'https://affine.pro/download',
-        pricingUrl: 'https://affine.pro/pricing',
-        discordUrl: 'https://affine.pro/redirect/discord',
-        requestLicenseUrl: 'https://affine.pro/redirect/license',
+        // Dafater does not link to AFFiNE's website, GitHub or community:
+        // these upstream URLs are intentionally empty.
+        githubUrl: '',
+        changelogUrl: '',
+        downloadUrl: '',
+        pricingUrl: '',
+        discordUrl: '',
+        requestLicenseUrl: '',
         imageProxyUrl: '/api/worker/image-proxy',
         linkPreviewUrl: '/api/worker/link-preview',
-        SENTRY_DSN: process.env.SENTRY_DSN ?? '',
+        // Dafater sends no telemetry / crash reports anywhere.
+        SENTRY_DSN: '',
+        // Built-in Dafater server of native builds (electron / ios / android).
+        // Web builds always use the server that serves them (location.origin).
+        // Empty = no built-in server (local-only + "add server" flow).
+        dafaterServerUrl:
+          process.env.DAFATER_SERVER_URL ??
+          (buildFlags.mode === 'development' ? 'http://localhost:8080' : ''),
+        // Dafater has no release feed: the desktop auto-updater (which pointed
+        // at AFFiNE's GitHub releases) and its UI are disabled.
+        enableUpdater: false,
       };
     },
     get beta() {
       return {
         ...this.stable,
         appBuildType: 'beta' as const,
-        changelogUrl: 'https://github.com/toeverything/AFFiNE/releases',
       };
     },
     get internal() {
       return {
         ...this.stable,
         appBuildType: 'internal' as const,
-        changelogUrl: 'https://github.com/toeverything/AFFiNE/releases',
       };
     },
     // canary will be aggressive and enable all features
@@ -73,7 +85,6 @@ export function getBuildConfig(
       return {
         ...this.stable,
         appBuildType: 'canary' as const,
-        changelogUrl: 'https://github.com/toeverything/AFFiNE/releases',
       };
     },
   };

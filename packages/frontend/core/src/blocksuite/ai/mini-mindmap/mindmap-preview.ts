@@ -7,6 +7,7 @@ import {
   MindmapStyleTwo,
 } from '@blocksuite/affine/gfx/mindmap';
 import type { ServiceProvider } from '@blocksuite/affine/global/di';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import {
   type MindmapElementModel,
@@ -51,7 +52,7 @@ export class MiniMindmapPreview extends WithDisposable(LitElement) {
         var(--textColor-textSecondaryColor, #8e8d91)
       );
 
-      font-family: Inter;
+      font-family: Inter, var(--affine-font-sans-family);
       font-size: 12px;
       font-style: normal;
       font-weight: 500;
@@ -186,7 +187,9 @@ export class MiniMindmapPreview extends WithDisposable(LitElement) {
 
       ${
         this.templateShow
-          ? html` <div class="select-template-title">Select template</div>
+          ? html` <div class="select-template-title">
+                ${t('Select template')}
+              </div>
               <div class="template">
                 ${repeat(
                   mindmapStyles,

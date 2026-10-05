@@ -5,6 +5,7 @@ import {
   type DataViewCellLifeCycle,
   EditorHostKey,
 } from '@blocksuite/affine/blocks/database';
+import { t } from '@blocksuite/affine/global/i18n';
 import {
   UserProvider,
   type UserService,
@@ -103,7 +104,7 @@ const MemberPreview = ({
         size={24}
       />
       <div className={memberName}>
-        {userInfo.removed ? 'Deleted user' : userInfo.name || 'Unnamed'}
+        {userInfo.removed ? t('Deleted user') : userInfo.name || t('Unnamed')}
       </div>
     </div>
   );

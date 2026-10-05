@@ -43,7 +43,8 @@ export const createCommentLinkedWidgetConfig = (
         ? html`<img style=${avatarStyle} src="${avatar}" />`
         : UserIcon();
 
-      let displayName = name ?? 'Unknown';
+      let displayName =
+        name ?? I18n['com.affine.editor.at-menu.unknown-member']();
       return {
         key: id,
         name: html`${unsafeHTML(displayName)}`,
@@ -125,7 +126,7 @@ export const createCommentLinkedWidgetConfig = (
         const member = result.item;
         const displayName = highlightFuseTitle(
           result.matches,
-          member.name ?? 'Unknown',
+          member.name ?? I18n['com.affine.editor.at-menu.unknown-member'](),
           'name'
         );
         return {

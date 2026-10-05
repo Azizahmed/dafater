@@ -117,6 +117,8 @@ export const COLOR_PICKER_STYLE = css`
     display: flex;
     flex-direction: column;
     gap: 16px;
+    /* The palette and sliders are positioned from the left edge. */
+    direction: ltr;
   }
 
   .color-palette-wrapper {
@@ -276,11 +278,13 @@ export const COLOR_PICKER_STYLE = css`
 
   .field.color {
     width: 132px;
+    direction: ltr;
   }
 
   .field.alpha {
     width: 58px;
     gap: 0;
+    direction: ltr;
   }
 
   ${fontSMStyle('input')}

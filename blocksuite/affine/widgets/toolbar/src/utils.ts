@@ -10,6 +10,7 @@ import {
   type ToolbarContext,
   type ToolbarPlacement,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { nextTick } from '@blocksuite/global/utils';
 import { MoreVerticalIcon } from '@blocksuite/icons/lit';
 import type {
@@ -267,12 +268,12 @@ export function renderToolbar(
           `${flavour}:${key}`,
           html`
             <editor-menu-button
-              aria-label="More menu"
+              aria-label=${t('More menu')}
               .contentPadding="${'8px'}"
               .button=${html`
                 <editor-icon-button
-                  aria-label="More"
-                  .tooltip="${'More'}"
+                  aria-label=${t('More')}
+                  .tooltip="${t('More')}"
                   .iconContainerPadding=${innerToolbar ? 4 : 2}
                   .iconSize=${innerToolbar ? '16px' : undefined}
                 >
@@ -363,12 +364,21 @@ function renderActions(
     .filter(action => action !== null);
 }
 
+/**
+ * Action labels and tooltips are static English strings from the toolbar
+ * configs, so they are translated here, when rendered.
+ */
+function translate<T>(text: T): T {
+  return (typeof text === 'string' ? t(text) : text) as T;
+}
+
 // TODO(@fundon): supports templates
 function renderActionItem(action: ToolbarAction, context: ToolbarContext) {
   const innerToolbar = context.placement$.value === 'inner';
   const ids = action.id.split('.');
   const id = ids[ids.length - 1];
-  const label = action.label ?? action.tooltip ?? id;
+  const label = translate(action.label ?? action.tooltip ?? id);
+  const tooltip = translate(action.tooltip);
   const actived =
     typeof action.active === 'function'
       ? action.active(context)
@@ -384,7 +394,7 @@ function renderActionItem(action: ToolbarAction, context: ToolbarContext) {
       aria-label=${ifDefined(label)}
       ?active=${actived}
       ?disabled=${disabled}
-      .tooltip=${action.tooltip}
+      .tooltip=${tooltip}
       .iconContainerPadding=${innerToolbar ? 4 : 2}
       .iconSize=${innerToolbar ? '16px' : undefined}
       @click=${() => action.run?.(context)}
@@ -392,7 +402,7 @@ function renderActionItem(action: ToolbarAction, context: ToolbarContext) {
       ${action.icon}
       ${
         action.showLabel && action.label
-          ? html`<span class="label">${action.label}</span>`
+          ? html`<span class="label">${translate(action.label)}</span>`
           : null
       }
     </editor-icon-button>
@@ -403,7 +413,8 @@ function renderMenuActionItem(action: ToolbarAction, context: ToolbarContext) {
   const innerToolbar = context.placement$.value === 'inner';
   const ids = action.id.split('.');
   const id = ids[ids.length - 1];
-  const label = action.label ?? action.tooltip ?? id;
+  const label = translate(action.label ?? action.tooltip ?? id);
+  const tooltip = translate(action.tooltip);
   const actived =
     typeof action.active === 'function'
       ? action.active(context)
@@ -421,13 +432,17 @@ function renderMenuActionItem(action: ToolbarAction, context: ToolbarContext) {
       class="${ifDefined(destructive)}"
       ?active=${actived}
       ?disabled=${disabled}
-      .tooltip=${ifDefined(action.tooltip)}
+      .tooltip=${ifDefined(tooltip)}
       .iconContainerPadding=${innerToolbar ? 4 : 2}
       .iconSize=${innerToolbar ? '16px' : undefined}
       @click=${() => action.run?.(context)}
     >
       ${action.icon}
-      ${action.label ? html`<span class="label">${action.label}</span>` : null}
+      ${
+        action.label
+          ? html`<span class="label">${translate(action.label)}</span>`
+          : null
+      }
     </editor-menu-action>
   `;
 }

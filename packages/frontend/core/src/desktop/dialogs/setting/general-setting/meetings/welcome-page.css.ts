@@ -39,7 +39,7 @@ export const beta = style({
   padding: '0 8px',
   borderRadius: '4px',
   position: 'absolute',
-  right: 32,
+  insetInlineEnd: 32,
   top: 0,
 });
 
@@ -68,7 +68,7 @@ globalStyle(`${hints} strong`, {
 
 globalStyle(`${hints} ul`, {
   padding: '12px 0',
-  marginLeft: 15,
+  marginInlineStart: 15,
 });
 
 globalStyle(`${hints} li`, {

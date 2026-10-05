@@ -22,11 +22,9 @@ import * as styles from './styles.css';
 export const MemberList = ({
   isOwner,
   isAdmin,
-  goToTeamBilling,
 }: {
   isOwner: boolean;
   isAdmin: boolean;
-  goToTeamBilling: () => void;
 }) => {
   const membersService = useService(WorkspaceMembersService);
   const memberCount = useLiveData(membersService.members.memberCount$);
@@ -79,7 +77,6 @@ export const MemberList = ({
             member={member}
             isOwner={isOwner}
             isAdmin={isAdmin}
-            goToTeamBilling={goToTeamBilling}
           />
         ))
       )}
@@ -125,13 +122,11 @@ const MemberItem = ({
   isOwner,
   isAdmin,
   currentAccount,
-  goToTeamBilling,
 }: {
   member: Member;
   isAdmin: boolean;
   isOwner: boolean;
   currentAccount: AuthAccountInfo;
-  goToTeamBilling: () => void;
 }) => {
   const t = useI18n();
   const [open, setOpen] = useState(false);
@@ -174,7 +169,7 @@ const MemberItem = ({
       })
       .catch(error => {
         notify.error({
-          title: 'Operation failed',
+          title: t['com.affine.settings.member.operation-failed'](),
           message: error.message,
         });
       });
@@ -220,7 +215,6 @@ const MemberItem = ({
             openAssignModal={handleOpenAssignModal}
             isAdmin={isAdmin}
             isOwner={isOwner}
-            goToTeamBilling={goToTeamBilling}
           />
         }
       >
@@ -317,6 +311,7 @@ export const MemberListError = ({
     () => getMembersFallbackHeight(memberCount),
     [memberCount]
   );
+  const t = useI18n();
 
   return (
     <div
@@ -328,7 +323,7 @@ export const MemberListError = ({
       <span className={styles.errorStyle}>
         {error
           ? UserFriendlyError.fromAny(error).message
-          : 'Failed to load members'}
+          : t['com.affine.settings.member.load-failed']()}
       </span>
     </div>
   );

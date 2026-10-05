@@ -50,6 +50,7 @@ export const CheckboxFilterValue = ({
   onDraftCompleted?: () => void;
   onChange?: (filter: FilterParams) => void;
 }) => {
+  const t = useI18n();
   return (
     <FilterValueMenu
       isDraft={isDraft}
@@ -65,7 +66,7 @@ export const CheckboxFilterValue = ({
             }}
             selected={filter.value === 'true'}
           >
-            {'True'}
+            {t['com.affine.filter.value.true']()}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -76,12 +77,16 @@ export const CheckboxFilterValue = ({
             }}
             selected={filter.value !== 'true'}
           >
-            {'False'}
+            {t['com.affine.filter.value.false']()}
           </MenuItem>
         </>
       }
     >
-      <span>{filter.value === 'true' ? 'True' : 'False'}</span>
+      <span>
+        {filter.value === 'true'
+          ? t['com.affine.filter.value.true']()
+          : t['com.affine.filter.value.false']()}
+      </span>
     </FilterValueMenu>
   );
 };

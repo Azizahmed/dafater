@@ -3,6 +3,7 @@ import {
   TelemetryProvider,
 } from '@blocksuite/affine-shared/services';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -14,7 +15,7 @@ import { CodeBlockPreviewIdentifier } from '../../code-preview-extension';
 export class PreviewButton extends WithDisposable(SignalWatcher(LitElement)) {
   static override styles = css`
     :host {
-      margin-right: auto;
+      margin-inline-end: auto;
     }
 
     .preview-toggle-container {
@@ -92,7 +93,7 @@ export class PreviewButton extends WithDisposable(SignalWatcher(LitElement)) {
           })}
           @click=${() => this._toggle(false)}
         >
-          Code
+          ${t('Code')}
         </div>
         <div
           class=${classMap({
@@ -101,7 +102,7 @@ export class PreviewButton extends WithDisposable(SignalWatcher(LitElement)) {
           })}
           @click=${() => this._toggle(true)}
         >
-          Preview
+          ${t('Preview')}
         </div>
       </div>
     `;

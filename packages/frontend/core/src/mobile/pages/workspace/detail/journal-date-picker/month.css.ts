@@ -9,7 +9,7 @@ export const monthViewClip = style({
 export const monthsSwipe = style({
   width: '300%',
   height: '100%',
-  marginLeft: '-100%',
+  marginInlineStart: '-100%',
   display: 'flex',
   justifyContent: 'center',
 });

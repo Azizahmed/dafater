@@ -268,7 +268,8 @@ export const DateDocListProperty = ({ value }: DocListPropertyProps) => {
 };
 
 export const DateGroupHeader = ({ groupId, docCount }: GroupHeaderProps) => {
-  const date = groupId || 'No Date';
+  const t = useI18n();
+  const date = groupId || t['com.affine.all-docs.group.no-date']();
 
   return (
     <PlainTextDocGroupHeader groupId={groupId} docCount={docCount}>

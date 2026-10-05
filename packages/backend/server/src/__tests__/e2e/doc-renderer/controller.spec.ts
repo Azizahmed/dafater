@@ -1,32 +1,33 @@
 import { app, createApp, e2e, Mockers } from '../test';
 
-e2e('should render doc share page with apple-itunes-app meta tag', async t => {
-  const owner = await app.signup();
-  const workspace = await app.create(Mockers.Workspace, {
-    owner,
-  });
+e2e(
+  'should render doc share page without the AFFiNE apple-itunes-app meta tag',
+  async t => {
+    const owner = await app.signup();
+    const workspace = await app.create(Mockers.Workspace, {
+      owner,
+    });
 
-  const docSnapshot = await app.create(Mockers.DocSnapshot, {
-    workspaceId: workspace.id,
-    user: owner,
-  });
-  // set public to true
-  await app.create(Mockers.DocMeta, {
-    workspaceId: workspace.id,
-    docId: docSnapshot.id,
-    public: true,
-  });
+    const docSnapshot = await app.create(Mockers.DocSnapshot, {
+      workspaceId: workspace.id,
+      user: owner,
+    });
+    // set public to true
+    await app.create(Mockers.DocMeta, {
+      workspaceId: workspace.id,
+      docId: docSnapshot.id,
+      public: true,
+    });
 
-  const res = await app
-    .GET(`/workspace/${workspace.id}/${docSnapshot.id}`)
-    .expect(200)
-    .expect('Content-Type', 'text/html; charset=utf-8');
+    const res = await app
+      .GET(`/workspace/${workspace.id}/${docSnapshot.id}`)
+      .expect(200)
+      .expect('Content-Type', 'text/html; charset=utf-8');
 
-  t.regex(
-    res.text,
-    /<meta name="apple-itunes-app" content="app-id=6736937980" \/>/
-  );
-});
+    // Dafater never advertises AFFiNE's iOS app on shared pages.
+    t.notRegex(res.text, /apple-itunes-app/);
+  }
+);
 
 e2e.serial(
   'should render doc share page without apple-itunes-app meta tag when selfhosted',

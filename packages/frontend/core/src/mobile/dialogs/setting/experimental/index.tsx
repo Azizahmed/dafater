@@ -1,4 +1,4 @@
-import { Switch } from '@affine/component';
+import { mirrorInRtl, Switch } from '@affine/component';
 import {
   AFFINE_FLAGS,
   FeatureFlagService,
@@ -23,7 +23,7 @@ export const ExperimentalFeatureSetting = () => {
     <>
       <SettingGroup title={t['com.affine.mobile.setting.experimental.title']()}>
         <RowLayout label={title} onClick={() => setOpen(true)}>
-          <ArrowRightSmallIcon fontSize={22} />
+          <ArrowRightSmallIcon fontSize={22} className={mirrorInRtl} />
         </RowLayout>
       </SettingGroup>
       <SwipeDialog open={open} onOpenChange={setOpen} title={title}>

@@ -48,9 +48,9 @@ export const tab = style([
       '&[data-active="true"]::after': {
         content: '""',
         position: 'absolute',
-        right: 0,
+        insetInlineEnd: 0,
         bottom: 0,
-        left: 0,
+        insetInlineStart: 0,
         height: 2,
         background: cssVarV2('tab/divider/indicator'),
       },

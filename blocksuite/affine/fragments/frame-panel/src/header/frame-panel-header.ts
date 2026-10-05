@@ -9,6 +9,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { createButtonPopper } from '@blocksuite/affine-shared/utils';
 import { DisposableGroup } from '@blocksuite/global/disposable';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { PresentationIcon, SettingsIcon } from '@blocksuite/icons/lit';
 import type { EditorHost } from '@blocksuite/std';
@@ -94,7 +95,7 @@ const styles = css`
 
   .presentation-button svg {
     fill: var(--affine-icon-color);
-    margin-right: 4px;
+    margin-inline-end: 4px;
   }
 
   .presentation-button-label {
@@ -189,12 +190,12 @@ export class FramePanelHeader extends WithDisposable(LitElement) {
   override render() {
     return html`<div class="frame-panel-header">
       <div class="all-frames-setting">
-        <span class="all-frames-setting-label">All frames</span>
+        <span class="all-frames-setting-label">${t('All frames')}</span>
         <edgeless-tool-icon-button
           class="all-frames-setting-button ${
             this._settingPopperShow ? 'active' : ''
           }"
-          .tooltip=${this._settingPopperShow ? '' : 'All Frames Settings'}
+          .tooltip=${this._settingPopperShow ? '' : t('All Frames Settings')}
           .tipPosition=${'top'}
           .active=${this._settingPopperShow}
           .activeMode=${'background'}
@@ -211,7 +212,7 @@ export class FramePanelHeader extends WithDisposable(LitElement) {
       <div class="presentation-button" @click=${this._enterPresentationMode}>
         ${PresentationIcon({ width: '16px', height: '16px' })}<span
           class="presentation-button-label"
-          >Presentation</span
+          >${t('Presentation')}</span
         >
       </div>
     </div>`;

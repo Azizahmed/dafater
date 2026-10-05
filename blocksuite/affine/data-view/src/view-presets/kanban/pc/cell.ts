@@ -36,7 +36,7 @@ const styles = css`
     align-items: center;
     justify-content: center;
     align-self: start;
-    margin-right: 12px;
+    margin-inline-end: 12px;
     height: var(--data-view-cell-text-line-height);
   }
 

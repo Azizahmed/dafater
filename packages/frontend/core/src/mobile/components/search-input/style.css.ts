@@ -30,7 +30,9 @@ export const prefixIcon = style({
 export const input = style([
   bodyRegular,
   {
-    padding: '11px 8px 11px 36px',
+    paddingBlock: '11px 11px',
+    paddingInlineStart: '36px',
+    paddingInlineEnd: '8px',
     width: '100%',
     height: '100%',
     outline: 'none',
@@ -42,7 +44,7 @@ export const placeholder = style([
   input,
   {
     position: 'absolute',
-    left: 0,
+    insetInlineStart: 0,
     top: 0,
     pointerEvents: 'none',
     color: cssVarV2('text/secondary'),

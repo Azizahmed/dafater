@@ -86,7 +86,7 @@ export const actionContent = style({
 
 export const arrowIcon = style({
   transition: 'transform 0.3s ease-in-out',
-  marginLeft: '8px',
+  marginInlineStart: '8px',
   width: '16px',
   height: '16px',
   selectors: {

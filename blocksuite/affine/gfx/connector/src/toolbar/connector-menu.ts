@@ -10,6 +10,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import type { ColorEvent } from '@blocksuite/affine-shared/utils';
 import { EdgelessToolbarToolMixin } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import {
   ConnectorCIcon,
@@ -36,7 +37,7 @@ function ConnectorModeButtonGroup(
       <edgeless-tool-icon-button
         .active=${mode === ConnectorMode.Curve}
         .activeMode=${'background'}
-        .tooltip=${'Curve'}
+        .tooltip=${t('Curve')}
         .iconSize=${'20px'}
         @click=${() => setConnectorMode({ mode: ConnectorMode.Curve })}
       >
@@ -45,7 +46,7 @@ function ConnectorModeButtonGroup(
       <edgeless-tool-icon-button
         .active=${mode === ConnectorMode.Orthogonal}
         .activeMode=${'background'}
-        .tooltip=${'Elbowed'}
+        .tooltip=${t('Elbowed')}
         .iconSize=${'20px'}
         @click=${() => setConnectorMode({ mode: ConnectorMode.Orthogonal })}
       >
@@ -54,7 +55,7 @@ function ConnectorModeButtonGroup(
       <edgeless-tool-icon-button
         .active=${mode === ConnectorMode.Straight}
         .activeMode=${'background'}
-        .tooltip=${'Straight'}
+        .tooltip=${t('Straight')}
         .iconSize=${'20px'}
         @click=${() => setConnectorMode({ mode: ConnectorMode.Straight })}
       >

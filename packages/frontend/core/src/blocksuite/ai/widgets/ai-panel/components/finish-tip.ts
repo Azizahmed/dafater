@@ -3,6 +3,7 @@ import {
   CopyIcon,
   WarningIcon,
 } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { NotificationProvider } from '@blocksuite/affine/shared/services';
 import type { EditorHost } from '@blocksuite/affine/std';
@@ -70,7 +71,7 @@ export class AIFinishTip extends WithDisposable(LitElement) {
   override render() {
     return html`<div class="finish-tip">
       ${WarningIcon}
-      <div class="text">AI outputs can be misleading or wrong</div>
+      <div class="text">${t('AI outputs can be misleading or wrong')}</div>
       ${
         this.copy?.allowed
           ? html`<div class="right">
@@ -87,12 +88,12 @@ export class AIFinishTip extends WithDisposable(LitElement) {
                         if (this.copied) {
                           this.host.std
                             .getOptional(NotificationProvider)
-                            ?.toast('Copied to clipboard');
+                            ?.toast(t('Copied to clipboard'));
                         }
                       }}
                     >
                       ${CopyIcon}
-                      <affine-tooltip>Copy</affine-tooltip>
+                      <affine-tooltip>${t('Copy')}</affine-tooltip>
                     </div>`
               }
             </div>`

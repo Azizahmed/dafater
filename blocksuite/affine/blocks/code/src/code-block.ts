@@ -13,6 +13,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { getViewportElement } from '@blocksuite/affine-shared/utils';
 import { IS_MAC, IS_MOBILE } from '@blocksuite/global/env';
+import { t } from '@blocksuite/global/i18n';
 import { noop } from '@blocksuite/global/utils';
 import type { BlockComponent } from '@blocksuite/std';
 import { BlockSelection, TextSelection } from '@blocksuite/std';
@@ -63,11 +64,11 @@ export class CodeBlockComponent extends CaptionedBlockComponent<CodeBlockModel> 
   languageName$: Signal<string> = computed(() => {
     const lang = this.model.props.language$.value;
     if (lang === null) {
-      return 'Plain Text';
+      return t('Plain Text');
     }
 
     const matchedInfo = this.langs.find(info => info.id === lang);
-    return matchedInfo ? matchedInfo.name : 'Plain Text';
+    return matchedInfo ? matchedInfo.name : t('Plain Text');
   });
 
   get inlineEditor() {
@@ -425,10 +426,12 @@ export class CodeBlockComponent extends CaptionedBlockComponent<CodeBlockModel> 
     this.std.clipboard
       .copySlice(slice)
       .then(() => {
-        this.notificationService?.toast('Copied to clipboard');
+        this.notificationService?.toast(t('Copied to clipboard'));
       })
       .catch(e => {
-        this.notificationService?.toast('Copied failed, something went wrong');
+        this.notificationService?.toast(
+          t('Copied failed, something went wrong')
+        );
         console.error(e);
       });
   }

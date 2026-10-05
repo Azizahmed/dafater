@@ -9,6 +9,7 @@ import {
   type DataViewCellLifeCycle,
   EditorHostKey,
 } from '@blocksuite/affine/blocks/database';
+import { t } from '@blocksuite/affine/global/i18n';
 import { openFilesWith } from '@blocksuite/affine/shared/utils';
 import type { BlobEngine } from '@blocksuite/affine/sync';
 import {
@@ -39,7 +40,6 @@ import {
   useMemo,
 } from 'react';
 
-import { WorkspaceDialogService } from '../../../../modules/dialogs';
 import { useSignalValue } from '../../../../modules/doc-info/utils';
 import type { ImageData } from '../../../../modules/peek-view/view/image-preview';
 import { CircularProgress } from '../../components/loading';
@@ -388,13 +388,6 @@ const FileCellComponent: ForwardRefRenderFunction<
   );
   const fileList = useSignalValue(manager.fileList);
   const isEditing = useSignalValue(manager.isEditing);
-  const workspaceDialogService = useService(WorkspaceDialogService);
-  const jumpToPricePlan = useCallback(() => {
-    workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
-    });
-  }, [workspaceDialogService]);
   const renderPopoverContent = () => {
     if (fileList.length === 0) {
       return (
@@ -417,16 +410,13 @@ const FileCellComponent: ForwardRefRenderFunction<
             variant="primary"
             className={styles.uploadButton}
           >
-            Choose a file
+            {t('Choose a file')}
           </Button>
 
           <div className={styles.fileInfoContainer}>
             <div className={styles.fileSizeInfo}>
-              The maximum size per file is 100MB
+              {t('The maximum size per file is 100MB')}
             </div>
-            <a className={styles.upgradeLink} onClick={jumpToPricePlan}>
-              Upgrade to Pro
-            </a>
           </div>
         </div>
       );
@@ -462,7 +452,7 @@ const FileCellComponent: ForwardRefRenderFunction<
             className={styles.uploadButtonStyle}
           >
             <PlusIcon className={styles.iconPrimary} width={20} height={20} />
-            <span>Add a file or image</span>
+            <span>{t('Add a file or image')}</span>
           </div>
         </div>
       </div>
@@ -603,7 +593,7 @@ export const FileListItem = (props: {
           onClick={onPreview}
           prefixIcon={<FileIcon width={20} height={20} />}
         >
-          Preview
+          {t('Preview')}
         </MenuItem>
       )}
       {(fileType === 'file' || fileType === 'image') && (
@@ -615,7 +605,7 @@ export const FileListItem = (props: {
           }}
           prefixIcon={<DownloadIcon width={20} height={20} />}
         >
-          Download
+          {t('Download')}
         </MenuItem>
       )}
       <MenuItem
@@ -625,7 +615,7 @@ export const FileListItem = (props: {
         type={'danger'}
         prefixIcon={<DeleteIcon width={20} height={20} />}
       >
-        Delete
+        {t('Delete')}
       </MenuItem>
     </>
   );

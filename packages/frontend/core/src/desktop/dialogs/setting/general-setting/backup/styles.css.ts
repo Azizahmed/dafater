@@ -20,7 +20,9 @@ export const list = style({
 
 export const listItem = style({
   display: 'flex',
-  padding: '8px 8px 8px 16px',
+  paddingBlock: '8px 8px',
+  paddingInlineStart: '16px',
+  paddingInlineEnd: '8px',
   height: '60px',
   alignItems: 'center',
   gap: 12,

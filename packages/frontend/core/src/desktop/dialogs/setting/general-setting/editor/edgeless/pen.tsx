@@ -31,7 +31,7 @@ export const PenSettings = () => {
 
   const colorItems = useMemo(() => {
     const { color } = settings.brush;
-    return palettes.map(({ key, value, resolvedValue }) => {
+    return palettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set('brush', { color: value });
       };
@@ -43,7 +43,7 @@ export const PenSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -84,7 +84,7 @@ export const PenSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={currentColor.resolvedValue} />}
               >
-                {currentColor.key}
+                {currentColor.label}
               </MenuTrigger>
             }
           />

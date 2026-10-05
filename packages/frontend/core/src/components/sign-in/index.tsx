@@ -7,11 +7,13 @@ import { AddSelfhostedStep } from './add-selfhosted';
 import { SignInStep } from './sign-in';
 import { SignInWithEmailStep } from './sign-in-with-email';
 import { SignInWithPasswordStep } from './sign-in-with-password';
+import { SignUpStep } from './sign-up';
 
 export type SignInStep =
   | 'signIn'
   | 'signInWithPassword'
   | 'signInWithEmail'
+  | 'signUp'
   | 'addSelfhosted';
 
 export interface SignInState {
@@ -68,6 +70,12 @@ export const SignInPanel = ({
         />
       ) : step === 'signInWithPassword' ? (
         <SignInWithPasswordStep
+          state={state}
+          changeState={setState}
+          onAuthenticated={onAuthenticated}
+        />
+      ) : step === 'signUp' ? (
+        <SignUpStep
           state={state}
           changeState={setState}
           onAuthenticated={onAuthenticated}

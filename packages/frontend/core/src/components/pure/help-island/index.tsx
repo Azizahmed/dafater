@@ -16,8 +16,10 @@ import {
   StyledTriggerWrapper,
 } from './style';
 
+// Dafater: "what's new" only when the build has a changelog URL (upstream's
+// pointed at AFFiNE's website)
 const DEFAULT_SHOW_LIST: IslandItemNames[] = [
-  'whatNew',
+  ...(BUILD_CONFIG.changelogUrl ? (['whatNew'] as const) : []),
   'contact',
   'shortcuts',
 ];

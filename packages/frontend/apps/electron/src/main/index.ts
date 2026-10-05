@@ -1,7 +1,5 @@
 import path from 'node:path';
 
-import * as Sentry from '@sentry/electron/main';
-import { IPCMode } from '@sentry/electron/main';
 import { app, protocol } from 'electron';
 
 import { createApplicationMenu } from './application-menu/create';
@@ -59,7 +57,7 @@ app.commandLine.appendSwitch('force-color-profile', 'srgb');
 
 // use the same data for internal & beta for testing
 if (overrideSession) {
-  const appName = buildType === 'stable' ? 'AFFiNE' : `AFFiNE-${buildType}`;
+  const appName = buildType === 'stable' ? 'Dafater' : `Dafater-${buildType}`;
   const userDataPath = path.join(app.getPath('appData'), appName);
   app.setPath('userData', userDataPath);
   app.setPath('sessionData', userDataPath);
@@ -121,22 +119,7 @@ app
   .then(setupTrayState)
   .catch(e => console.error('Failed create window:', e));
 
-if (process.env.SENTRY_RELEASE) {
-  // https://docs.sentry.io/platforms/javascript/guides/electron/
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.BUILD_TYPE ?? 'development',
-    ipcMode: IPCMode.Protocol,
-    transportOptions: {
-      maxAgeDays: 30,
-      maxQueueSize: 100,
-    },
-  });
-  Sentry.setTags({
-    distribution: 'electron',
-    appVersion: app.getVersion(),
-  });
-}
+// Dafater sends no crash reports: Sentry is never initialised.
 
 protocol.registerSchemesAsPrivileged([
   {

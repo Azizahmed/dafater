@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { PlusIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -88,7 +89,7 @@ export class TableGroupFooter extends WithDisposable(ShadowlessElement) {
                   role="button"
                 >
                   ${PlusIcon()}<span class="${styles.addRowText}"
-                    >New Record</span
+                    >${t('New Record')}</span
                   >
                 </div>
               </div>

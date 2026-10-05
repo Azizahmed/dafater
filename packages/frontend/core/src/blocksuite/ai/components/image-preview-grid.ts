@@ -58,7 +58,7 @@ export class ImagePreviewGrid extends LitElement {
       z-index: 1;
       cursor: pointer;
       top: -6px;
-      right: -6px;
+      inset-inline-end: -6px;
     }
 
     .image-container:hover .close-wrapper {

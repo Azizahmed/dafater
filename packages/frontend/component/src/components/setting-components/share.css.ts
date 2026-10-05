@@ -65,7 +65,7 @@ export const settingRow = style({
     '&.disabled::after': {
       content: '',
       position: 'absolute',
-      left: 0,
+      insetInlineStart: 0,
       top: 0,
       width: '100%',
       height: '100%',
@@ -93,7 +93,7 @@ globalStyle(`${settingRow} .desc`, {
 globalStyle(`${settingRow} .right-col`, {
   display: 'flex',
   justifyContent: 'flex-end',
-  paddingLeft: '15px',
+  paddingInlineStart: '15px',
   flexShrink: 0,
 });
 

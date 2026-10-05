@@ -1,6 +1,7 @@
+import { useI18n } from '@affine/i18n';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import clsx from 'clsx';
-import { type HTMLAttributes, useState } from 'react';
+import { type HTMLAttributes, useMemo, useState } from 'react';
 
 import { Button } from '../button';
 import { RadioGroup, type RadioItem } from '../radio';
@@ -9,11 +10,6 @@ import { AffineIconPicker } from './picker/affine-icon/affine-icon-picker';
 import { EmojiPicker } from './picker/emoji/emoji-picker';
 import { type IconData, IconType } from './type';
 
-const panels: Array<RadioItem> = [
-  { value: 'Emoji', className: styles.headerNavItem },
-  { value: 'Icons', className: styles.headerNavItem },
-];
-
 export const IconPicker = ({
   className,
   style,
@@ -21,7 +17,23 @@ export const IconPicker = ({
 }: Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> & {
   onSelect?: (data?: IconData) => void;
 }) => {
+  const t = useI18n();
   const [activePanel, setActivePanel] = useState<string>('Emoji');
+  const panels: Array<RadioItem> = useMemo(
+    () => [
+      {
+        value: 'Emoji',
+        label: t['com.affine.icon-picker.emoji'](),
+        className: styles.headerNavItem,
+      },
+      {
+        value: 'Icons',
+        label: t['com.affine.icon-picker.icons'](),
+        className: styles.headerNavItem,
+      },
+    ],
+    [t]
+  );
 
   return (
     <div className={clsx(styles.container, className)} style={{ ...style }}>
@@ -50,7 +62,7 @@ export const IconPicker = ({
             style={{ color: cssVarV2.text.secondary, fontWeight: 500 }}
             onClick={() => onSelect?.()}
           >
-            Remove
+            {t['com.affine.icon-picker.remove']()}
           </Button>
         </div>
       </header>

@@ -1,4 +1,5 @@
 import { createLitPortal } from '@blocksuite/affine/components/portal';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { ThemeProvider } from '@blocksuite/affine/shared/services';
 import {
@@ -81,6 +82,8 @@ export class AIItemList extends WithDisposable(LitElement) {
     });
 
     const aiItemContainer = aiItem.menuItem;
+    // Sub-menus open toward the inline end.
+    const isRtl = getComputedStyle(aiItemContainer).direction === 'rtl';
     const subMenuOffset = {
       mainAxis: item.subItemOffset?.[0] ?? SUBMENU_OFFSET_MAIN_AXIS,
       crossAxis: item.subItemOffset?.[1] ?? SUBMENU_OFFSET_CROSS_AXIS,
@@ -97,7 +100,7 @@ export class AIItemList extends WithDisposable(LitElement) {
       positionStrategy: 'absolute',
       computePosition: {
         referenceElement: aiItemContainer,
-        placement: 'right-start',
+        placement: isRtl ? 'left-start' : 'right-start',
         middleware: [flip(), offset(subMenuOffset)],
         autoUpdate: true,
       },
@@ -118,7 +121,7 @@ export class AIItemList extends WithDisposable(LitElement) {
         ${
           group.name
             ? html`<div class="group-name">
-                ${group.name.toLocaleUpperCase()}
+                ${t(group.name).toLocaleUpperCase()}
               </div>`
             : nothing
         }

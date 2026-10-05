@@ -13,6 +13,7 @@ import {
   ThemeProvider,
 } from '@blocksuite/affine-shared/services';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { type BlockComponent, BlockStdScope } from '@blocksuite/std';
 import { html, nothing } from 'lit';
 import { query } from 'lit/decorators.js';
@@ -128,7 +129,7 @@ export class EmbedEdgelessSyncedDocBlockComponent extends toEdgelessEmbedBlock(
                 ? html`
                     <div class="affine-embed-synced-doc-editor-empty">
                       <span>
-                        This is a linked doc, you can add content here.
+                        ${t('This is a linked doc, you can add content here.')}
                       </span>
                     </div>
                   `

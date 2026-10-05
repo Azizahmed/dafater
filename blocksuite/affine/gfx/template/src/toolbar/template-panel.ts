@@ -13,6 +13,7 @@ import {
 } from '@blocksuite/affine-shared/utils';
 import { EdgelessDraggableElementController } from '@blocksuite/affine-widget-edgeless-toolbar';
 import type { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import type { BlockComponent } from '@blocksuite/std';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
@@ -393,7 +394,7 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
           <input
             class="search-input"
             type="text"
-            placeholder="Search file or anything..."
+            placeholder=${t('Search file or anything...')}
             @input=${this._updateSearchKeyword}
             @cut=${stopPropagation}
             @copy=${stopPropagation}
@@ -462,7 +463,7 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
                             style=${styleMap({
                               opacity: isBeingDragged ? '0' : '1',
                             })}
-                            data-hover-text="Add"
+                            data-hover-text=${t('Add')}
                             @mousedown=${(e: MouseEvent) =>
                               this.draggableController.onMouseDown(e, {
                                 data: template,

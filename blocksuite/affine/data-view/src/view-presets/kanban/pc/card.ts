@@ -86,7 +86,7 @@ const styles = css`
 
   .card-ops {
     position: absolute;
-    right: 8px;
+    inset-inline-end: 8px;
     top: 8px;
     visibility: hidden;
     display: flex;

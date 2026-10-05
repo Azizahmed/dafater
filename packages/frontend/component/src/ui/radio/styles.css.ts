@@ -58,7 +58,7 @@ export const indicator = style({
   borderRadius: 'inherit',
   width: '100%',
   height: '100%',
-  left: 0,
+  insetInlineStart: 0,
   top: 0,
   background: cssVarV2('switch/buttonBackground/active'),
   boxShadow: cssVar('buttonShadow'),

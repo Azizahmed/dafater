@@ -17,30 +17,39 @@ type OpenDocAction = OpenDocConfigItem & {
   shortcut?: string;
 };
 
+// Labels are getters so menus read them in the current language.
 export const openDocActions: Array<OpenDocAction> = [
   {
     type: 'open-in-active-view',
-    label: I18n['com.affine.peek-view-controls.open-doc'](),
+    get label() {
+      return I18n['com.affine.peek-view-controls.open-doc']();
+    },
     icon: ExpandFullIcon(),
     enabled: true,
   },
   {
     type: 'open-in-new-view',
-    label: I18n['com.affine.peek-view-controls.open-doc-in-split-view'](),
+    get label() {
+      return I18n['com.affine.peek-view-controls.open-doc-in-split-view']();
+    },
     icon: SplitViewIcon(),
     shortcut: '⌘ + ⌥ + click',
     enabled: BUILD_CONFIG.isElectron,
   },
   {
     type: 'open-in-new-tab',
-    label: I18n['com.affine.peek-view-controls.open-doc-in-new-tab'](),
+    get label() {
+      return I18n['com.affine.peek-view-controls.open-doc-in-new-tab']();
+    },
     icon: OpenInNewIcon(),
     shortcut: '⌘ + click',
     enabled: true,
   },
   {
     type: 'open-in-center-peek',
-    label: I18n['com.affine.peek-view-controls.open-doc-in-center-peek'](),
+    get label() {
+      return I18n['com.affine.peek-view-controls.open-doc-in-center-peek']();
+    },
     icon: CenterPeekIcon(),
     shortcut: '⇧ + click',
     enabled: true,
@@ -52,10 +61,12 @@ export const openDocActions: Array<OpenDocAction> = [
 
 export function patchOpenDocExtension() {
   const openDocConfig: OpenDocConfig = {
-    items: openDocActions.map<OpenDocConfigItem>(({ type, label, icon }) => ({
-      type,
-      label,
-      icon,
+    items: openDocActions.map<OpenDocConfigItem>(action => ({
+      type: action.type,
+      get label() {
+        return action.label;
+      },
+      icon: action.icon,
     })),
   };
   return OpenDocExtension(openDocConfig);

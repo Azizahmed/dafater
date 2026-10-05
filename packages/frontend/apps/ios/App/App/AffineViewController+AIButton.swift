@@ -126,7 +126,7 @@ extension AFFiNEViewController: IntelligentsButtonDelegate {
   @MainActor
   private func showAIErrorAlert(_ error: Error) {
     let alert = UIAlertController(
-      title: "Unable to open AFFiNE AI",
+      title: "Unable to open Dafater AI",
       message: error.localizedDescription,
       preferredStyle: .alert
     )

@@ -300,6 +300,12 @@ export class RichText extends WithDisposable(ShadowlessElement) {
                   rangeRect.width -
                   (containerRect.left + containerRect.width) +
                   2;
+              } else if (
+                rangeRect.left < containerRect.left &&
+                getComputedStyle(this).direction === 'rtl'
+              ) {
+                // RTL text overflows to the left (scrollLeft goes negative).
+                scrollLeft -= containerRect.left - rangeRect.left + 2;
               }
               this.scrollLeft = scrollLeft;
             }

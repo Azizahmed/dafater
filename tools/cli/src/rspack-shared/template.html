@@ -1,7 +1,8 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="<%= HTML_LANG %>" dir="<%= HTML_DIR %>">
   <head>
     <meta charset="utf-8" />
+    <%= LOCALE_BOOT_SCRIPT %>
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=<%= VIEWPORT_FIT %>"
@@ -14,7 +15,7 @@
       content="black-translucent"
     />
 
-    <title>AFFiNE</title>
+    <title><%= TITLE %></title>
     <meta name="theme-color" content="#fafafa" />
     <%= PRECONNECT %>
     <link rel="manifest" href="/manifest.json" />
@@ -24,22 +25,11 @@
     <meta name="emotion-insertion-point" content="" />
     <meta property="description" content="<%= DESCRIPTION %>" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://app.affine.pro/" />
-    <meta
-      name="twitter:title"
-      content="AFFiNE: There can be more than Notion and Miro."
-    />
+    <meta name="twitter:title" content="<%= SOCIAL_TITLE %>" />
     <meta name="twitter:description" content="<%= DESCRIPTION %>" />
-    <meta name="twitter:site" content="@AffineOfficial" />
-    <meta name="twitter:image" content="https://affine.pro/og.jpeg" />
-    <meta
-      property="og:title"
-      content="AFFiNE: There can be more than Notion and Miro."
-    />
+    <meta property="og:title" content="<%= SOCIAL_TITLE %>" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="<%= DESCRIPTION %>" />
-    <meta property="og:url" content="https://app.affine.pro/" />
-    <meta property="og:image" content="https://affine.pro/og.jpeg" />
   </head>
 
   <body>

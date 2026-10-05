@@ -11,6 +11,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { EdgelessToolbarToolMixin } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { Bound, clamp } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import {
   EndPointArrowIcon,
@@ -42,7 +43,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
       width: 100%;
       height: 100%;
       gap: 8px;
-      padding-right: 2px;
+      padding-inline-end: 2px;
     }
     .full-divider {
       width: 8px;
@@ -78,12 +79,17 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      padding-right: 8px;
+      padding-inline-end: 8px;
     }
 
     .edgeless-frame-navigator-count {
       color: var(--affine-text-secondary-color);
       white-space: nowrap;
+      direction: ltr;
+      unicode-bidi: isolate;
+    }
+    :host(:dir(rtl)) .nav-arrow svg {
+      transform: scaleX(-1);
     }
     .edgeless-frame-navigator-stop {
       border: none;
@@ -161,10 +167,17 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
       }
     };
 
+    // In RTL the "previous" button sits on the right, so the arrows swap.
+    const isRtl = () => this.matches(':dir(rtl)');
+
     this.edgeless.bindHotKey(
       {
-        ArrowLeft: handleKeyIfFrameNavigator(() => this._previousFrame()),
-        ArrowRight: handleKeyIfFrameNavigator(() => this._nextFrame()),
+        ArrowLeft: handleKeyIfFrameNavigator(() =>
+          isRtl() ? this._nextFrame() : this._previousFrame()
+        ),
+        ArrowRight: handleKeyIfFrameNavigator(() =>
+          isRtl() ? this._previousFrame() : this._nextFrame()
+        ),
         Escape: handleKeyIfFrameNavigator(() => this._exitPresentation()),
       },
       {
@@ -246,7 +259,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
     const min = 0;
     const max = frames.length - 1;
     if (this._currentFrameIndex === frames.length - 1) {
-      toast(this.host, 'You have reached the last frame');
+      toast(this.host, t('You have reached the last frame'));
     } else {
       this._currentFrameIndex = clamp(this._currentFrameIndex + 1, min, max);
     }
@@ -257,7 +270,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
     const min = 0;
     const max = frames.length - 1;
     if (this._currentFrameIndex === 0) {
-      toast(this.host, 'You have reached the first frame');
+      toast(this.host, t('You have reached the first frame'));
     } else {
       this._currentFrameIndex = clamp(this._currentFrameIndex - 1, min, max);
     }
@@ -325,7 +338,9 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
             if (!store.getStorage('presentNoFrameToastShown')) {
               toast(
                 this.host,
-                'The presentation requires at least 1 frame. You can firstly create a frame.',
+                t(
+                  'The presentation requires at least 1 frame. You can firstly create a frame.'
+                ),
                 5000
               );
               store.setStorage('presentNoFrameToastShown', true);
@@ -398,8 +413,9 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
         }
       </style>
       <edgeless-tool-icon-button
+        class="nav-arrow"
         .iconContainerPadding=${0}
-        .tooltip=${'Previous'}
+        .tooltip=${t('Previous')}
         .iconSize=${'24px'}
         @click=${() => this._previousFrame()}
       >
@@ -415,7 +431,7 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
                 class="edgeless-frame-navigator-title"
                 @click=${() => this._moveToCurrentFrame()}
               >
-                ${frame?.props.title ?? 'no frame'}
+                ${frame?.props.title ?? t('no frame')}
               </span>`
         }
 
@@ -425,7 +441,8 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
       </div>
 
       <edgeless-tool-icon-button
-        .tooltip=${'Next'}
+        class="nav-arrow"
+        .tooltip=${t('Next')}
         @click=${() => this._nextFrame()}
         .iconContainerPadding=${0}
         .iconSize=${'24px'}
@@ -439,8 +456,8 @@ export class PresentationToolbar extends EdgelessToolbarToolMixin(
         <edgeless-tool-icon-button
           .tooltip=${
             document.fullscreenElement
-              ? 'Exit Full Screen'
-              : 'Enter Full Screen'
+              ? t('Exit Full Screen')
+              : t('Enter Full Screen')
           }
           @click=${() => this._toggleFullScreen()}
           .iconContainerPadding=${0}

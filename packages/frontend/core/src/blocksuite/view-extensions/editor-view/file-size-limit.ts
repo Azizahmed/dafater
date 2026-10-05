@@ -1,5 +1,5 @@
-import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
-import track from '@affine/track';
+import { notify } from '@affine/component';
+import { I18n } from '@affine/i18n';
 import type { Container } from '@blocksuite/affine/global/di';
 import {
   FileSizeLimitProvider,
@@ -8,9 +8,7 @@ import {
 import { Extension } from '@blocksuite/affine/store';
 import type { FrameworkProvider } from '@toeverything/infra';
 
-export function patchFileSizeLimitExtension(framework: FrameworkProvider) {
-  const workspaceDialogService = framework.get(WorkspaceDialogService);
-
+export function patchFileSizeLimitExtension(_framework: FrameworkProvider) {
   class AffineFileSizeLimitService
     extends Extension
     implements IFileSizeLimitService
@@ -18,12 +16,13 @@ export function patchFileSizeLimitExtension(framework: FrameworkProvider) {
     // 2GB
     maxFileSize = 2 * 1024 * 1024 * 1024;
 
+    // Dafater has no plans to upgrade to: just tell the user the file is too
+    // large (upstream opened the pricing plans here).
     onOverFileSize() {
-      workspaceDialogService.open('setting', {
-        activeTab: 'plans',
-        scrollAnchor: 'cloudPricingPlan',
+      notify.error({
+        title: I18n['com.affine.dafater.file-too-large.title'](),
+        message: I18n['com.affine.dafater.file-too-large.message'](),
       });
-      track.$.paywall.storage.viewPlans();
     }
 
     static override setup(di: Container) {

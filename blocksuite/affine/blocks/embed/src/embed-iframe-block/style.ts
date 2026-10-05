@@ -26,7 +26,7 @@ export const embedIframeBlockStyles = css`
 
   .affine-embed-iframe-source {
     position: absolute;
-    left: 8px;
+    inset-inline-start: 8px;
     bottom: 8px;
     padding: 2px 6px;
     background: rgba(0, 0, 0, 0.7);

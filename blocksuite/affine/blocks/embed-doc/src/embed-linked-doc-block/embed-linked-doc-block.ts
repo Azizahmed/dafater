@@ -33,6 +33,7 @@ import {
   referenceToNode,
 } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { ResetIcon } from '@blocksuite/icons/lit';
 import { BlockSelection } from '@blocksuite/std';
 import { Text } from '@blocksuite/store';
@@ -240,7 +241,9 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
   });
 
   get docTitle() {
-    return this.model.props.title || this.linkedDoc?.meta?.title || 'Untitled';
+    return (
+      this.model.props.title || this.linkedDoc?.meta?.title || t('Untitled')
+    );
   }
 
   get editorMode() {
@@ -354,18 +357,18 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
       : isLoading
         ? LoadingIcon()
         : this.icon$.value;
-    const title = isLoading ? 'Loading...' : this.title$;
+    const title = isLoading ? t('Loading...') : this.title$;
     const description = this.model.props.description$;
 
     const showDefaultNoteContent = isError || isLoading || isDeleted || isEmpty;
     const defaultNoteContent = isError
-      ? 'This linked doc failed to load.'
+      ? t('This linked doc failed to load.')
       : isLoading
         ? ''
         : isDeleted
-          ? 'This linked doc is deleted.'
+          ? t('This linked doc is deleted.')
           : isEmpty
-            ? 'Preview of the doc will be displayed here.'
+            ? t('Preview of the doc will be displayed here.')
             : '';
 
     const dateText =
@@ -435,13 +438,13 @@ export class EmbedLinkedDocBlockComponent extends EmbedBlockComponent<EmbedLinke
                         class="affine-embed-linked-doc-card-content-reload-button"
                         @click=${this.refreshData}
                       >
-                        ${ResetIcon()} <span>Reload</span>
+                        ${ResetIcon()} <span>${t('Reload')}</span>
                       </div>
                     </div>
                   `
                 : html`
                     <div class="affine-embed-linked-doc-content-date">
-                      <span>Updated</span>
+                      <span>${t('Updated')}</span>
 
                       <span>${dateText}</span>
                     </div>

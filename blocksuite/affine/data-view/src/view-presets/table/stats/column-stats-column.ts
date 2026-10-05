@@ -4,6 +4,7 @@ import {
   popMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { ArrowDownSmallIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -113,12 +114,12 @@ export class DatabaseColumnStatsCell extends SignalWatcher(
     const menus: MenuConfig[] = Object.entries(this.groups$.value).map(
       ([group, funcs]) => {
         return menu.subMenu({
-          name: group,
+          name: t(group),
           options: {
             items: Object.values(funcs).map(func => {
               return menu.action({
                 isSelected: func.type === this.column.statCalcOp$.value,
-                name: func.menuName ?? func.type,
+                name: func.menuName ? t(func.menuName) : func.type,
                 select: () => {
                   this.column.updateStatCalcOp(func.type);
                 },
@@ -133,7 +134,7 @@ export class DatabaseColumnStatsCell extends SignalWatcher(
         items: [
           menu.action({
             isSelected: !this.column.statCalcOp$.value,
-            name: 'None',
+            name: t('None'),
             select: () => {
               this.column.updateStatCalcOp();
             },
@@ -166,7 +167,7 @@ export class DatabaseColumnStatsCell extends SignalWatcher(
       return null;
     }
     return {
-      name: func.displayName,
+      name: func.displayName ? t(func.displayName) : undefined,
       value:
         func.impl?.(this.values$.value, {
           meta,
@@ -227,7 +228,7 @@ export class DatabaseColumnStatsCell extends SignalWatcher(
       <div class="content">
         ${
           !this.statsResult$.value
-            ? html`Calculate ${ArrowDownSmallIcon()}`
+            ? html`${t('Calculate')} ${ArrowDownSmallIcon()}`
             : html`
                 <span class="label">${this.statsResult$.value.name}</span>
                 <span class="value">${this.statsResult$.value.value} </span>

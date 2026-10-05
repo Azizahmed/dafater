@@ -23,6 +23,7 @@ import {
 import { propertyPresets } from '@blocksuite/data-view/property-presets';
 import { IS_MOBILE } from '@blocksuite/global/env';
 import { BlockSuiteError, ErrorCode } from '@blocksuite/global/exceptions';
+import { t } from '@blocksuite/global/i18n';
 import type { EditorHost } from '@blocksuite/std';
 import { type BlockModel } from '@blocksuite/store';
 import { computed, type ReadonlySignal, signal } from '@preact/signals-core';
@@ -219,7 +220,7 @@ export class DatabaseBlockDataSource extends DataSourceBase {
     return this._model.children[this._model.childMap.value.get(rowId) ?? -1];
   }
 
-  private newPropertyName(prefix = 'Column'): string {
+  private newPropertyName(prefix = t('Column')): string {
     let i = 1;
     const hasSameName = (name: string) => {
       return this._model.props.columns$.value.some(
@@ -357,7 +358,7 @@ export class DatabaseBlockDataSource extends DataSourceBase {
           data: defaultData,
           id: propertyId,
           type: propertyId,
-          name: meta.config.name,
+          name: t(meta.config.name),
         },
         index: -1,
       };
@@ -464,7 +465,7 @@ export class DatabaseBlockDataSource extends DataSourceBase {
 
   propertyNameGet(propertyId: string): string {
     if (propertyId === 'type') {
-      return 'Block Type';
+      return t('Block Type');
     }
     const result = this.getPropertyAndIndex(propertyId);
     if (!result) {

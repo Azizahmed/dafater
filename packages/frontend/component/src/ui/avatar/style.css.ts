@@ -42,37 +42,37 @@ const bottomAnimation = keyframes({
 });
 const middleAnimation = keyframes({
   '0%': {
-    left: '-30px',
+    insetInlineStart: '-30px',
     top: '-30px',
     transform: 'matrix(-0.48, -0.88, 0.8, -0.6, 0, 0)',
   },
   '16%': {
-    left: '-37px',
+    insetInlineStart: '-37px',
     top: '-37px',
     transform: 'matrix(-0.86, -0.52, 0.39, -0.92, 0, 0)',
   },
   '32%': {
-    left: '-20px',
+    insetInlineStart: '-20px',
     top: '-10px',
     transform: 'matrix(-1, -0.02, -0.12, -0.99, 0, 0)',
   },
   '48%': {
-    left: '-27px',
+    insetInlineStart: '-27px',
     top: '-2px',
     transform: 'matrix(-0.88, 0.48, -0.6, -0.8, 0, 0)',
   },
   '64%': {
-    left: '-20px',
+    insetInlineStart: '-20px',
     top: '-10px',
     transform: 'matrix(-1, -0.02, -0.12, -0.99, 0, 0)',
   },
   '80%': {
-    left: '-37px',
+    insetInlineStart: '-37px',
     top: '-37px',
     transform: 'matrix(-0.86, -0.52, 0.39, -0.92, 0, 0)',
   },
   '100%': {
-    left: '-30px',
+    insetInlineStart: '-30px',
     top: '-30px',
     transform: 'matrix(-0.48, -0.88, 0.8, -0.6, 0, 0)',
   },
@@ -191,7 +191,7 @@ export const hoverWrapper = style({
 });
 export const removeButton = style({
   position: 'absolute',
-  right: '-8px',
+  insetInlineEnd: '-8px',
   top: '-2px',
   visibility: 'hidden',
   zIndex: '1',

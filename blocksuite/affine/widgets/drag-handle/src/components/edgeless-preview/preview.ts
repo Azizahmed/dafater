@@ -1,4 +1,5 @@
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import {
   EmbedIcon,
   FrameIcon,
@@ -124,7 +125,7 @@ export class EdgelessDndPreviewElement extends LitElement {
         })}
       >
         ${icon({ width: '24px', height: '24px' })}
-        <span class="text">${name}</span>
+        <span class="text">${t(name)}</span>
       </div>`;
     });
 

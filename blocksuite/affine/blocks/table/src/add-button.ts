@@ -23,6 +23,7 @@ import {
 } from './add-button-css';
 import { DefaultColumnWidth, DefaultRowHeight } from './consts';
 import type { TableDataManager } from './table-data-manager';
+import { isRtl } from './utils';
 
 export const AddButtonComponentName = 'affine-table-add-button';
 export class AddButton extends SignalWatcher(
@@ -142,6 +143,8 @@ export class AddButton extends SignalWatcher(
     e.stopPropagation();
     const initialX = e.clientX;
     const initialY = e.clientY;
+    // Columns are added on the inline-end side: leftwards in an RTL table.
+    const xSign = isRtl(this) ? -1 : 1;
     const target = e.target as HTMLElement;
     const isColumn = target.closest('.column-add');
     const isRow = target.closest('.row-add');
@@ -167,7 +170,7 @@ export class AddButton extends SignalWatcher(
       emptyColumns = this.getEmptyColumns();
     }
     const onMouseMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - initialX;
+      const deltaX = (e.clientX - initialX) * xSign;
       const deltaY = e.clientY - initialY;
       const addColumn = isColumn || isRowColumn;
       const addRow = isRow || isRowColumn;

@@ -3,6 +3,7 @@
 import { type Server } from '@affine/core/modules/cloud';
 import type { WorkspaceMetadata } from '@affine/core/modules/workspace';
 import { ServerDeploymentType } from '@affine/graphql';
+import { getOrCreateI18n } from '@affine/i18n';
 import { LinkPreviewDetails } from '@blocksuite/affine/components/link-preview';
 import {
   type LinkPreviewCacheProvider,
@@ -21,6 +22,9 @@ import { LinkPreview, resolveShareTitle } from './link-preview';
 import { parseShareLinkPreview, readShareLinkPreview } from './preview';
 import { SharePreviewRouteOwner } from './preview-route-owner';
 import type { PendingShareItem, ShareLinkPreview } from './types';
+
+// Registers the i18next instance used by `useI18n()` (English).
+getOrCreateI18n();
 
 const cache: LinkPreviewCacheProvider = {
   get: () => undefined,
@@ -231,7 +235,7 @@ describe('link preview transport and route ownership', () => {
     expect(fetch).toHaveBeenCalledTimes(6);
   });
 
-  test('keeps the official route frozen while destinations change', () => {
+  test('never routes official previews to AFFiNE while destinations change', () => {
     const owner = new SharePreviewRouteOwner({
       ...item(),
       previewRoute: 'official',
@@ -241,9 +245,8 @@ describe('link preview transport and route ownership', () => {
     owner.selectWorkspace(workspace('self'), [
       server('self', 'https://self.example', ServerDeploymentType.Selfhosted),
     ]);
-    expect(owner.routeEndpoint).toBe(
-      'https://app.affine.pro/api/worker/link-preview'
-    );
+    // Dafater: no AFFiNE preview service; the official route stays unresolved.
+    expect(owner.routeEndpoint).toBeUndefined();
     expect(owner.generation).toBe(generation);
   });
 
@@ -333,7 +336,7 @@ describe('link preview transport and route ownership', () => {
       'cloud route',
       workspace('cloud'),
       [server('cloud', 'https://cloud.example/', ServerDeploymentType.Affine)],
-      'https://app.affine.pro/api/worker/link-preview',
+      'https://cloud.example/api/worker/link-preview',
     ],
     ['local deferred route', workspace('local'), [], undefined],
     ['missing server', workspace('missing'), [], undefined],
@@ -422,9 +425,10 @@ describe('link preview transport and route ownership', () => {
     const second = owner.load();
 
     expect(second).not.toBe(first);
+    // Both requests go through the selected workspace's own server.
     expect(fetch.mock.calls.map(([url]) => url)).toEqual([
       '/api/worker/link-preview',
-      'https://app.affine.pro/api/worker/link-preview',
+      '/api/worker/link-preview',
     ]);
   });
 

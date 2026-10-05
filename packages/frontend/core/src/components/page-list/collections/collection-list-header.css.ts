@@ -3,7 +3,9 @@ import { style } from '@vanilla-extract/css';
 export const collectionListHeader = style({
   height: 100,
   alignItems: 'center',
-  padding: '48px 16px 20px 24px',
+  paddingBlock: '48px 20px',
+  paddingInlineStart: '24px',
+  paddingInlineEnd: '16px',
   overflow: 'hidden',
   display: 'flex',
   justifyContent: 'space-between',

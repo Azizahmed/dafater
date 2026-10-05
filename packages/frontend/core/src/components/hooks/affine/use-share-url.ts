@@ -167,7 +167,9 @@ export const useSharingUrl = ({ workspaceId, pageId }: UseSharingUrl) => {
           });
         track.$.sharePanel.$.copyShareLink({ type });
       } else {
-        notify.error({ title: 'Network not available' });
+        notify.error({
+          title: t['com.affine.share-menu.copy-link.network-unavailable'](),
+        });
       }
     },
     [pageId, serverService, t, workspaceId]

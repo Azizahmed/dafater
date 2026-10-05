@@ -9,6 +9,7 @@ import {
 import { effect, Entity, fromPromise, LiveData } from '@toeverything/infra';
 import { catchError, EMPTY, exhaustMap } from 'rxjs';
 
+import { arabase, setLocalizedCssVariables } from '../../arabase';
 import type { GlobalCache } from '../../storage';
 
 export type LanguageInfo = {
@@ -20,7 +21,9 @@ export type LanguageInfo = {
 
 const logger = new DebugLogger('i18n');
 
-function mapLanguageInfo(language: Language = 'en'): LanguageInfo {
+function mapLanguageInfo(
+  language: Language = arabase.defaultLocale as Language
+): LanguageInfo {
   const languageInfo = SUPPORTED_LANGUAGES[language];
 
   return {
@@ -51,25 +54,42 @@ export class I18n extends Entity {
     // @ts-expect-error same key indexing
     Object.keys(SUPPORTED_LANGUAGES).map(mapLanguageInfo);
 
+  private initialized = false;
+
   constructor(private readonly cache: GlobalCache) {
     super();
     this.i18n.on('languageChanged', (language: Language) => {
-      this.applyDocumentLanguage(language);
-      this.cache.set('i18n_lng', language);
+      this.applyLanguage(language);
     });
   }
 
+  /**
+   * Applies the stored (or default) language. Idempotent, and must run
+   * before the first render: bundled languages switch synchronously, so the
+   * first frame already has the right strings, `lang` and `dir`.
+   */
   init() {
-    const language = this.currentLanguageKey$.value ?? 'en';
-    this.applyDocumentLanguage(language);
-    this.changeLanguage(language);
+    if (this.initialized) return;
+    this.initialized = true;
+    arabase.installStyles();
+    const language = arabase.resolveInitialLocale(
+      this.cache.get<Language>('i18n_lng')
+    ) as Language;
+    if (this.i18n.language === language) {
+      this.applyLanguage(language);
+    } else {
+      this.changeLanguage(language);
+    }
   }
 
-  private applyDocumentLanguage(language: Language) {
-    document.documentElement.lang = language;
-    document.documentElement.dir = SUPPORTED_LANGUAGES[language]?.rtl
-      ? 'rtl'
-      : 'ltr';
+  private applyLanguage(language: Language) {
+    arabase.setLocale(language);
+    setLocalizedCssVariables({
+      '--affine-doc-title-placeholder': this.i18n.t('Title'),
+    });
+    if (this.cache.get('i18n_lng') !== language) {
+      this.cache.set('i18n_lng', language);
+    }
   }
 
   changeLanguage = effect(
@@ -78,8 +98,10 @@ export class I18n extends Entity {
         catchError(error => {
           notify({
             theme: 'error',
-            title: 'Failed to change language',
-            message: 'Error occurs when loading language files',
+            title: this.i18n.t('com.affine.i18n.change-language-failed.title'),
+            message: this.i18n.t(
+              'com.affine.i18n.change-language-failed.message'
+            ),
           });
 
           logger.error('Failed to change language', error);

@@ -1,4 +1,5 @@
 import { Button, Modal, SafeArea, Scrollable } from '@affine/component';
+import { useI18n } from '@affine/i18n';
 import { ImageIcon, LinkIcon, TextIcon } from '@blocksuite/icons/rc';
 
 import { PageHeader } from '../page-header';
@@ -9,32 +10,39 @@ import type { PendingShareItem, ShareInboxProvider } from './types';
 import { useShareImport } from './use-share-import';
 export type { ShareInboxProvider } from './types';
 
-const errorMessage = (error?: string) => {
+const errorMessage = (t: ReturnType<typeof useI18n>, error?: string) => {
   switch (error) {
     case 'workspace-not-found':
-      return 'The selected workspace is no longer available. Choose another workspace.';
+      return t['com.affine.mobile.share-import.error.workspace-not-found']();
     case 'permission-denied':
-      return 'You no longer have permission to create documents in this workspace.';
+      return t['com.affine.mobile.share-import.error.permission-denied']();
     case 'destination-not-found':
-      return 'One or more selected tags or the collection no longer exist.';
+      return t['com.affine.mobile.share-import.error.destination-not-found']();
     case 'offline-confirmation-required':
-      return 'AFFiNE could not confirm the latest workspace state.';
+      return t[
+        'com.affine.mobile.share-import.error.offline-confirmation-required'
+      ]();
     case 'attachment-missing':
-      return 'The shared attachment is no longer available.';
+      return t['com.affine.mobile.share-import.error.attachment-missing']();
     case 'attachment-too-large':
-      return 'The shared attachment is too large for this workspace.';
+      return t['com.affine.mobile.share-import.error.attachment-too-large']();
     case 'attachment-write-failed':
-      return 'AFFiNE could not store this attachment in the selected workspace. Try again or choose another workspace.';
+      return t[
+        'com.affine.mobile.share-import.error.attachment-write-failed'
+      ]();
     case 'import-conflict':
-      return 'This share conflicts with an existing document and was not changed.';
+      return t['com.affine.mobile.share-import.error.import-conflict']();
     case 'completion-failed':
-      return 'This share was saved, but AFFiNE could not clear it from the inbox. Try again.';
+      return t['com.affine.mobile.share-import.error.completion-failed']();
     default:
       return undefined;
   }
 };
 
-const sourceDetails = (item: PendingShareItem) => {
+const sourceDetails = (
+  t: ReturnType<typeof useI18n>,
+  item: PendingShareItem
+) => {
   if (item.content.kind === 'url') {
     return {
       title: item.title,
@@ -44,18 +52,24 @@ const sourceDetails = (item: PendingShareItem) => {
   if (item.content.kind === 'image') {
     return {
       title: item.title,
-      detail: item.attachments?.[0]?.fileName ?? 'Shared image',
+      detail:
+        item.attachments?.[0]?.fileName ??
+        t['com.affine.mobile.share-import.shared-image'](),
     };
   }
   if (item.content.kind === 'pdf') {
     return {
       title: item.title,
-      detail: item.attachments?.[0]?.fileName ?? 'Shared PDF',
+      detail:
+        item.attachments?.[0]?.fileName ??
+        t['com.affine.mobile.share-import.shared-pdf'](),
     };
   }
   return {
     title: item.title,
-    detail: `${item.content.text?.length ?? 0} characters`,
+    detail: t['com.affine.mobile.share-import.characters']({
+      count: String(item.content.text?.length ?? 0),
+    }),
   };
 };
 
@@ -81,6 +95,7 @@ export const ShareImportController = ({
 }: {
   provider: ShareInboxProvider;
 }) => {
+  const t = useI18n();
   const {
     entry,
     setEntry,
@@ -119,16 +134,19 @@ export const ShareImportController = ({
           <PageHeader
             suffix={
               <Button variant="plain" onClick={() => setEntry(undefined)}>
-                Not now
+                {t['com.affine.mobile.share-import.not-now']()}
               </Button>
             }
           >
-            <span className={styles.headerTitle}>Update required</span>
+            <span className={styles.headerTitle}>
+              {t['com.affine.mobile.share-import.update-required.title']()}
+            </span>
           </PageHeader>
           <main className={styles.main}>
             <div className={styles.warning}>
-              Update AFFiNE to import this shared item. It will stay in your
-              inbox until then.
+              {t[
+                'com.affine.mobile.share-import.update-required.description'
+              ]()}
             </div>
           </main>
         </div>
@@ -144,7 +162,10 @@ export const ShareImportController = ({
   const workspaceOptions: SelectionPageOption[] = workspaces.map(workspace => ({
     id: `${workspace.flavour}:${workspace.id}`,
     label: workspacesService.getProfile(workspace).name$.value || workspace.id,
-    detail: workspace.flavour === 'local' ? 'On this device' : 'Cloud',
+    detail:
+      workspace.flavour === 'local'
+        ? t['com.affine.mobile.share-import.on-this-device']()
+        : t['com.affine.workspace-card.status.cloud'](),
   }));
   const tagOptions: SelectionPageOption[] =
     destinations?.tags.map(tag => ({
@@ -153,7 +174,7 @@ export const ShareImportController = ({
       color: tag.color,
     })) ?? [];
   const collectionOptions: SelectionPageOption[] = [
-    { id: '', label: 'No collection' },
+    { id: '', label: t['com.affine.mobile.share-import.no-collection']() },
     ...(destinations?.collections.map(collection => ({
       id: collection.id,
       label: collection.name,
@@ -166,17 +187,17 @@ export const ShareImportController = ({
       .map(tag => tag.name) ?? [];
   const collectionName =
     destinations?.collections.find(collection => collection.id === collectionId)
-      ?.name ?? 'None';
+      ?.name ?? t['com.affine.mobile.share-import.none']();
   const requiresOfflineConfirmation =
     item.lastError === 'offline-confirmation-required' ||
     destinations?.verification === 'unavailable';
-  const source = sourceDetails(item);
+  const source = sourceDetails(t, item);
 
   const content = (() => {
     if (page === 'workspace') {
       return (
         <SelectionPage
-          title="Workspace"
+          title={t['com.affine.settings.workspace']()}
           options={workspaceOptions}
           selectedIds={selectedWorkspaceKey ? [selectedWorkspaceKey] : []}
           onBack={() => setPage('main')}
@@ -213,7 +234,7 @@ export const ShareImportController = ({
     if (page === 'tags') {
       return (
         <SelectionPage
-          title="Tags"
+          title={t['Tags']()}
           multiple
           options={tagOptions}
           selectedIds={tagIds}
@@ -233,7 +254,7 @@ export const ShareImportController = ({
     if (page === 'collection') {
       return (
         <SelectionPage
-          title="Collection"
+          title={t['com.affine.m.selector.type-collection']()}
           options={collectionOptions}
           selectedIds={[collectionId]}
           onBack={() => setPage('main')}
@@ -249,7 +270,7 @@ export const ShareImportController = ({
         <div className={styles.page}>
           <PageHeader back backAction={() => setPage('main')}>
             <span className={styles.headerTitle}>
-              Use local workspace data?
+              {t['com.affine.mobile.share-import.offline.title']()}
             </span>
           </PageHeader>
           <main className={styles.confirmation}>
@@ -257,9 +278,7 @@ export const ShareImportController = ({
               {selectedWorkspaceName}
             </h2>
             <p className={styles.confirmationText}>
-              AFFiNE could not confirm that this workspace, your permissions,
-              and its destinations are current online. Saving will use the most
-              recent data available on this device.
+              {t['com.affine.mobile.share-import.offline.description']()}
             </p>
           </main>
           <SafeArea bottom className={styles.footer}>
@@ -269,7 +288,9 @@ export const ShareImportController = ({
               disabled={isSaving}
               onClick={() => void save(true).catch(console.error)}
             >
-              {isSaving ? 'Saving…' : 'Save using local data'}
+              {isSaving
+                ? t['com.affine.mobile.share-import.saving']()
+                : t['com.affine.mobile.share-import.save-using-local-data']()}
             </Button>
           </SafeArea>
         </div>
@@ -281,11 +302,13 @@ export const ShareImportController = ({
         <PageHeader
           suffix={
             <Button variant="plain" onClick={() => setEntry(undefined)}>
-              Not now
+              {t['com.affine.mobile.share-import.not-now']()}
             </Button>
           }
         >
-          <span className={styles.headerTitle}>Choose where to save</span>
+          <span className={styles.headerTitle}>
+            {t['com.affine.mobile.share-import.choose-destination']()}
+          </span>
         </PageHeader>
 
         <Scrollable.Root className={styles.scrollArea}>
@@ -328,9 +351,12 @@ export const ShareImportController = ({
                   type="button"
                   onClick={() => setPage('workspace')}
                 >
-                  <span className={styles.rowLabel}>Workspace</span>
+                  <span className={styles.rowLabel}>
+                    {t['com.affine.settings.workspace']()}
+                  </span>
                   <span className={styles.rowValue}>
-                    {selectedWorkspaceName ?? 'Choose'}
+                    {selectedWorkspaceName ??
+                      t['com.affine.mobile.share-import.choose']()}
                     <span className={styles.rowArrow}>›</span>
                   </span>
                 </button>
@@ -342,12 +368,17 @@ export const ShareImportController = ({
                   onClick={() => setPage('tags')}
                 >
                   <span className={styles.rowLabel}>
-                    Tags <span className={styles.optional}>Optional</span>
+                    {t['Tags']()}{' '}
+                    <span className={styles.optional}>
+                      {t['com.affine.mobile.share-import.optional']()}
+                    </span>
                   </span>
                   <span className={styles.rowValue}>
                     {selectedTagNames.length
-                      ? `${selectedTagNames.length} selected`
-                      : 'None'}
+                      ? t['com.affine.mobile.share-import.selected-count']({
+                          count: String(selectedTagNames.length),
+                        })
+                      : t['com.affine.mobile.share-import.none']()}
                     <span className={styles.rowArrow}>›</span>
                   </span>
                 </button>
@@ -359,7 +390,10 @@ export const ShareImportController = ({
                   onClick={() => setPage('collection')}
                 >
                   <span className={styles.rowLabel}>
-                    Collection <span className={styles.optional}>Optional</span>
+                    {t['com.affine.m.selector.type-collection']()}{' '}
+                    <span className={styles.optional}>
+                      {t['com.affine.mobile.share-import.optional']()}
+                    </span>
                   </span>
                   <span className={styles.rowValue}>
                     {collectionName}
@@ -369,16 +403,18 @@ export const ShareImportController = ({
               </section>
 
               {isLoadingDestinations ? (
-                <div className={styles.status}>Checking workspace…</div>
+                <div className={styles.status}>
+                  {t['com.affine.mobile.share-import.checking-workspace']()}
+                </div>
               ) : requiresOfflineConfirmation ? (
                 <div className={styles.warning}>
-                  The latest online workspace state could not be confirmed.
+                  {t['com.affine.mobile.share-import.offline-warning']()}
                 </div>
               ) : null}
 
-              {errorMessage(item.lastError) ? (
+              {errorMessage(t, item.lastError) ? (
                 <div className={styles.error}>
-                  {errorMessage(item.lastError)}
+                  {errorMessage(t, item.lastError)}
                 </div>
               ) : null}
             </main>
@@ -403,7 +439,9 @@ export const ShareImportController = ({
               }
             }}
           >
-            {isSaving ? 'Saving…' : 'Save'}
+            {isSaving
+              ? t['com.affine.mobile.share-import.saving']()
+              : t['Save']()}
           </Button>
         </SafeArea>
       </div>

@@ -42,34 +42,40 @@ import * as styles from './styles.css';
 export { PureWorkspaceCard } from './pure-workspace-card';
 
 const RemoteWorkspaceStatus = ({ selfHosted }: { selfHosted?: boolean }) => {
+  const t = useI18n();
   const Icon = selfHosted ? SelfhostIcon : CloudWorkspaceIcon;
   return (
     <>
       <Icon />
-      {selfHosted ? 'AFFiNE' : 'Cloud'}
+      {selfHosted
+        ? t['com.affine.brand.name']()
+        : t['com.affine.workspace-card.status.cloud']()}
     </>
   );
 };
 
 const SyncingWorkspaceStatus = ({ progress }: { progress?: number }) => {
+  const t = useI18n();
   return (
     <>
       <Loading progress={progress} speed={0} />
-      Syncing...
+      {t['com.affine.workspace-card.status.syncing']()}
     </>
   );
 };
 
 const UnSyncWorkspaceStatus = () => {
+  const t = useI18n();
   return (
     <>
       <UnsyncIcon />
-      Wait for upload
+      {t['com.affine.workspace-card.status.wait-for-upload']()}
     </>
   );
 };
 
 const LocalWorkspaceStatus = () => {
+  const t = useI18n();
   return (
     <>
       {!BUILD_CONFIG.isElectron ? (
@@ -77,21 +83,23 @@ const LocalWorkspaceStatus = () => {
       ) : (
         <LocalWorkspaceIcon />
       )}
-      Local
+      {t['Local']()}
     </>
   );
 };
 
 const OfflineStatus = () => {
+  const t = useI18n();
   return (
     <>
       <NoNetworkIcon />
-      Offline
+      {t['com.affine.workspace-card.status.offline']()}
     </>
   );
 };
 
 const useSyncEngineSyncProgress = (meta: WorkspaceMetadata) => {
+  const t = useI18n();
   const isOnline = useSystemOnline();
   const workspace = useWorkspace(meta);
   const serversService = useService(ServersService);
@@ -106,7 +114,7 @@ const useSyncEngineSyncProgress = (meta: WorkspaceMetadata) => {
     serverConfig?.type === ServerDeploymentType.Selfhosted;
   const syncTarget = isSelfHostedServer
     ? getSelfHostedServerName(serverConfig.serverName)
-    : 'AFFiNE Cloud';
+    : t['AFFiNE Cloud']();
 
   const engineState = useLiveData(
     useMemo(() => {
@@ -125,34 +133,44 @@ const useSyncEngineSyncProgress = (meta: WorkspaceMetadata) => {
   const syncing = engineState.syncing > 0 || engineState.syncRetrying;
 
   let content;
-  // TODO(@eyhn): add i18n
   if (workspace.flavour === 'local') {
     if (!BUILD_CONFIG.isElectron) {
-      content = 'This is a local demo workspace.';
+      content = t['com.affine.workspace-card.sync.local-demo']();
     } else {
-      content = 'Saved locally';
+      content = t['com.affine.workspace-card.sync.saved-locally']();
     }
   } else if (!isOnline) {
-    content = 'Disconnected, please check your network connection';
+    content = t['com.affine.workspace-card.sync.disconnected']();
   } else if (engineState.syncRetrying && engineState.syncErrorMessage) {
-    content = `${engineState.syncErrorMessage}, reconnecting.`;
+    content = t['com.affine.workspace-card.sync.error-reconnecting']({
+      error: engineState.syncErrorMessage,
+    });
   } else if (engineState.syncRetrying) {
-    content = 'Sync disconnected due to unexpected issues, reconnecting.';
+    content = t['com.affine.workspace-card.sync.reconnecting']();
   } else if (syncing) {
-    content =
-      `Syncing with ${syncTarget}` +
-      (progress ? ` (${Math.floor(progress * 100)}%)` : '');
+    content = progress
+      ? t['com.affine.workspace-card.sync.syncing-with-progress']({
+          target: syncTarget,
+          progress: String(Math.floor(progress * 100)),
+        })
+      : t['com.affine.workspace-card.sync.syncing-with']({
+          target: syncTarget,
+        });
   } else {
-    content = `Synced with ${syncTarget}`;
+    content = t['com.affine.workspace-card.sync.synced-with']({
+      target: syncTarget,
+    });
   }
 
   const CloudWorkspaceSyncStatus = () => {
     if (syncing) {
-      return SyncingWorkspaceStatus({
-        progress: progress ? Math.max(progress, 0.2) : undefined,
-      });
+      return (
+        <SyncingWorkspaceStatus
+          progress={progress ? Math.max(progress, 0.2) : undefined}
+        />
+      );
     } else if (engineState.syncRetrying) {
-      return UnSyncWorkspaceStatus();
+      return <UnSyncWorkspaceStatus />;
     } else {
       return <RemoteWorkspaceStatus selfHosted={isSelfHostedServer} />;
     }
@@ -392,7 +410,9 @@ export const WorkspaceCard = forwardRef<
             )}
           </div>
           {information?.isEmpty && information.isOwner ? (
-            <Button onClick={onRemoveWorkspace}>Remove</Button>
+            <Button onClick={onRemoveWorkspace}>
+              {t['com.affine.workspace-card.remove']()}
+            </Button>
           ) : null}
           <div className={styles.showOnCardHover}>
             {onClickEnableCloud && workspaceMetadata.flavour === 'local' ? (
@@ -400,7 +420,7 @@ export const WorkspaceCard = forwardRef<
                 className={styles.enableCloudButton}
                 onClick={onEnableCloud}
               >
-                Enable Cloud
+                {t['com.affine.workspace-card.enable-cloud']()}
               </Button>
             ) : null}
 

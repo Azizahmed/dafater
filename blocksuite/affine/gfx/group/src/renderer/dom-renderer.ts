@@ -1,4 +1,5 @@
 import { DomElementRendererExtension } from '@blocksuite/affine-block-surface';
+import { isRTL } from '@blocksuite/affine-gfx-text';
 import { FontWeight, type GroupElementModel } from '@blocksuite/affine-model';
 
 import {
@@ -34,6 +35,7 @@ export const GroupDomRendererExtension = DomElementRendererExtension(
       titleElement.style.fontSize = `${GROUP_TITLE_FONT_SIZE}px`;
       titleElement.style.color = renderer.getPropertyValue('--affine-blue');
       titleElement.style.textAlign = 'left';
+      titleElement.dir = isRTL(text) ? 'rtl' : 'ltr';
       titleElement.style.padding = `${GROUP_TITLE_PADDING[0]}px ${GROUP_TITLE_PADDING[1]}px`;
       titleElement.textContent = text;
       domElement.replaceChildren(titleElement);

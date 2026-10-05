@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { ShadowlessElement } from '@blocksuite/affine/std';
 import { WebIcon } from '@blocksuite/icons/lit';
@@ -42,7 +43,7 @@ export class WebCrawlTool extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     return html`
       <tool-call-card
-        .name=${`Reading the website "${this.data.args.url}"`}
+        .name=${t('Reading the website "{url}"', { url: this.data.args.url })}
         .icon=${WebIcon()}
       ></tool-call-card>
     `;
@@ -58,7 +59,7 @@ export class WebCrawlTool extends WithDisposable(ShadowlessElement) {
       const { favicon, title, content } = result[0];
       return html`
         <tool-result-card
-          .name=${'The reading is complete, and this webpage has been read'}
+          .name=${t('The reading is complete, and this webpage has been read')}
           .icon=${WebIcon()}
           .footerIcons=${favicon ? [favicon] : []}
           .results=${[
@@ -75,7 +76,7 @@ export class WebCrawlTool extends WithDisposable(ShadowlessElement) {
 
     return html`
       <tool-call-failed
-        .name=${'Web reading failed'}
+        .name=${t('Web reading failed')}
         .icon=${WebIcon()}
       ></tool-call-failed>
     `;

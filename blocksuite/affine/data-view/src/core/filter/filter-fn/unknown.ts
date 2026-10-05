@@ -1,13 +1,15 @@
-import { t } from '../../logical/type-presets.js';
+import { t } from '@blocksuite/global/i18n';
+
+import { t as types } from '../../logical/type-presets.js';
 import { createFilter } from './create.js';
 
 export const unknownFilter = [
   createFilter({
     name: 'isNotEmpty',
-    self: t.unknown.instance(),
+    self: types.unknown.instance(),
     args: [] as const,
     label: 'Is not empty',
-    shortString: () => ': Is not empty',
+    shortString: () => `: ${t('Is not empty')}`,
     impl: self => {
       if (Array.isArray(self)) {
         return self.length > 0;
@@ -20,10 +22,10 @@ export const unknownFilter = [
   }),
   createFilter({
     name: 'isEmpty',
-    self: t.unknown.instance(),
+    self: types.unknown.instance(),
     args: [] as const,
     label: 'Is empty',
-    shortString: () => ': Is empty',
+    shortString: () => `: ${t('Is empty')}`,
     impl: self => {
       if (Array.isArray(self)) {
         return self.length === 0;

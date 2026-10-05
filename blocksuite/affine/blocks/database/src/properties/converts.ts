@@ -6,6 +6,7 @@ import {
 import { presetPropertyConverts } from '@blocksuite/data-view/property-presets';
 import { propertyModelPresets } from '@blocksuite/data-view/property-pure-presets';
 import { clamp } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { nanoid, Text } from '@blocksuite/store';
 
 import { richTextPropertyModelConfig } from './rich-text/define.js';
@@ -109,7 +110,7 @@ export const databasePropertyConverts = [
     richTextPropertyModelConfig,
     propertyModelPresets.checkboxPropertyModelConfig,
     (_property, cells) => {
-      const truthyValues = new Set(['yes', 'true']);
+      const truthyValues = new Set(['yes', 'true', t('Yes').toLowerCase()]);
       return {
         property: {},
         cells: cells.map(v =>
@@ -124,7 +125,7 @@ export const databasePropertyConverts = [
     (_property, cells) => {
       return {
         property: {},
-        cells: cells.map(v => new Text(v ? 'Yes' : 'No').yText),
+        cells: cells.map(v => new Text(v ? t('Yes') : t('No')).yText),
       };
     }
   ),

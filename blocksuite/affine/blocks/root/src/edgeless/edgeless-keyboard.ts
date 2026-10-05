@@ -50,6 +50,7 @@ import {
 import { matchModels } from '@blocksuite/affine-shared/utils';
 import { IS_MAC } from '@blocksuite/global/env';
 import { Bound, getCommonBound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { SurfaceSelection, TextSelection } from '@blocksuite/std';
 import {
   type BaseTool,
@@ -301,7 +302,7 @@ export class EdgelessPageKeyboardManager extends PageKeyboardManager {
             return;
           }
 
-          toast(this.rootComponent.host, 'Zoom to selection');
+          toast(this.rootComponent.host, t('Zoom to selection'));
 
           this.gfx.viewport.setViewportByBound(
             bound,

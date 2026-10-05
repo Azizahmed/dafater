@@ -14,6 +14,7 @@ import {
 import { matchModels } from '@blocksuite/affine-shared/utils';
 import { getRootBlock } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   EditIcon,
   InsertIntoPageIcon,
@@ -64,7 +65,7 @@ export const groupToolbarConfig = {
           lastNoteId
         );
 
-        toast(ctx.host, 'Group has been inserted into doc');
+        toast(ctx.host, t('Group has been inserted into doc'));
       },
     },
     {

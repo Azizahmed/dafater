@@ -1,4 +1,5 @@
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { scrollbarStyle } from '@blocksuite/affine/shared/styles';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -19,7 +20,6 @@ interface GroupedSessions {
 type HistorySessionWithMessages = BlockSuitePresets.AIRecentSession &
   Partial<Pick<CopilotChatHistoryFragment, 'messages'>>;
 
-const DEFAULT_SESSION_TITLE = 'New chat';
 const TITLE_MAX_LENGTH = 28;
 
 function truncateSessionTitle(text: string) {
@@ -34,7 +34,7 @@ function deriveSessionTitle(session: HistorySessionWithMessages) {
     message => message.role === 'user'
   );
   const raw = firstUserMessage?.content?.trim();
-  if (!raw) return DEFAULT_SESSION_TITLE;
+  if (!raw) return t('New chat');
   const newlineIdx = raw.indexOf('\n');
   return truncateSessionTitle(
     newlineIdx === -1 ? raw : raw.slice(0, newlineIdx)
@@ -114,6 +114,7 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        unicode-bidi: plaintext;
       }
 
       .ai-session-doc {
@@ -140,12 +141,13 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          unicode-bidi: plaintext;
         }
       }
 
       .ai-session-item-delete {
         position: absolute;
-        right: 2px;
+        inset-inline-end: 2px;
         top: 50%;
         transform: translateY(-50%);
         display: flex;
@@ -298,7 +300,7 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
               <div class="ai-session-title">
                 ${sessionTitle}
                 <affine-tooltip .offsetX=${60}>
-                  Click to open this chat
+                  ${t('Click to open this chat')}
                 </affine-tooltip>
               </div>
               ${
@@ -314,7 +316,7 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
                 }}
               >
                 ${DeleteIcon()}
-                <affine-tooltip>Delete</affine-tooltip>
+                <affine-tooltip>${t('Delete')}</affine-tooltip>
               </div>
             </div>
           `;
@@ -336,14 +338,14 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
     >
       ${docIcon}
       <span class="doc-title"> ${this.docDisplayConfig.getTitle(docId)} </span>
-      <affine-tooltip>Open this doc</affine-tooltip>
+      <affine-tooltip>${t('Open this doc')}</affine-tooltip>
     </div>`;
   }
 
   private renderLoading() {
     return html`
       <div class="loading-container">
-        <div class="loading-title">Loading history...</div>
+        <div class="loading-title">${t('Loading history...')}</div>
       </div>
     `;
   }
@@ -351,7 +353,7 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
   private renderEmpty() {
     return html`
       <div class="empty-container">
-        <div class="empty-title">Empty history</div>
+        <div class="empty-title">${t('Empty history')}</div>
       </div>
     `;
   }
@@ -377,11 +379,11 @@ export class AISessionHistory extends WithDisposable(ShadowlessElement) {
 
     const groupedSessions = this.groupSessionsByTime(otherSessions);
     return html`
-      ${this.renderSessionGroup('Current document', currentDocSessions)}
-      ${this.renderSessionGroup('Today', groupedSessions.today)}
-      ${this.renderSessionGroup('Last 7 days', groupedSessions.last7Days)}
-      ${this.renderSessionGroup('Last 30 days', groupedSessions.last30Days)}
-      ${this.renderSessionGroup('Older', groupedSessions.older)}
+      ${this.renderSessionGroup(t('Current document'), currentDocSessions)}
+      ${this.renderSessionGroup(t('Today'), groupedSessions.today)}
+      ${this.renderSessionGroup(t('Last 7 days'), groupedSessions.last7Days)}
+      ${this.renderSessionGroup(t('Last 30 days'), groupedSessions.last30Days)}
+      ${this.renderSessionGroup(t('Older'), groupedSessions.older)}
     `;
   }
 

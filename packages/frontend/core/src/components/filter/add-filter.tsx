@@ -4,6 +4,7 @@ import {
   Menu,
   MenuItem,
   MenuSeparator,
+  mirrorInRtl,
 } from '@affine/component';
 import type { FilterParams } from '@affine/core/modules/collection-rules';
 import { WorkspacePropertyService } from '@affine/core/modules/workspace-property';
@@ -44,7 +45,7 @@ export const AddFilterMenu = ({
       <div className={styles.selectHeaderContainer}>
         {onBack && (
           <IconButton onClick={onBack}>
-            <ArrowLeftBigIcon />
+            <ArrowLeftBigIcon className={mirrorInRtl} />
           </IconButton>
         )}
         <div className={styles.variableSelectTitleStyle}>

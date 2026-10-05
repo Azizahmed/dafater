@@ -2,6 +2,11 @@ import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
 import { Path, ProjectRoot } from '@affine-tools/utils/path';
+import {
+  createBootScript,
+  htmlRootAttributes,
+  htmlRootAttributesString,
+} from '@arabase/core/boot';
 import { Repository } from '@napi-rs/simple-git';
 import { HtmlRspackPlugin, type HtmlRspackPluginOptions } from '@rspack/core';
 import { once } from 'lodash-es';
@@ -36,32 +41,40 @@ function createRawSource(compiler: CompilerLike, source: string) {
   return new RawSource(source);
 }
 
-export const getPublicPath = (BUILD_CONFIG: BUILD_CONFIG_TYPE) => {
-  const { BUILD_TYPE } = process.env;
+export const getPublicPath = (_buildConfig: BUILD_CONFIG_TYPE) => {
   if (typeof process.env.PUBLIC_PATH === 'string') {
     return process.env.PUBLIC_PATH;
   }
 
-  if (
-    BUILD_CONFIG.debug ||
-    BUILD_CONFIG.distribution === 'desktop' ||
-    BUILD_CONFIG.distribution === 'ios' ||
-    BUILD_CONFIG.distribution === 'android'
-  ) {
-    return '/';
-  }
-
-  switch (BUILD_TYPE) {
-    case 'stable':
-      return 'https://prod.affineassets.com/';
-    case 'beta':
-      return 'https://beta.affineassets.com/';
-    default:
-      return 'https://dev.affineassets.com/';
-  }
+  // Dafater serves its assets from its own server (no AFFiNE CDN), for every
+  // build and distribution.
+  return '/';
 };
 
-const DESCRIPTION = `There can be more than Notion and Miro. AFFiNE is a next-gen knowledge base that brings planning, sorting and creating all together.`;
+/**
+ * Product name / description used by `<title>`, the description meta and the
+ * Open Graph / Twitter tags. The product default is Arabic; the admin panel is
+ * English-only (see `getLocaleHtml`).
+ */
+const BRAND_TEXT = {
+  ar: {
+    title: 'دفاتر',
+    socialTitle: 'دفاتر: مساحة عملك للمستندات واللوحات وقواعد البيانات',
+    description:
+      'دفاتر مساحة عمل عربية تجمع المستندات واللوحات البيضاء وقواعد البيانات في مكان واحد. خطّط ونظّم وأبدع في تطبيق واحد.',
+  },
+  en: {
+    title: 'Dafater',
+    socialTitle: 'Dafater: docs, whiteboards and databases in one workspace',
+    description:
+      'Dafater is a next-gen knowledge base that brings planning, sorting and creating all together.',
+  },
+};
+
+const getBrandText = (BUILD_CONFIG: BUILD_CONFIG_TYPE) =>
+  BUILD_CONFIG.isAdmin || !BUILD_CONFIG.defaultLanguage.startsWith('ar')
+    ? BRAND_TEXT.en
+    : BRAND_TEXT.ar;
 
 const gitShortHash = once(() => {
   const { GITHUB_SHA } = process.env;
@@ -81,6 +94,37 @@ const gitShortHash = once(() => {
 
 const currentDir = Path.dir(import.meta.url);
 
+/**
+ * `<html lang dir>` and the pre-paint locale script (see `@arabase/core/boot`):
+ * the first frame renders in the product default (Arabic, RTL) or in the
+ * language the user picked, never in a transient language/direction.
+ * The admin panel is English-only.
+ */
+export function getLocaleHtml(BUILD_CONFIG: BUILD_CONFIG_TYPE): {
+  lang: string;
+  dir: string;
+  htmlRootAttrs: string;
+  bootScript: string;
+} {
+  const locale = BUILD_CONFIG.isAdmin ? 'en' : BUILD_CONFIG.defaultLanguage;
+  return {
+    ...htmlRootAttributes(locale),
+    htmlRootAttrs: htmlRootAttributesString(locale),
+    bootScript: BUILD_CONFIG.isAdmin
+      ? ''
+      : createBootScript({
+          defaultLocale: locale,
+          // The app's own language setting, for the first start after an
+          // update from a version without the arabase hint: GlobalCache in
+          // localStorage (web) or the desktop shared storage (preload).
+          legacySources: [
+            'JSON.parse(localStorage.getItem("global-cache:i18n_lng"))',
+            'window.__sharedStorage.globalCache.get("i18n_lng")',
+          ],
+        }),
+  };
+}
+
 export interface CreateHTMLPluginConfig {
   filename?: string;
   template?: string;
@@ -97,9 +141,16 @@ function getHTMLPluginOptions(BUILD_CONFIG: BUILD_CONFIG_TYPE) {
     ? undefined
     : new URL(publicPath).origin;
 
+  const { lang, dir, bootScript } = getLocaleHtml(BUILD_CONFIG);
+  const brand = getBrandText(BUILD_CONFIG);
   const templateParams = {
+    HTML_LANG: lang,
+    HTML_DIR: dir,
+    LOCALE_BOOT_SCRIPT: bootScript ? `<script>${bootScript}</script>` : '',
     GIT_SHORT_SHA: gitShortHash(),
-    DESCRIPTION,
+    TITLE: brand.title,
+    SOCIAL_TITLE: brand.socialTitle,
+    DESCRIPTION: brand.description,
     PRECONNECT: cdnOrigin
       ? `<link rel="preconnect" href="${cdnOrigin}" />`
       : '',
@@ -116,8 +167,9 @@ function getHTMLPluginOptions(BUILD_CONFIG: BUILD_CONFIG_TYPE) {
   } satisfies HtmlRspackPluginOptions;
 }
 
-const AssetsManifestPlugin = {
+const createAssetsManifestPlugin = (BUILD_CONFIG: BUILD_CONFIG_TYPE) => ({
   apply(compiler: CompilerLike) {
+    const { htmlRootAttrs, bootScript } = getLocaleHtml(BUILD_CONFIG);
     compiler.hooks.compilation.tap('assets-manifest-plugin', compilation => {
       HtmlRspackPlugin.getCompilationHooks(
         compilation
@@ -137,7 +189,11 @@ const AssetsManifestPlugin = {
                     file.substring(arg.assets.publicPath.length)
                   ),
                   gitHash: gitShortHash(),
-                  description: DESCRIPTION,
+                  title: getBrandText(BUILD_CONFIG).title,
+                  description: getBrandText(BUILD_CONFIG).description,
+                  // Consumed by the server-side renderer (doc-renderer).
+                  htmlRootAttrs,
+                  bootScript,
                 },
                 null,
                 2
@@ -153,7 +209,7 @@ const AssetsManifestPlugin = {
       });
     });
   },
-};
+});
 
 const GlobalErrorHandlerPlugin = {
   apply(compiler: CompilerLike) {
@@ -267,7 +323,7 @@ export function createHTMLPlugins(
   }
 
   if (config.emitAssetsManifest) {
-    plugins.push(AssetsManifestPlugin);
+    plugins.push(createAssetsManifestPlugin(BUILD_CONFIG));
   }
 
   if (config.injectGlobalErrorHandler) {

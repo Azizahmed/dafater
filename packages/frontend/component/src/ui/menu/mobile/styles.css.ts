@@ -88,7 +88,7 @@ export const mobileMenuItem = style({
       content: '""',
       position: 'absolute',
       bottom: -8,
-      left: 0,
+      insetInlineStart: 0,
       width: '100%',
       borderBottom: `0.5px solid ${cssVarV2('layer/insideBorder/border')}`,
     },
@@ -106,8 +106,8 @@ export const backButton = style({
   alignSelf: 'start',
   fontWeight: 600,
   fontSize: 17,
-  paddingLeft: 0,
-  marginLeft: 20,
+  paddingInlineStart: 0,
+  marginInlineStart: 20,
   maxWidth: 'calc(100% - 20px)',
 });
 

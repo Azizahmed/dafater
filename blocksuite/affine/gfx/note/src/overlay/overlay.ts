@@ -5,6 +5,7 @@ import {
 import { type Color, DefaultTheme } from '@blocksuite/affine-model';
 import { ThemeProvider } from '@blocksuite/affine-shared/services';
 import type { XYWH } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import type { GfxController } from '@blocksuite/std/gfx';
 import { effect } from '@preact/signals-core';
 import { Subject } from 'rxjs';
@@ -103,19 +104,28 @@ export class NoteOverlay extends ToolOverlay {
     ctx.fillStyle = this.gfx.std
       .get(ThemeProvider)
       .getCssVariableColor(NOTE_OVERLAY_TEXT_COLOR);
+    // the tip is the English name of the block type
+    const text = t(this.text);
+    // start the text on the right side for right-to-left text
+    const rtl = /[\u0590-\u08ff]/.test(text);
     let fontSize = 16;
     ctx.font = `${fontSize}px Arial`;
-    ctx.textAlign = 'left';
+    ctx.textAlign = rtl ? 'right' : 'left';
+    ctx.direction = rtl ? 'rtl' : 'ltr';
     ctx.textBaseline = 'middle';
 
     // measure the width of the text
     // if the text is wider than the rectangle, reduce the maximum width of the text
-    while (ctx.measureText(this.text).width > NOTE_OVERLAY_WIDTH - 20) {
+    while (ctx.measureText(text).width > NOTE_OVERLAY_WIDTH - 20) {
       fontSize -= 1;
       ctx.font = `${fontSize}px Arial`;
     }
 
-    ctx.fillText(this.text, overlayX + 10, overlayY + NOTE_OVERLAY_HEIGHT / 2);
+    ctx.fillText(
+      text,
+      rtl ? overlayX + NOTE_OVERLAY_WIDTH - 10 : overlayX + 10,
+      overlayY + NOTE_OVERLAY_HEIGHT / 2
+    );
   }
 }
 

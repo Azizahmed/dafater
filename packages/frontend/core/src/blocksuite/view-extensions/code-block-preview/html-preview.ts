@@ -1,4 +1,5 @@
 import { CodeBlockPreviewExtension } from '@blocksuite/affine/blocks/code';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import type { CodeBlockModel } from '@blocksuite/affine/model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -119,30 +120,32 @@ export class HTMLPreview extends SignalWatcher(
           [
             'loading',
             () =>
-              html`<div class="html-preview-loading">
-                Rendering the code...
+              html`<div class="html-preview-loading" dir="auto">
+                ${t('Rendering the code...')}
               </div>`,
           ],
           [
             'error',
             () =>
-              html`<div class="html-preview-error">
-                Failed to render the preview. Please check your HTML code for
-                errors.
+              html`<div class="html-preview-error" dir="auto">
+                ${t(
+                  'Failed to render the preview. Please check your HTML code for errors.'
+                )}
               </div>`,
           ],
           [
             'fallback',
             () =>
-              html`<div class="html-preview-fallback">
-                This feature is not supported in your browser. Please download
-                the AFFiNE Desktop App to use it.
+              html`<div class="html-preview-fallback" dir="auto">
+                ${t(
+                  'This feature is not supported in your browser. Please download the Dafater Desktop App to use it.'
+                )}
               </div>`,
           ],
         ])}
         <iframe
           class="html-preview-iframe"
-          title="HTML Preview"
+          title=${t('HTML Preview')}
           style=${styleMap({
             display: this.state === 'finish' ? undefined : 'none',
           })}

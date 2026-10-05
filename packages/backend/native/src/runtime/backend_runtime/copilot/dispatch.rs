@@ -155,8 +155,9 @@ pub(super) fn compile_execution(
   candidates: &[AuthorizedTargetRef],
   managed_credentials: &HashMap<String, Zeroizing<String>>,
 ) -> RuntimeResult<CompiledExecution> {
-  let key = CredentialEnvelopeKey::derive(config.private_key.as_bytes())
-    .map_err(|_| RuntimeError::invalid_state("credential_unavailable"))?;
+  // Dafater: only BYOK envelopes need the server private key; managed
+  // (administrator-configured) profiles must work without one.
+  let key = CredentialEnvelopeKey::derive(config.private_key.as_bytes()).ok();
   let mut identities = HashMap::new();
   let mut routes = Vec::with_capacity(candidates.len());
   for candidate in candidates {
@@ -167,7 +168,7 @@ pub(super) fn compile_execution(
       .models
       .get(candidate.model_index)
       .ok_or_else(|| RuntimeError::invalid_state("invalid authorized route model"))?;
-    let credential = resolve_credential(&key, profile, managed_credentials)?;
+    let credential = resolve_credential(key.as_ref(), profile, managed_credentials)?;
     let target = compile_backend_target(BackendTargetInput {
       provider: provider(&profile.provider)?,
       operation: operation(slot.operation),
@@ -273,12 +274,13 @@ fn collect_message_attachments(
 }
 
 fn resolve_credential(
-  key: &CredentialEnvelopeKey,
+  key: Option<&CredentialEnvelopeKey>,
   profile: &AuthorizedProviderProfile,
   managed_credentials: &HashMap<String, Zeroizing<String>>,
 ) -> RuntimeResult<String> {
   match &profile.credential_ref {
     CredentialRef::Envelope { encrypted, aad } => key
+      .ok_or_else(|| RuntimeError::invalid_state("credential_unavailable"))?
       .decrypt(encrypted, aad)
       .map_err(|_| RuntimeError::invalid_state("credential_unavailable"))
       .and_then(|credential| {
@@ -309,6 +311,11 @@ pub(super) async fn managed_credential(
   } else {
     "apiKey"
   };
+  // Dafater: OpenAI-compatible servers on the local network (Ollama, LM
+  // Studio) may run without a key; an empty credential omits the auth header.
+  if profile.is_openai_compatible() && context::required_config_text(profile, field).is_err() {
+    return Ok(String::new());
+  }
   Ok(context::required_config_text(profile, field)?.to_string())
 }
 

@@ -1,13 +1,15 @@
-import { t } from '../../logical/type-presets.js';
+import { t } from '@blocksuite/global/i18n';
+
+import { t as types } from '../../logical/type-presets.js';
 import { createFilter } from './create.js';
 
 export const booleanFilter = [
   createFilter({
     name: 'isChecked',
-    self: t.boolean.instance(),
+    self: types.boolean.instance(),
     args: [],
     label: 'Is checked',
-    shortString: () => ': Checked',
+    shortString: () => `: ${t('Checked')}`,
     impl: value => {
       return !!value;
     },
@@ -15,10 +17,10 @@ export const booleanFilter = [
   }),
   createFilter({
     name: 'isUnchecked',
-    self: t.boolean.instance(),
+    self: types.boolean.instance(),
     args: [],
     label: 'Is unchecked',
-    shortString: () => ': Unchecked',
+    shortString: () => `: ${t('Unchecked')}`,
     impl: value => {
       return !value;
     },

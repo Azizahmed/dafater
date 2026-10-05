@@ -70,7 +70,7 @@ export const TemplateGroupHeader = ({
       ? t['com.affine.all-docs.group.is-template']()
       : groupId === 'false'
         ? t['com.affine.all-docs.group.is-not-template']()
-        : 'Default';
+        : t['com.affine.all-docs.group.default']();
 
   return (
     <PlainTextDocGroupHeader groupId={groupId} docCount={docCount}>
@@ -90,6 +90,7 @@ export const TemplateFilterValue = ({
   onDraftCompleted?: () => void;
   onChange?: (filter: FilterParams) => void;
 }) => {
+  const t = useI18n();
   return (
     <FilterValueMenu
       isDraft={isDraft}
@@ -105,7 +106,7 @@ export const TemplateFilterValue = ({
             }}
             selected={filter.value === 'true'}
           >
-            {'True'}
+            {t['com.affine.filter.value.true']()}
           </MenuItem>
           <MenuItem
             onClick={() => {
@@ -116,12 +117,16 @@ export const TemplateFilterValue = ({
             }}
             selected={filter.value !== 'true'}
           >
-            {'False'}
+            {t['com.affine.filter.value.false']()}
           </MenuItem>
         </>
       }
     >
-      <span>{filter.value === 'true' ? 'True' : 'False'}</span>
+      <span>
+        {filter.value === 'true'
+          ? t['com.affine.filter.value.true']()
+          : t['com.affine.filter.value.false']()}
+      </span>
     </FilterValueMenu>
   );
 };

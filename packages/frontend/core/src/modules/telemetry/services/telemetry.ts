@@ -5,7 +5,6 @@ import { flushTelemetry, setTelemetryContext, tracker } from '@affine/track';
 import { LiveData, OnEvent, Service } from '@toeverything/infra';
 
 import type { AuthAccountInfo, Server, ServersService } from '../../cloud';
-import { getOfficialTelemetryEndpoint } from '../../cloud/constant';
 import type { GlobalContextService } from '../../global-context';
 import { ApplicationStarted } from '../../lifecycle';
 
@@ -62,7 +61,9 @@ export class TelemetryService extends Service {
           isAuthed: !!account,
           isSelfHosted: !!selfHosted,
           channel,
-          officialEndpoint: getOfficialTelemetryEndpoint(channel),
+          // Dafater sends no telemetry: without an endpoint the telemetry
+          // worker never uploads anything (AFFiNE's endpoints are removed).
+          officialEndpoint: '',
         });
 
         if (prevAccount) {

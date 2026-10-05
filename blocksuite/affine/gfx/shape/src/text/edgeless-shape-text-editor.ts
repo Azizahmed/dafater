@@ -523,6 +523,11 @@ export class EdgelessShapeTextEditor extends WithDisposable(ShadowlessElement) {
         edgeless-shape-text-editor .inline-editor {
           min-width: 1px;
         }
+
+        /* Each line takes its direction from its text, like the canvas. */
+        edgeless-shape-text-editor v-line > div {
+          unicode-bidi: plaintext;
+        }
       </style>
       <rich-text
         .yText=${this.element.text}

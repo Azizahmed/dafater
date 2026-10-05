@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { ShadowlessElement } from '@blocksuite/affine/std';
 import { CloseIcon } from '@blocksuite/icons/lit';
 import { css, html, type TemplateResult } from 'lit';
@@ -107,7 +108,7 @@ export class PlaygroundModal extends ShadowlessElement {
 
   @property({ attribute: false })
   accessor content: TemplateResult = html`
-    <div>Welcome to the AI Playground!</div>
+    <div>${t('Welcome to the AI Playground!')}</div>
   `;
 
   @property({ attribute: false })

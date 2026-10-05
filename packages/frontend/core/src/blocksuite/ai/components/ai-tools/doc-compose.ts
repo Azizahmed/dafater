@@ -1,6 +1,7 @@
 import { getStoreManager } from '@affine/core/blocksuite/manager/store';
 import { getAFFiNEWorkspaceSchema } from '@affine/core/modules/workspace';
 import { getEmbedLinkedDocIcons } from '@blocksuite/affine/blocks/embed-doc';
+import { t } from '@blocksuite/affine/global/i18n';
 import { RefNodeSlotsProvider } from '@blocksuite/affine/inlines/reference';
 import type { ColorScheme } from '@blocksuite/affine/model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -52,6 +53,8 @@ export class DocComposeTool extends ArtifactTool<
       font-size: 36px;
       font-weight: 600;
       padding: 14px 0px 38px 0px;
+      unicode-bidi: plaintext;
+      text-align: start;
     }
 
     .doc-compose-result-save-as-doc {
@@ -151,7 +154,7 @@ export class DocComposeTool extends ArtifactTool<
       await navigator.clipboard
         .writeText(successResult.markdown)
         .catch(console.error);
-      this.notificationService.toast('Copied markdown to clipboard');
+      this.notificationService.toast(t('Copied markdown to clipboard'));
     };
 
     const saveAsDoc = async () => {
@@ -170,10 +173,12 @@ export class DocComposeTool extends ArtifactTool<
         });
         if (docId) {
           const open = await this.notificationService.confirm({
-            title: 'Open the doc you just created',
-            message: 'Doc saved successfully! Would you like to open it now?',
-            cancelText: 'Cancel',
-            confirmText: 'Open',
+            title: t('Open the doc you just created'),
+            message: t(
+              'Doc saved successfully! Would you like to open it now?'
+            ),
+            cancelText: t('Cancel'),
+            confirmText: t('Open'),
           });
           if (open) {
             refNodeSlots?.docLinkClicked.next({
@@ -183,11 +188,11 @@ export class DocComposeTool extends ArtifactTool<
             });
           }
         } else {
-          this.notificationService.toast('Failed to create document');
+          this.notificationService.toast(t('Failed to create document'));
         }
       } catch (e) {
         console.error(e);
-        this.notificationService.toast('Failed to create document');
+        this.notificationService.toast(t('Failed to create document'));
       }
     };
 
@@ -200,9 +205,9 @@ export class DocComposeTool extends ArtifactTool<
               height: '20',
               style: `color: ${unsafeCSSVarV2('icon/primary')}`,
             })}
-            Save as doc
+            ${t('Save as doc')}
           </button>
-          <icon-button @click=${copyMarkdown} title="Copy markdown">
+          <icon-button @click=${copyMarkdown} title=${t('Copy markdown')}>
             ${CopyIcon({ width: '20', height: '20' })}
           </icon-button>
         `;
@@ -216,7 +221,7 @@ export class DocComposeTool extends ArtifactTool<
       (this.data.result as any).type === 'error'
     ) {
       return html`<tool-call-failed
-        .name=${'Doc compose failed'}
+        .name=${t('Doc compose failed')}
         .icon=${ToolIcon()}
       ></tool-call-failed>`;
     }

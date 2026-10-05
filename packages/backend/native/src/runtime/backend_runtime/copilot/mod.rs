@@ -311,27 +311,37 @@ impl BackendRuntime {
     if input.managed_target_id.is_some() && input.target_override.is_some() {
       return Err(RuntimeError::invalid_input("multiple_target_selections"));
     }
-    let target_override = if let Some(target_id) = input.managed_target_id.as_deref() {
+    let managed_override = if let Some(target_id) = input.managed_target_id.as_deref() {
       let model_id =
-        route::managed_selected_target(input.built_in_route_id.as_deref(), target_id, input.access.managed_tier)
-          .ok_or_else(|| RuntimeError::invalid_input("managed_target_unavailable"))?;
-      let profile = profiles
-        .iter()
-        .find(|profile| {
+        route::managed_selected_target(input.built_in_route_id.as_deref(), target_id, input.access.managed_tier);
+      let profile = model_id.as_ref().and_then(|model_id| {
+        profiles.iter().find(|profile| {
           profile.source == route::ProfileSource::Managed
-            && profile.models.iter().any(|model| model.model_id == model_id)
+            && profile.models.iter().any(|model| &model.model_id == model_id)
         })
-        .ok_or_else(|| RuntimeError::invalid_state("managed_target_unavailable"))?;
-      Some(route::TargetOverride {
-        profile_id: profile.profile_id.clone(),
-        model_id,
-      })
+      });
+      match (model_id, profile) {
+        (Some(model_id), Some(profile)) => Some(route::TargetOverride {
+          profile_id: profile.profile_id.clone(),
+          model_id,
+        }),
+        // Dafater: a self-hosted server answers with the model its
+        // administrator configured; built-in model choices it does not serve
+        // are ignored instead of failing the request.
+        _ if config.deployment == crate::runtime::Deployment::SelfHosted => None,
+        (None, _) => return Err(RuntimeError::invalid_input("managed_target_unavailable")),
+        (Some(_), None) => return Err(RuntimeError::invalid_state("managed_target_unavailable")),
+      }
     } else {
+      None
+    };
+    let target_override_managed = managed_override.is_some();
+    let target_override = managed_override.or_else(|| {
       input.target_override.map(|target| route::TargetOverride {
         profile_id: target.profile_id,
         model_id: target.model_id,
       })
-    };
+    });
     let candidates = match route::decide(route::RoutePolicyInput {
       slot: &slot,
       deployment: config.deployment,
@@ -340,7 +350,7 @@ impl BackendRuntime {
         || route::quota_policy(&slot, input.built_in_route_id.as_deref()) != route::QuotaPolicy::Metered,
       profiles: &profiles,
       target_override: target_override.as_ref(),
-      target_override_managed: input.managed_target_id.is_some(),
+      target_override_managed,
     }) {
       route::RouteDecision::Ready(candidates) => candidates,
       route::RouteDecision::Denied(reason) => {

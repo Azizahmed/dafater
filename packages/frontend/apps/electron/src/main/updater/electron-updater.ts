@@ -10,8 +10,11 @@ import { WindowsUpdater } from './windows-updater';
 const mode = process.env.NODE_ENV;
 const isDev = mode === 'development';
 
-// skip auto update in dev mode & internal
-const disabled = buildType === 'internal' || isDev;
+// skip auto update in dev mode & internal.
+// Dafater: the upstream feed is AFFiNE's GitHub releases, so the updater is
+// disabled unless a build explicitly enables it (BUILD_CONFIG.enableUpdater).
+const disabled =
+  !BUILD_CONFIG.enableUpdater || buildType === 'internal' || isDev;
 
 export const autoUpdater =
   process.platform === 'win32' ? new WindowsUpdater() : defaultAutoUpdater;

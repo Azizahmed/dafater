@@ -220,7 +220,7 @@ describe('share destination selection lifecycle', () => {
     render(<ShareImportController provider={provider} />);
 
     await screen.findByText(
-      'This share was saved, but AFFiNE could not clear it from the inbox. Try again.'
+      'This share was saved, but Dafater could not clear it from the inbox. Try again.'
     );
     await new Promise(resolve => setTimeout(resolve, 0));
     expect(importer.importShareToWorkspace).toHaveBeenCalledTimes(1);
@@ -277,7 +277,7 @@ describe('share destination selection lifecycle', () => {
     render(<ShareImportController provider={provider} />);
 
     await screen.findByText(
-      'This share was saved, but AFFiNE could not clear it from the inbox. Try again.'
+      'This share was saved, but Dafater could not clear it from the inbox. Try again.'
     );
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await waitFor(() =>
@@ -371,7 +371,7 @@ describe('share destination selection lifecycle', () => {
     render(<ShareImportController provider={provider} />);
 
     await screen.findByText(
-      'This share was saved, but AFFiNE could not clear it from the inbox. Try again.'
+      'This share was saved, but Dafater could not clear it from the inbox. Try again.'
     );
     const saveButton = screen.getByRole('button', { name: 'Save' });
     await waitFor(() =>
@@ -426,7 +426,7 @@ describe('share destination selection lifecycle', () => {
     );
     expect(
       screen.queryByText(
-        'This share was saved, but AFFiNE could not clear it from the inbox. Try again.'
+        'This share was saved, but Dafater could not clear it from the inbox. Try again.'
       )
     ).toBeNull();
   });
@@ -488,7 +488,7 @@ describe('share destination selection lifecycle', () => {
 
     const firstLaunch = render(<ShareImportController provider={provider} />);
     await screen.findByText(
-      'This share was saved, but AFFiNE could not clear it from the inbox. Try again.'
+      'This share was saved, but Dafater could not clear it from the inbox. Try again.'
     );
     firstLaunch.unmount();
 

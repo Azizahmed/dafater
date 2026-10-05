@@ -72,8 +72,9 @@ export const EMBED_BLOCK_MODEL_LIST = [
   EmbedLoomModel,
 ] as const;
 
-export const DEFAULT_IMAGE_PROXY_ENDPOINT =
-  'https://affine-worker.toeverything.workers.dev/api/worker/image-proxy';
+// Dafater: the default image proxy is the app's own server (same origin),
+// not AFFiNE's worker (upstream: affine-worker.toeverything.workers.dev).
+export const DEFAULT_IMAGE_PROXY_ENDPOINT = '/api/worker/image-proxy';
 
 // This constant is used to ignore tags when exporting using html2canvas
 export const CANVAS_EXPORT_IGNORE_TAGS = [

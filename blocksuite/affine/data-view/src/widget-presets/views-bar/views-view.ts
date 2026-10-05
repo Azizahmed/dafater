@@ -5,6 +5,7 @@ import {
   type PopupTarget,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import {
   DeleteIcon,
   DuplicateIcon,
@@ -87,7 +88,7 @@ export class DataViewHeaderViews extends WidgetBase {
       popupTargetFromElement(event.currentTarget as HTMLElement),
       this.dataSource.viewMetas.map(v => {
         return menu.action({
-          name: v.model.defaultName,
+          name: t(v.model.defaultName),
           prefix: html`<uni-lit .uni=${v.renderer.icon}></uni-lit>`,
           select: () => {
             this.addView(v.type);
@@ -138,7 +139,7 @@ export class DataViewHeaderViews extends WidgetBase {
         menu.group({
           items: this.dataSource.viewMetas.map(v => {
             return menu.action({
-              name: `Create ${v.model.defaultName}`,
+              name: t('Create {name}', { name: t(v.model.defaultName) }),
               hide: () => this.readonly,
               prefix: PlusIcon(),
               select: () => {
@@ -165,12 +166,14 @@ export class DataViewHeaderViews extends WidgetBase {
     if (!view) {
       return;
     }
+    // The tabs run right to left in a right-to-left database.
+    const rtl = getComputedStyle(this).direction === 'rtl';
     popMenu(target, {
       options: {
         items: [
           menu.input({
             initialValue: view.name$.value,
-            placeholder: 'View name',
+            placeholder: t('View name'),
             onChange: text => {
               view.nameSet(text);
             },
@@ -178,7 +181,7 @@ export class DataViewHeaderViews extends WidgetBase {
           menu.group({
             items: [
               menu.action({
-                name: 'Edit View',
+                name: t('Edit View'),
                 prefix: InfoIcon(),
                 select: () => {
                   this.closest('affine-data-view-renderer')
@@ -187,9 +190,9 @@ export class DataViewHeaderViews extends WidgetBase {
                 },
               }),
               menu.action({
-                name: 'Move Left',
+                name: rtl ? t('Move Right') : t('Move Left'),
                 hide: () => index === 0,
-                prefix: MoveLeftIcon(),
+                prefix: rtl ? MoveRightIcon() : MoveLeftIcon(),
                 select: () => {
                   const targetId = views[index - 1];
                   this.viewManager.moveTo(
@@ -199,8 +202,8 @@ export class DataViewHeaderViews extends WidgetBase {
                 },
               }),
               menu.action({
-                name: 'Move Right',
-                prefix: MoveRightIcon(),
+                name: rtl ? t('Move Left') : t('Move Right'),
+                prefix: rtl ? MoveLeftIcon() : MoveRightIcon(),
                 hide: () => index === views.length - 1,
                 select: () => {
                   const targetId = views[index + 1];
@@ -215,14 +218,14 @@ export class DataViewHeaderViews extends WidgetBase {
           menu.group({
             items: [
               menu.action({
-                name: 'Duplicate',
+                name: t('Duplicate'),
                 prefix: DuplicateIcon(),
                 select: () => {
                   this.viewManager.viewDuplicate(id);
                 },
               }),
               menu.action({
-                name: 'Delete',
+                name: t('Delete'),
                 prefix: DeleteIcon(),
                 select: () => {
                   view.delete();
@@ -252,7 +255,7 @@ export class DataViewHeaderViews extends WidgetBase {
     }
     return html`
       <div class="database-view-button dv-hover" @click="${this._showMore}">
-        ${views.length - count} More
+        ${t('{count} More', { count: views.length - count })}
       </div>
     `;
   };

@@ -15,7 +15,7 @@ export const root = style({
 export const closeButton = style({
   position: 'fixed',
   top: 'calc(env(safe-area-inset-top) + 8px)',
-  right: 16,
+  insetInlineEnd: 16,
   width: 44,
   height: 44,
   zIndex: 2,

@@ -13,9 +13,9 @@ export const viewer = style({
       position: 'absolute',
       content: '',
       top: 0,
-      right: 0,
+      insetInlineEnd: 0,
       bottom: 0,
-      left: 0,
+      insetInlineStart: 0,
       zIndex: -1,
     },
     '&:not(.gridding):before': {
@@ -60,8 +60,8 @@ export const titlebarChild = style({
       display: 'flex',
       gap: '12px',
       alignItems: 'center',
-      paddingLeft: '12px',
-      paddingRight: '12px',
+      paddingInlineStart: '12px',
+      paddingInlineEnd: '12px',
     },
     '&.zoom:not(.show)': {
       display: 'none',

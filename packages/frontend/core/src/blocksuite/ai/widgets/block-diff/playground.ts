@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { WidgetComponent, WidgetViewExtension } from '@blocksuite/affine/std';
 import type { Store } from '@blocksuite/affine/store';
@@ -36,6 +37,7 @@ export class BlockDiffPlaygroundModal extends WithDisposable(LitElement) {
       outline: none;
       font-family: inherit;
       box-sizing: border-box;
+      unicode-bidi: plaintext;
     }
     .playground-actions {
       display: flex;
@@ -109,11 +111,11 @@ export class BlockDiffPlaygroundModal extends WithDisposable(LitElement) {
   override render() {
     return html`
       <div class="playground-modal">
-        <div class="playground-modal-title">Block Diff Playground</div>
+        <div class="playground-modal-title">${t('Block Diff Playground')}</div>
         <div class="playground-modal-content">
           <textarea
             class="playground-textarea"
-            placeholder="Please input the markdown you want to apply."
+            placeholder=${t('Please input the markdown you want to apply.')}
             .value=${this.markdown}
             @input=${this.handleInput}
             @focus=${(e: FocusEvent) => e.stopPropagation()}
@@ -133,13 +135,13 @@ export class BlockDiffPlaygroundModal extends WithDisposable(LitElement) {
               class="playground-btn"
               @click=${this.handleInsertCurrentMarkdown}
             >
-              Insert Current Doc MD
+              ${t('Insert Current Doc MD')}
             </button>
             <button class="playground-btn" @click=${this.handleClear}>
-              Clear
+              ${t('Clear')}
             </button>
             <button class="playground-btn primary" @click=${this.handleConfirm}>
-              Confirm
+              ${t('Confirm')}
             </button>
           </div>
         </div>
@@ -152,7 +154,7 @@ export class BlockDiffPlayground extends WidgetComponent {
   static override styles = css`
     .playground-fab {
       position: fixed;
-      right: 32px;
+      inset-inline-end: 32px;
       bottom: 32px;
       z-index: 9999;
       width: 56px;
@@ -214,7 +216,7 @@ export class BlockDiffPlayground extends WidgetComponent {
         <div
           class="playground-fab"
           @click=${this.handleOpen}
-          title="Block Diff Playground"
+          title=${t('Block Diff Playground')}
         >
           🧪
         </div>

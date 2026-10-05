@@ -1,6 +1,6 @@
 import { Scrollable, ThemedImg } from '@affine/component';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
-import { Trans, useI18n } from '@affine/i18n';
+import { useI18n } from '@affine/i18n';
 import { ArrowDownSmallIcon } from '@blocksuite/icons/rc';
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 import { useCallback, useState } from 'react';
@@ -100,7 +100,7 @@ export const ErrorDetail: FC<ErrorDetailProps> = props => {
           data-show-stack={showStack}
         >
           <Scrollable.Viewport>
-            {error?.stack || 'No detailed error stack is provided.'}
+            {error?.stack || t['com.affine.error.no-stack']()}
           </Scrollable.Viewport>
           <Scrollable.Scrollbar />
         </Scrollable.Root>
@@ -134,19 +134,8 @@ export const ErrorDetail: FC<ErrorDetailProps> = props => {
   );
 };
 
+// Dafater: no link to AFFiNE's community, point users at their administrator
 export function ContactUS() {
-  return (
-    <Trans
-      i18nKey="com.affine.error.contact-us"
-      components={{
-        1: (
-          <a
-            style={{ color: 'var(--affine-primary-color)' }}
-            href="https://affine.pro/redirect/discord"
-            target="__blank"
-          />
-        ),
-      }}
-    />
-  );
+  const t = useI18n();
+  return <>{t['com.affine.dafater.error.contact-admin']()}</>;
 }

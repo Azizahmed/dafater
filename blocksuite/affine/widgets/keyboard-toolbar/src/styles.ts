@@ -35,6 +35,10 @@ export const keyboardToolbarStyles = css`
       width: 24px;
       height: 24px;
     }
+
+    icon-button.mirror-in-rtl:dir(rtl) svg {
+      transform: scaleX(-1);
+    }
   }
 
   .item-container {
@@ -72,7 +76,8 @@ export const keyboardToolPanelStyles = css`
     flex-direction: column;
     gap: 24px;
     width: 100%;
-    padding: 16px 4px 8px 8px;
+    padding-block: 16px 8px;
+    padding-inline: 8px 4px;
   }
 
   ${scrollbarStyle('affine-keyboard-tool-panel')}

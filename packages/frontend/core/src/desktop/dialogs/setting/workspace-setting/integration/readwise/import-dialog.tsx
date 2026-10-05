@@ -176,10 +176,11 @@ export const ImportDialog = ({ onClose }: { onClose: () => void }) => {
 };
 
 const CrawlerError = ({ onRetry }: { onRetry: () => void }) => {
+  const t = useI18n();
   return (
     <>
-      Unexpected error occurred, please try again.
-      <Button onClick={onRetry}>Retry</Button>
+      {t['com.affine.integration.readwise.import.crawl-error']()}
+      <Button onClick={onRetry}>{t['Retry']()}</Button>
     </>
   );
 };

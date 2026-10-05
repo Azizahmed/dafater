@@ -1,4 +1,5 @@
 import { AIStarIcon } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -35,7 +36,7 @@ export class AskAIIcon extends WithDisposable(LitElement) {
       font-size: var(--affine-font-xs);
       svg {
         scale: 0.8;
-        margin-right: 2px;
+        margin-inline-end: 2px;
       }
     }
 
@@ -51,20 +52,24 @@ export class AskAIIcon extends WithDisposable(LitElement) {
     }
 
     .ask-ai-icon-button svg {
-      margin-right: 4px;
+      margin-inline-end: 4px;
       color: var(--affine-brand-color);
     }
   `;
 
   override render() {
+    const label = t('Ask AI');
+    // The fixed widths fit the English label; translations size to content.
+    const width =
+      label === 'Ask AI' ? buttonWidthMap[this.size] : 'max-content';
     return html`
       <icon-button
         class="ask-ai-icon-button ${this.size}"
-        width=${buttonWidthMap[this.size]}
+        width=${width}
         height=${buttonHeightMap[this.size]}
       >
         ${AIStarIcon}
-        <span>Ask AI</span>
+        <span>${label}</span>
       </icon-button>
     `;
   }

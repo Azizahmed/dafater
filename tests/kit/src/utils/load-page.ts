@@ -7,6 +7,14 @@ export function setCoreUrl(url: string) {
 }
 
 export async function openHomePage(page: Page) {
+  // Fresh installs start in Arabic. Suites built on plain `@playwright/test`
+  // (without the kit's fixtures) assert English strings, so start in English
+  // unless the test already chose a language.
+  await page.context().addInitScript(() => {
+    if (!window.localStorage.getItem('arabase:locale')) {
+      window.localStorage.setItem('arabase:locale', 'en');
+    }
+  });
   await page.goto(coreUrl);
 }
 

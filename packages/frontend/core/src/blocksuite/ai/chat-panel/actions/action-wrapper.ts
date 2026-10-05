@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
 import type { EditorHost } from '@blocksuite/affine/std';
@@ -80,7 +81,7 @@ export class ActionWrapper extends WithDisposable(LitElement) {
         flex: 1;
 
         div:last-child svg {
-          margin-left: auto;
+          margin-inline-start: auto;
         }
       }
     }
@@ -139,6 +140,8 @@ export class ActionWrapper extends WithDisposable(LitElement) {
     const answer = item.messages[2]?.content;
     const images = item.messages[1].attachments;
 
+    // `item.action` is a fixed AI action label (never user content), so the
+    // displayed name is translated while logic keeps the English value.
     return html`<style></style>
       <slot></slot>
       <div
@@ -148,7 +151,7 @@ export class ActionWrapper extends WithDisposable(LitElement) {
       >
         ${icons[item.action] ? icons[item.action] : DoneIcon()}
         <div>
-          <div>${item.action}</div>
+          <div>${t(item.action)}</div>
           <div>${this.promptShow ? ArrowDownIcon() : ArrowUpIcon()}</div>
         </div>
       </div>
@@ -156,7 +159,7 @@ export class ActionWrapper extends WithDisposable(LitElement) {
         this.promptShow
           ? html`
               <div class="answer-prompt" data-testid="answer-prompt">
-                <div class="subtitle">Answer</div>
+                <div class="subtitle">${t('Answer')}</div>
                 ${
                   HISTORY_IMAGE_ACTIONS.includes(item.action)
                     ? images &&
@@ -177,7 +180,7 @@ export class ActionWrapper extends WithDisposable(LitElement) {
                 }
                 ${
                   originalText
-                    ? html`<div class="subtitle prompt">Prompt</div>
+                    ? html`<div class="subtitle prompt">${t('Prompt')}</div>
                         ${createTextRenderer({
                           customHeading: true,
                           testId: 'chat-message-action-prompt',

@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
 import { css, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -42,7 +43,7 @@ export class DocTitle extends LitElement {
 
     return html`
       <editor-icon-button
-        aria-label="Doc title"
+        aria-label=${t('Doc title')}
         .hover=${false}
         .labelHeight="${'20px'}"
         .tooltip=${title}

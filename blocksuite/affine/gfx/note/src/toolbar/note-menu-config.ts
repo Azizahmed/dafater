@@ -14,6 +14,7 @@ import {
   TextIcon,
 } from '@blocksuite/affine-components/icons';
 import type { NoteChildrenFlavour } from '@blocksuite/affine-shared/types';
+import { t } from '@blocksuite/global/i18n';
 import type { TemplateResult } from 'lit';
 
 export const BUTTON_GROUP_LENGTH = 10;
@@ -141,11 +142,41 @@ export const NOTE_MENU_ITEMS = TEXT_ITEMS.concat(LIST_ITEMS)
   .map(item => {
     return {
       icon: item.icon,
-      tooltip:
-        item.type !== 'text'
-          ? item.tooltip.replace('Drag/Click to insert ', '')
-          : 'Text',
+      get tooltip() {
+        return getNoteMenuItemTooltip(item.name);
+      },
       childFlavour: item.flavour as NoteChildrenFlavour,
       childType: item.type,
     } as NoteMenuItem;
   });
+
+function getNoteMenuItemTooltip(name: string) {
+  switch (name) {
+    case 'Bulleted List':
+      return t('Bulleted List');
+    case 'Numbered List':
+      return t('Numbered List');
+    case 'To-do List':
+      return t('To-do List');
+    case 'Text':
+      return t('Text');
+    case 'Heading 1':
+      return t('Heading 1');
+    case 'Heading 2':
+      return t('Heading 2');
+    case 'Heading 3':
+      return t('Heading 3');
+    case 'Heading 4':
+      return t('Heading 4');
+    case 'Heading 5':
+      return t('Heading 5');
+    case 'Heading 6':
+      return t('Heading 6');
+    case 'Code Block':
+      return t('Code Block');
+    case 'Quote':
+      return t('Quote');
+    default:
+      return name;
+  }
+}

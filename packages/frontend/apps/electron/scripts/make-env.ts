@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 
 import debug from 'debug';
@@ -17,7 +17,9 @@ const ROOT = path.resolve(__dirname, '..');
 const envBuildType = (process.env.BUILD_TYPE || 'canary').trim().toLowerCase();
 const buildType = ReleaseTypeSchema.parse(envBuildType);
 const stableBuild = buildType === 'stable';
-const productName = !stableBuild ? `AFFiNE-${buildType}` : 'AFFiNE';
+const productName = !stableBuild ? `Dafater-${buildType}` : 'Dafater';
+// Deep-link scheme stays `affine[-<channel>]`: the app's link handling is keyed on it.
+const urlScheme = !stableBuild ? `affine-${buildType}` : 'affine';
 const icoPath = path.join(
   ROOT,
   !stableBuild
@@ -44,7 +46,8 @@ const icnsPath = path.join(
 
 const iconPngPath = path.join(ROOT, './resources/icons/icon.png');
 
-const iconUrl = `https://cdn.affine.pro/app-icons/icon_${buildType}.ico`;
+// Local file: Dafater does not depend on a remote icon CDN.
+const iconUrl = pathToFileURL(icoPath).href;
 
 log(`buildType=${buildType}, productName=${productName}, icoPath=${icoPath}`);
 
@@ -91,4 +94,5 @@ export {
   REPO_ROOT,
   ROOT,
   stableBuild,
+  urlScheme,
 };

@@ -14,7 +14,7 @@ import { useTheme } from 'next-themes';
 import { useCallback, useMemo } from 'react';
 
 import { useAppSettingHelper } from '../../../../../components/hooks/affine/use-app-setting-helper';
-import { OpenInAppLinksMenu } from './links';
+import { FontMenu } from './font-menu';
 import { settingWrapper } from './style.css';
 import { ThemeEditorSetting } from './theme-editor-setting';
 
@@ -188,6 +188,15 @@ export const AppearanceSettings = () => {
             <LanguageMenu />
           </div>
         </SettingRow>
+        <SettingRow
+          name={t['com.affine.appearanceSettings.app-font.title']()}
+          desc={t['com.affine.appearanceSettings.app-font.description']()}
+          data-testid="font-setting"
+        >
+          <div className={settingWrapper}>
+            <FontMenu />
+          </div>
+        </SettingRow>
         {BUILD_CONFIG.isElectron ? (
           <SettingRow
             name={t['com.affine.appearanceSettings.clientBorder.title']()}
@@ -219,18 +228,6 @@ export const AppearanceSettings = () => {
           />
         </SettingRow>
       </SettingWrapper>
-
-      {BUILD_CONFIG.isWeb && !environment.isMobile ? (
-        <SettingWrapper title={t['com.affine.setting.appearance.links']()}>
-          <SettingRow
-            name={t['com.affine.setting.appearance.open-in-app']()}
-            desc={t['com.affine.setting.appearance.open-in-app.hint']()}
-            data-testid="open-in-app-links-trigger"
-          >
-            <OpenInAppLinksMenu />
-          </SettingRow>
-        </SettingWrapper>
-      ) : null}
 
       <SettingWrapper
         title={t['com.affine.appearanceSettings.sidebar.title']()}

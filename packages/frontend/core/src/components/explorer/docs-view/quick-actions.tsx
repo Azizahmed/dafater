@@ -322,7 +322,7 @@ export const QuickRestore = memo(function QuickRestore({
             await restoreFromTrash(doc.id);
             toast(
               t['com.affine.toastMessage.restored']({
-                title: doc.title$.value || 'Untitled',
+                title: doc.title$.value || t['Untitled'](),
               })
             );
           } else {

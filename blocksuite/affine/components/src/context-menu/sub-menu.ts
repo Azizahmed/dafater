@@ -53,6 +53,12 @@ export class MenuSubMenu extends MenuFocusable {
       affine-menu-sub-menu.active .affine-menu-button svg:last-child {
         transform: rotate(90deg);
       }
+      .affine-menu-sub-menu-arrow {
+        display: flex;
+      }
+      .affine-menu-sub-menu-arrow:dir(rtl) {
+        transform: scaleX(-1);
+      }
     `,
   ];
 
@@ -260,7 +266,13 @@ export const subMenuItems = {
               ${config.label?.() ?? config.name}
             </div>
             ${config.postfix}
-            ${config.disableArrow ? nothing : ArrowRightSmallIcon()} `,
+            ${
+              config.disableArrow
+                ? nothing
+                : html`<span class="affine-menu-sub-menu-arrow"
+                    >${ArrowRightSmallIcon()}</span
+                  >`
+            } `,
         class: config.class,
         options: config.options,
         openOnHover: config.openOnHover,

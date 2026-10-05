@@ -65,7 +65,7 @@ export const usageLabel = style({
 });
 export const usageLabelTitle = style({
   color: cssVarV2('text/primary'),
-  marginRight: '0.5em',
+  marginInlineEnd: '0.5em',
 });
 
 export const cloudUsageBar = style({
@@ -120,7 +120,7 @@ export const workspaceAvatar = style({
   border: `1px solid ${cssVarV2('layer/white')}`,
   selectors: {
     '&.multi-avatar': {
-      marginLeft: -4,
+      marginInlineStart: -4,
     },
   },
 });
@@ -136,8 +136,8 @@ export const teamName = style({
 });
 
 export const teamBadge = style({
-  marginLeft: 'auto',
-  marginRight: '0px',
+  marginInlineStart: 'auto',
+  marginInlineEnd: '0px',
   padding: '0px 4px',
   borderRadius: '2px',
   fontSize: '10px',

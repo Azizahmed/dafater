@@ -1,11 +1,9 @@
-import { Button, IconButton, Modal } from '@affine/component';
+import { Button, IconButton, mirrorInRtl, Modal } from '@affine/component';
 import { useBlurRoot } from '@affine/core/components/hooks/use-blur-root';
-import { AuthService, SubscriptionService } from '@affine/core/modules/cloud';
-import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
-import { Trans, useI18n } from '@affine/i18n';
-import { track } from '@affine/track';
+import { AuthService } from '@affine/core/modules/cloud';
+import { useI18n } from '@affine/i18n';
 import { ArrowLeftSmallIcon } from '@blocksuite/icons/rc';
-import { useLiveData, useService, useServices } from '@toeverything/infra';
+import { useLiveData, useService } from '@toeverything/infra';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -42,22 +40,7 @@ const getPlayList = (t: Translate): Array<PlayListItem> => [
   {
     video: '/onboarding/ai-onboarding.general.5.mp4',
     title: t['com.affine.ai-onboarding.general.5.title'](),
-    desc: (
-      <Trans
-        i18nKey="com.affine.ai-onboarding.general.5.description"
-        values={{ link: 'ai.affine.pro' }}
-        components={{
-          a: (
-            <a
-              className={styles.link}
-              href="https://ai.affine.pro"
-              target="_blank"
-              rel="noreferrer"
-            />
-          ),
-        }}
-      />
-    ),
+    desc: t['com.affine.dafater.ai-onboarding.ready.description'](),
   },
 ];
 
@@ -81,10 +64,7 @@ function prefetchVideos() {
 }
 
 export const AIOnboardingGeneral = () => {
-  const { authService, subscriptionService } = useServices({
-    AuthService,
-    SubscriptionService,
-  });
+  const authService = useService(AuthService);
 
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
   const prevVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -92,10 +72,8 @@ export const AIOnboardingGeneral = () => {
   const isLoggedIn = loginStatus === 'authenticated';
   const t = useI18n();
   const open = useLiveData(showAIOnboardingGeneral$);
-  const aiSubscription = useLiveData(subscriptionService.subscription.ai$);
   const [index, setIndex] = useState(0);
   const list = useMemo(() => getPlayList(t), [t]);
-  const workspaceDialogService = useService(WorkspaceDialogService);
   const readyToOpen = isLoggedIn;
   useBlurRoot(open && readyToOpen);
 
@@ -109,24 +87,12 @@ export const AIOnboardingGeneral = () => {
     showAIOnboardingGeneral$.next(false);
     toggleGeneralAIOnboarding(false);
   }, []);
-  const goToPricingPlans = useCallback(() => {
-    workspaceDialogService.open('setting', {
-      activeTab: 'plans',
-      scrollAnchor: 'aiPricingPlan',
-    });
-    track.$.aiOnboarding.dialog.viewPlans();
-    closeAndDismiss();
-  }, [closeAndDismiss, workspaceDialogService]);
   const onPrev = useCallback(() => {
     setIndex(i => Math.max(0, i - 1));
   }, []);
   const onNext = useCallback(() => {
     setIndex(i => Math.min(list.length - 1, i + 1));
   }, [list.length]);
-
-  useEffect(() => {
-    subscriptionService.subscription.revalidate();
-  }, [subscriptionService]);
 
   useEffect(() => {
     prefetchVideos();
@@ -213,23 +179,6 @@ export const AIOnboardingGeneral = () => {
           />
         </main>
 
-        <section
-          className={styles.privacy}
-          aria-hidden={!isLast || !!aiSubscription}
-        >
-          <Trans
-            i18nKey="com.affine.ai-onboarding.general.privacy"
-            components={{
-              a: (
-                <a
-                  className={styles.privacyLink}
-                  href="https://affine.pro/terms#ai"
-                />
-              ),
-            }}
-          />
-        </section>
-
         <footer
           className={styles.footer}
           data-is-last={isLast}
@@ -238,30 +187,11 @@ export const AIOnboardingGeneral = () => {
           {isLast ? (
             <>
               <IconButton size="20" onClick={onPrev}>
-                <ArrowLeftSmallIcon />
+                <ArrowLeftSmallIcon className={mirrorInRtl} />
               </IconButton>
-              {aiSubscription ? (
-                <Button
-                  size="large"
-                  onClick={closeAndDismiss}
-                  variant="primary"
-                >
-                  {t['com.affine.ai-onboarding.general.get-started']()}
-                </Button>
-              ) : (
-                <div className={styles.subscribeActions}>
-                  <Button size="large" onClick={goToPricingPlans}>
-                    {t['com.affine.ai-onboarding.general.purchase']()}
-                  </Button>
-                  <Button
-                    size="large"
-                    onClick={closeAndDismiss}
-                    variant="primary"
-                  >
-                    {t['com.affine.ai-onboarding.general.try-for-free']()}
-                  </Button>
-                </div>
-              )}
+              <Button size="large" onClick={closeAndDismiss} variant="primary">
+                {t['com.affine.ai-onboarding.general.get-started']()}
+              </Button>
             </>
           ) : (
             <>
@@ -271,7 +201,7 @@ export const AIOnboardingGeneral = () => {
                 </Button>
               ) : (
                 <Button
-                  prefix={<ArrowLeftSmallIcon />}
+                  prefix={<ArrowLeftSmallIcon className={mirrorInRtl} />}
                   onClick={onPrev}
                   size="large"
                   variant="plain"

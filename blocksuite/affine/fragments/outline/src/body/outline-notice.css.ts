@@ -4,7 +4,7 @@ import { style } from '@vanilla-extract/css';
 
 export const outlineNotice = style({
   position: 'absolute',
-  left: 0,
+  insetInlineStart: 0,
   bottom: '8px',
   padding: '10px 18px',
   display: 'flex',

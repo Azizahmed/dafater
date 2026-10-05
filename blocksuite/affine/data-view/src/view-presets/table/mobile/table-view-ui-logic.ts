@@ -4,6 +4,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import type { InsertToPosition } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { AddCursorIcon } from '@blocksuite/icons/lit';
 import { signal } from '@preact/signals-core';
 import type { TemplateResult } from 'lit';
@@ -90,7 +91,7 @@ export class MobileTableViewUILogic extends DataViewUILogicBase<
         @click="${add}"
       >
         <div class="dv-icon-16" style="display:flex;">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>${t('New Group')}</div>
       </div>
     </div>`;
   };

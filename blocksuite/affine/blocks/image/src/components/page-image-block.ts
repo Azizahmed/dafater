@@ -7,6 +7,7 @@ import {
 } from '@blocksuite/affine-shared/commands';
 import { ImageSelection } from '@blocksuite/affine-shared/selection';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import type { BlockComponent, UIEventStateContext } from '@blocksuite/std';
 import {
@@ -47,7 +48,7 @@ export class ImageBlockPageComponent extends SignalWatcher(
       justify-content: center;
       position: absolute;
       top: 4px;
-      left: 4px;
+      inset-inline-start: 4px;
       width: 36px;
       height: 36px;
       padding: 5px;
@@ -64,7 +65,7 @@ export class ImageBlockPageComponent extends SignalWatcher(
 
     affine-page-image .affine-image-status {
       position: absolute;
-      left: 18px;
+      inset-inline-start: 18px;
       bottom: 18px;
     }
 
@@ -224,7 +225,7 @@ export class ImageBlockPageComponent extends SignalWatcher(
 
   private _handleError() {
     this.block.resourceController.updateState({
-      errorMessage: 'Failed to download image!',
+      errorMessage: t('Failed to download image!'),
     });
   }
 

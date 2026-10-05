@@ -23,6 +23,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { getBlockProps } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   CaptionIcon,
   CopyIcon,
@@ -363,7 +364,7 @@ function createBuiltinToolbarConfigForExternal(
               const slice = Slice.fromModels(ctx.store, [model]);
               ctx.clipboard
                 .copySlice(slice)
-                .then(() => toast(ctx.host, 'Copied to clipboard'))
+                .then(() => toast(ctx.host, t('Copied to clipboard')))
                 .catch(console.error);
             },
           },

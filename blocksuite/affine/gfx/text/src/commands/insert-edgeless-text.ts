@@ -6,8 +6,10 @@ import {
   EDGELESS_TEXT_BLOCK_MIN_HEIGHT,
   EDGELESS_TEXT_BLOCK_MIN_WIDTH,
   EdgelessTextBlockModel,
+  TextAlign,
 } from '@blocksuite/affine-model';
 import { focusTextModel } from '@blocksuite/affine-rich-text';
+import { EditPropsStore } from '@blocksuite/affine-shared/services';
 import { matchModels } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
 import type { Command } from '@blocksuite/std';
@@ -34,6 +36,16 @@ export const insertEdgelessTextCommand: Command<
   const zoom = gfx.viewport.zoom;
   const selection = gfx.selection;
 
+  // Right-to-left UI: text starts on the right unless another alignment was
+  // chosen (the stored default is left).
+  const lastTextAlign =
+    std.get(EditPropsStore).lastProps$.value['affine:edgeless-text'].textAlign;
+  const textAlign =
+    lastTextAlign === TextAlign.Left &&
+    getComputedStyle(host).direction === 'rtl'
+      ? TextAlign.Right
+      : undefined;
+
   const textId = std.get(EdgelessCRUDIdentifier).addBlock(
     'affine:edgeless-text',
     {
@@ -43,6 +55,7 @@ export const insertEdgelessTextCommand: Command<
         EDGELESS_TEXT_BLOCK_MIN_WIDTH * zoom,
         EDGELESS_TEXT_BLOCK_MIN_HEIGHT * zoom
       ).serialize(),
+      ...(textAlign ? { textAlign } : {}),
     },
     surface.id
   );

@@ -11,14 +11,13 @@ import {
   type ImportRunContext,
   ImportService,
 } from '@affine/core/modules/import';
-import { UrlService } from '@affine/core/modules/url';
 import {
   getAFFiNEWorkspaceSchema,
   type WorkspaceMetadata,
   WorkspaceService,
 } from '@affine/core/modules/workspace';
 import { DebugLogger } from '@affine/debug';
-import { useI18n } from '@affine/i18n';
+import { I18n, useI18n } from '@affine/i18n';
 import track from '@affine/track';
 import { openDirectory, openFilesWith } from '@blocksuite/affine/shared/utils';
 import type { Workspace } from '@blocksuite/affine/store';
@@ -117,20 +116,21 @@ function toImportErrorState(error: unknown): ImportErrorState {
   if (error instanceof DOMException && error.name === 'AbortError') {
     return {
       code: 'cancelled',
-      message: 'Import cancelled',
+      message: I18n['com.affine.import.status.cancelled'](),
       sourcePath,
     };
   }
   if (error instanceof Error) {
     return {
       code: error.name || 'import-error',
-      message: error.message || 'Unknown error occurred',
+      message:
+        error.message || I18n['com.affine.import.status.unknown-error'](),
       sourcePath,
     };
   }
   return {
     code: 'unknown',
-    message: 'Unknown error occurred',
+    message: I18n['com.affine.import.status.unknown-error'](),
     sourcePath,
   };
 }
@@ -513,18 +513,6 @@ const ImportOptions = ({
           }
         )}
       </div>
-      <div className={style.importModalTip}>
-        {t['com.affine.import.modal.tip']()}{' '}
-        <a
-          className={style.link}
-          href={BUILD_CONFIG.discordUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Discord
-        </a>
-        .
-      </div>
     </>
   );
 };
@@ -575,16 +563,7 @@ const SuccessStatus = ({
         {t['com.affine.import.status.success.title']()}
       </div>
       <p className={style.importStatusContent}>
-        {t['com.affine.import.status.success.message']()}{' '}
-        <a
-          className={style.link}
-          href={BUILD_CONFIG.discordUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Discord
-        </a>
-        .
+        {t['com.affine.dafater.import.success.message']()}
       </p>
       {warnings.length ? (
         <div className={style.importWarnings}>
@@ -610,27 +589,18 @@ const ErrorStatus = ({
   onRetry: () => void;
 }) => {
   const t = useI18n();
-  const urlService = useService(UrlService);
   return (
     <>
       <div className={style.importModalTitle}>
         {t['com.affine.import.status.failed.title']()}
       </div>
       <p className={style.importStatusContent}>
-        {error?.message || 'Unknown error occurred'}
+        {error?.message || t['com.affine.import.status.unknown-error']()}
       </p>
       {error?.sourcePath ? (
         <div className={style.importErrorDetail}>{error.sourcePath}</div>
       ) : null}
       <div className={style.importModalButtonContainer}>
-        <Button
-          onClick={() => {
-            urlService.openPopupWindow(BUILD_CONFIG.discordUrl);
-          }}
-          variant="secondary"
-        >
-          {t['Feedback']()}
-        </Button>
         <Button onClick={onRetry} variant="primary">
           {t['Retry']()}
         </Button>

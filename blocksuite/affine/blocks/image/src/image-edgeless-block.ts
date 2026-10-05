@@ -8,6 +8,7 @@ import {
 } from '@blocksuite/affine-model';
 import { cssVarV2, unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import { formatSize } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { BrokenImageIcon, ImageIcon } from '@blocksuite/icons/lit';
 import { GfxBlockComponent } from '@blocksuite/std';
 import { GfxViewInteractionExtension } from '@blocksuite/std/gfx';
@@ -108,7 +109,7 @@ export class ImageEdgelessBlockComponent extends GfxBlockComponent<ImageBlockMod
 
   private _handleError() {
     this.resourceController.updateState({
-      errorMessage: 'Failed to download image!',
+      errorMessage: t('Failed to download image!'),
     });
   }
 
@@ -296,7 +297,7 @@ export class ImageEdgelessBlockComponent extends GfxBlockComponent<ImageBlockMod
       }),
       errorIcon: BrokenImageIcon(),
       icon: ImageIcon(),
-      title: 'Image',
+      title: t('Image'),
       description: formatSize(size),
     });
 

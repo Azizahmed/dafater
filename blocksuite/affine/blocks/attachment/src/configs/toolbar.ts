@@ -17,6 +17,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { getBlockProps } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   CaptionIcon,
   CopyIcon,
@@ -211,8 +212,8 @@ const builtinToolbarConfig = {
 
         return html`
           <editor-icon-button
-            aria-label="Rename"
-            .tooltip="${'Rename'}"
+            aria-label=${t('Rename')}
+            .tooltip=${t('Rename')}
             @click=${() => {
               ctx.hide();
 

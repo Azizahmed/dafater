@@ -13,6 +13,7 @@ import {
   type ColorEvent,
   stopPropagation,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { batch, signal } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
@@ -195,7 +196,7 @@ export class EdgelessShapeColorPicker extends WithDisposable(
         .contentPadding="${tabType === 'normal' ? '8px' : '0px'}"
         @click=${stopPropagation}
         .button=${html`
-          <editor-icon-button aria-label="Color" .tooltip="${'Color'}">
+          <editor-icon-button aria-label=${t('Color')} .tooltip="${t('Color')}">
             <edgeless-color-button
               .color=${fillColorWithoutAlpha}
             ></edgeless-color-button>
@@ -227,9 +228,9 @@ export class EdgelessShapeColorPicker extends WithDisposable(
                     ] satisfies PickerType[],
                     item => item.type,
                     ({ label, type, value, onPick, hollowCircle }) => html`
-                      <div class="picker-label">${label}</div>
+                      <div class="picker-label">${t(label)}</div>
                       <edgeless-color-panel
-                        aria-label="${label}"
+                        aria-label="${t(label)}"
                         role="listbox"
                         .hasTransparent=${false}
                         .hollowCircle=${hollowCircle}
@@ -259,7 +260,7 @@ export class EdgelessShapeColorPicker extends WithDisposable(
                       </edgeless-color-panel>
                     `
                   )}
-                  <div class="picker-label">Border style</div>
+                  <div class="picker-label">${t('Border style')}</div>
                   <edgeless-line-styles-panel
                     class="picker"
                     .lineSize=${strokeWidth}

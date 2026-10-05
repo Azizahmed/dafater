@@ -40,6 +40,10 @@ export abstract class ArtifactTool<
       .affine-embed-linked-doc-block:hover {
         background-color: ${unsafeCSSVarV2('layer/background/hoverOverlay')};
       }
+
+      .affine-embed-linked-doc-content-title-text {
+        unicode-bidi: plaintext;
+      }
     }
 
     .artifact-skeleton-container {

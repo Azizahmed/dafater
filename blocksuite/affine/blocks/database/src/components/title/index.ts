@@ -1,6 +1,7 @@
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import { stopPropagation } from '@blocksuite/affine-shared/utils';
 import type { DataViewUILogicBase } from '@blocksuite/data-view';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { ShadowlessElement } from '@blocksuite/std';
 import type { Text } from '@blocksuite/store';
@@ -10,6 +11,7 @@ import { property, query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
+import { isDocDatabase } from '../../commands.js';
 import type { DatabaseBlockComponent } from '../../database-block.js';
 
 export class DatabaseTitle extends SignalWatcher(
@@ -44,6 +46,15 @@ export class DatabaseTitle extends SignalWatcher(
       outline: none;
       resize: none;
       scrollbar-width: none;
+    }
+
+    .affine-database-title textarea::placeholder {
+      color: var(--affine-placeholder-color);
+      opacity: 1;
+    }
+
+    .affine-database-title .untitled {
+      color: var(--affine-placeholder-color);
     }
 
     .affine-database-title .text {
@@ -137,6 +148,12 @@ export class DatabaseTitle extends SignalWatcher(
 
   override render() {
     const isEmpty = !this.text$.value;
+    const untitled = t('Untitled database');
+    // A database that is its doc's only content is named by the doc title;
+    // its own empty title would show a second "untitled" right under it.
+    const model = this.database?.model;
+    const hideUntitled =
+      isEmpty && !this.isFocus$.value && !!model && isDocDatabase(model);
 
     const classList = classMap({
       'affine-database-title': true,
@@ -144,15 +161,15 @@ export class DatabaseTitle extends SignalWatcher(
       'comment-highlighted': this.database?.isCommentHighlighted ?? false,
     });
     const untitledStyle = styleMap({
-      height: isEmpty ? 'auto' : 0,
-      opacity: isEmpty && !this.isFocus$.value ? 1 : 0,
+      height: isEmpty && !hideUntitled ? 'auto' : 0,
+      opacity: isEmpty && !this.isFocus$.value && !hideUntitled ? 1 : 0,
     });
     return html` <div
       class="${classList}"
       data-title-empty="${isEmpty}"
       data-title-focus="${this.isFocus$.value}"
     >
-      <div class="text" style="${untitledStyle}">Untitled</div>
+      <div class="text untitled" style="${untitledStyle}">${untitled}</div>
       <div class="text">${this.text$.value}</div>
       <textarea
         .disabled="${this.readonly$.value}"
@@ -164,6 +181,7 @@ export class DatabaseTitle extends SignalWatcher(
         @blur="${this.onBlur}"
         @compositionend="${this.compositionEnd}"
         data-block-is-database-title="true"
+        placeholder="${untitled}"
         title="${this.titleText.toString()}"
       ></textarea>
     </div>`;

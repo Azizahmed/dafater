@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import type { Placement } from '@floating-ui/dom';
 import type { TemplateResult } from 'lit';
 import { css, html, LitElement, nothing } from 'lit';
@@ -97,7 +98,12 @@ export class EdgelessToolIconButton extends LitElement {
   }
 
   override render() {
-    const tooltip = this.coming ? '(Coming soon)' : this.tooltip;
+    // Tooltips are static UI strings from the edgeless tool configs.
+    const tooltip = this.coming
+      ? t('(Coming soon)')
+      : typeof this.tooltip === 'string'
+        ? t(this.tooltip)
+        : this.tooltip;
     const classnames = `icon-container active-mode-${this.activeMode} ${this.hoverState ? 'hovered' : ''}`;
     const padding = this.iconContainerPadding;
     const iconContainerStyles = styleMap({

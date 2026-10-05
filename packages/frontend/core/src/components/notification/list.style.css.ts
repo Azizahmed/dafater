@@ -121,7 +121,7 @@ export const itemSkeletonContainer = style({
 
 export const itemDeleteButton = style({
   position: 'absolute',
-  right: '10px',
+  insetInlineEnd: '10px',
   bottom: '8px',
   width: '20px',
   height: '20px',
@@ -175,7 +175,7 @@ export const itemActionButton = style({
 
 export const itemNameLabelIcon = style({
   verticalAlign: 'top',
-  marginRight: '4px',
+  marginInlineEnd: '4px',
   color: cssVarV2('icon/primary'),
 });
 

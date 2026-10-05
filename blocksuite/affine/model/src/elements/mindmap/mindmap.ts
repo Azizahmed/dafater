@@ -1,5 +1,6 @@
 import type { Bound, SerializedXYWH, XYWH } from '@blocksuite/global/gfx';
 import { deserializeXYWH } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { assertType, noop } from '@blocksuite/global/utils';
 import type {
   BaseElementProps,
@@ -281,7 +282,8 @@ export class MindmapElementModel extends GfxGroupLikeElementModel<MindmapElement
       throw new Error(`Parent node ${parent} not found`);
     }
 
-    props['text'] = new Y.Text((props['text'] as string) ?? 'New node');
+    // Default text is created in the active language: it is user data.
+    props['text'] = new Y.Text((props['text'] as string) ?? t('New node'));
 
     const type = (props.type as string) ?? 'shape';
     let id: string;

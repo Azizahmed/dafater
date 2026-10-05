@@ -13,7 +13,7 @@ export const RenameContent = ({
   inputPrefixRenderer: InputPrefixRenderer,
   inputBelowRenderer: InputBelowRenderer,
   descRenderer: DescRenderer,
-  confirmText = 'Done',
+  confirmText,
   onConfirm,
 }: RenameContentProps) => {
   const t = useI18n();
@@ -59,7 +59,7 @@ export const RenameContent = ({
           data-testid="rename-confirm"
           {...restConfirmButtonProps}
         >
-          {confirmText}
+          {confirmText ?? t['com.affine.m.explorer.folder.rename-confirm']()}
         </Button>
       </div>
     </div>

@@ -38,7 +38,7 @@ export const badge = style({
   ':before': {
     content: '""',
     position: 'absolute',
-    left: 0,
+    insetInlineStart: 0,
     top: 0,
     width: '100%',
     height: '100%',

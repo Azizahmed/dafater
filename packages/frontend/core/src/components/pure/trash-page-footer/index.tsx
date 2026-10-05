@@ -29,7 +29,7 @@ export const TrashPageFooter = () => {
       .then(() => {
         toast(
           t['com.affine.toastMessage.restored']({
-            title: doc.meta$.value.title || 'Untitled',
+            title: doc.meta$.value.title || t['Untitled'](),
           })
         );
       })

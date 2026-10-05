@@ -5,6 +5,7 @@ import {
   popMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine/components/context-menu';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
 import type { NotificationService } from '@blocksuite/affine-shared/services';
@@ -61,7 +62,7 @@ export class ChatInputPreference extends SignalWatcher(
       min-width: 220px;
     }
     .ai-active-model-name {
-      margin-left: 40px;
+      margin-inline-start: 40px;
       color: ${unsafeCSSVarV2('text/secondary')};
       font-size: 14px;
       line-height: 22px;
@@ -81,7 +82,7 @@ export class ChatInputPreference extends SignalWatcher(
       color: ${unsafeCSSVarV2('icon/activated')};
     }
     .ai-model-version {
-      margin-right: 40px;
+      margin-inline-end: 40px;
       color: ${unsafeCSSVarV2('text/tertiary')};
       font-size: 12px;
       line-height: 20px;
@@ -125,18 +126,18 @@ export class ChatInputPreference extends SignalWatcher(
     if (this.aiModelService.models.value.length) {
       preferenceItems.push(
         menu.subMenu({
-          name: 'Model',
+          name: t('Model'),
           prefix: AiOutlineIcon(),
           middleware: modelSubMenuMiddleware,
           postfix: html`
             <span class="ai-active-model-name">
-              ${this.model.value?.name ?? 'Auto'}
+              ${this.model.value?.name ?? t('Auto')}
             </span>
           `,
           options: {
             items: [
               menu.action({
-                name: 'Auto',
+                name: t('Auto'),
                 prefix: html`
                   <div class="ai-model-prefix">
                     ${
@@ -168,10 +169,13 @@ export class ChatInputPreference extends SignalWatcher(
                   `,
                   select: () => {
                     if (!model.available) {
+                      // Dafater: no AI subscriptions, the administrator
+                      // decides which models are available
                       this.notificationService.toast(
-                        'This model requires an AFFiNE AI subscription.'
+                        t(
+                          'This model is not available. Contact your server administrator.'
+                        )
                       );
-                      this.onAISubscribe().catch(console.error);
                       return;
                     }
                     this.aiModelService.setModel(model.id);
@@ -186,7 +190,7 @@ export class ChatInputPreference extends SignalWatcher(
 
     preferenceItems.push(
       menu.toggleSwitch({
-        name: 'Extended Thinking',
+        name: t('Extended Thinking'),
         prefix: ThinkingIcon(),
         on: this.extendedThinking,
         onChange: (value: boolean) => this.onExtendedThinkingChange?.(value),
@@ -196,7 +200,7 @@ export class ChatInputPreference extends SignalWatcher(
 
     searchItems.push(
       menu.toggleSwitch({
-        name: 'Workspace All Docs',
+        name: t('Workspace All Docs'),
         prefix: CloudWorkspaceIcon(),
         on:
           !!this.toolsConfigService.config.value.searchWorkspace &&
@@ -232,7 +236,7 @@ export class ChatInputPreference extends SignalWatcher(
       class="chat-input-preference-trigger"
     >
       <span class="chat-input-preference-trigger-label">
-        ${this.model.value?.category ?? 'Auto'}
+        ${this.model.value?.category ?? t('Auto')}
       </span>
       <span class="chat-input-preference-trigger-icon">
         ${ArrowDownSmallIcon()}

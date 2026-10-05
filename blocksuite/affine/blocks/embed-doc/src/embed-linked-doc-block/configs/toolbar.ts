@@ -26,6 +26,7 @@ import {
   referenceToNode,
 } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   CaptionIcon,
   CopyIcon,
@@ -79,7 +80,7 @@ const docTitleAction = {
 
     const originalTitle =
       ctx.std.get(DocDisplayMetaProvider).title(model.props.pageId).value ||
-      'Untitled';
+      t('Untitled');
     const open = (event: MouseEvent) => block.open({ event });
 
     return html`<affine-linked-doc-title
@@ -139,7 +140,10 @@ const openDocActionGroup = {
       <editor-menu-button
         .contentPadding="${'8px'}"
         .button=${html`
-          <editor-icon-button aria-label="Open doc" .tooltip=${'Open doc'}>
+          <editor-icon-button
+            aria-label=${t('Open doc')}
+            .tooltip=${t('Open doc')}
+          >
             ${OpenInNewIcon()} ${EditorChevronDown}
           </editor-icon-button>
         `}
@@ -150,13 +154,13 @@ const openDocActionGroup = {
             action => action.id,
             ({ label, icon, run, disabled }) => html`
               <editor-menu-action
-                aria-label=${ifDefined(label)}
+                aria-label=${ifDefined(label && t(label))}
                 ?disabled=${ifDefined(
                   typeof disabled === 'function' ? disabled(ctx) : disabled
                 )}
                 @click=${() => run?.(ctx)}
               >
-                ${icon}<span class="label">${label}</span>
+                ${icon}<span class="label">${label && t(label)}</span>
               </editor-menu-action>
             `
           )}
@@ -320,7 +324,7 @@ const builtinToolbarConfig = {
             const slice = Slice.fromModels(ctx.store, [model]);
             ctx.clipboard
               .copySlice(slice)
-              .then(() => toast(ctx.host, 'Copied to clipboard'))
+              .then(() => toast(ctx.host, t('Copied to clipboard')))
               .catch(console.error);
           },
         },

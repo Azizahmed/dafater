@@ -1,4 +1,5 @@
 import { ShapeStyle } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import { StyleGeneralIcon, StyleScribbleIcon } from '@blocksuite/icons/lit';
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -41,7 +42,7 @@ export class EdgelessShapeStylePanel extends LitElement {
           .tipPosition=${'top'}
           .activeMode=${'background'}
           aria-label=${value}
-          .tooltip=${value}
+          .tooltip=${value === ShapeStyle.General ? t('General') : t('Scribbled')}
           .active=${this.value === value}
           .iconSize=${'20px'}
           @click=${() => this._onSelect(value)}

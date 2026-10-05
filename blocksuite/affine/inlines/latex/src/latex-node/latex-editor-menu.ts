@@ -3,6 +3,7 @@ import type { RichText } from '@blocksuite/affine-rich-text';
 import { ThemeProvider } from '@blocksuite/affine-shared/services';
 import { unsafeCSSVar } from '@blocksuite/affine-shared/theme';
 import type { AffineTextAttributes } from '@blocksuite/affine-shared/types';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { noop } from '@blocksuite/global/utils';
 import { DoneIcon } from '@blocksuite/icons/lit';
@@ -56,6 +57,7 @@ export class LatexEditorMenu extends SignalWatcher(
       box-shadow: 0px 0px 0px 2px rgba(30, 150, 235, 0.3);
 
       font-family: ${unsafeCSSVar('fontCodeFamily')};
+      direction: ltr;
       border: 1px solid transparent;
 
       max-height: 400px;
@@ -69,7 +71,7 @@ export class LatexEditorMenu extends SignalWatcher(
       grid-area: confirm-box;
       display: flex;
       align-items: flex-end;
-      padding-left: 10px;
+      padding-inline-start: 10px;
     }
 
     .latex-editor-hint {
@@ -195,7 +197,7 @@ export class LatexEditorMenu extends SignalWatcher(
           })}</span
         >
       </div>
-      <div class="latex-editor-hint">Shift Enter to line break</div>
+      <div class="latex-editor-hint">${t('Shift Enter to line break')}</div>
     </div>`;
   }
 

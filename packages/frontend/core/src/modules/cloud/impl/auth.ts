@@ -86,6 +86,33 @@ export function configureDefaultAuthProvider(framework: Framework) {
         });
         return await res.json();
       },
+      async signUp(credential) {
+        const headers: Record<string, string> = {};
+
+        if (credential.verifyToken) {
+          headers['x-captcha-token'] = credential.verifyToken;
+          headers['x-captcha-provider'] = credential.challenge
+            ? 'hashcash'
+            : 'turnstile';
+        }
+        if (credential.challenge) {
+          headers['x-captcha-challenge'] = credential.challenge;
+        }
+
+        const res = await fetchService.fetch('/api/auth/sign-up', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: credential.email,
+            password: credential.password,
+            name: credential.name,
+          }),
+          headers: {
+            'content-type': 'application/json',
+            ...headers,
+          },
+        });
+        return await res.json();
+      },
       async signInOpenAppSignInCode(code: string) {
         await fetchService.fetch('/api/auth/open-app/sign-in', {
           method: 'POST',

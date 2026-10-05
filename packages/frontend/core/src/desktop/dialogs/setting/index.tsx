@@ -14,9 +14,7 @@ import type {
 } from '@affine/core/modules/dialogs/constant';
 import { GlobalContextService } from '@affine/core/modules/global-context';
 import { createIsland, type Island } from '@affine/core/utils/island';
-import { ServerDeploymentType } from '@affine/graphql';
-import { Trans, useTranslation } from '@affine/i18n';
-import { ContactWithUsIcon } from '@blocksuite/icons/rc';
+import { useTranslation } from '@affine/i18n';
 import { FrameworkScope, useLiveData, useService } from '@toeverything/infra';
 import { debounce } from 'lodash-es';
 import {
@@ -32,9 +30,8 @@ import { flushSync } from 'react-dom';
 
 import { AccountSetting } from './account-setting';
 import { GeneralSetting } from './general-setting';
-import { IssueFeedbackModal } from './issue-feedback-modal';
+import { isServerSetting, ServerSetting } from './server-setting';
 import { SettingSidebar } from './setting-sidebar';
-import { StarAFFiNEModal } from './star-affine-modal';
 import * as style from './style.css';
 import {
   SubPageContext,
@@ -61,6 +58,18 @@ const CenteredLoading = () => {
   );
 };
 
+// Dafater has no plans, billing or licenses: tabs that upstream callers may
+// still request fall back to an existing tab.
+const REMOVED_TAB_FALLBACK: Partial<Record<SettingTab, SettingTab>> = {
+  plans: 'appearance',
+  billing: 'appearance',
+  'workspace:billing': 'workspace:preference',
+  'workspace:license': 'workspace:preference',
+};
+
+const resolveSettingTab = (tab: SettingTab): SettingTab =>
+  REMOVED_TAB_FALLBACK[tab] ?? tab;
+
 const SettingModalInner = ({
   activeTab: initialActiveTab = 'appearance',
   onCloseSetting,
@@ -68,7 +77,7 @@ const SettingModalInner = ({
 }: SettingProps) => {
   const [subPageIslands, setSubPageIslands] = useState<Island[]>([]);
   const [settingState, setSettingState] = useState<SettingState>({
-    activeTab: initialActiveTab,
+    activeTab: resolveSettingTab(initialActiveTab),
     scrollAnchor: initialScrollAnchor,
   });
   const globalContextService = useService(GlobalContextService);
@@ -86,11 +95,6 @@ const SettingModalInner = ({
     ) ?? defaultServerService.server;
   const loginStatus = useLiveData(
     currentServer.scope.get(AuthService).session.status$
-  );
-  const isSelfhosted = useLiveData(
-    currentServer.config$.selector(
-      c => c.type === ServerDeploymentType.Selfhosted
-    )
   );
 
   const modalContentRef = useRef<HTMLDivElement>(null);
@@ -138,21 +142,10 @@ const SettingModalInner = ({
 
   const onTabChange = useCallback(
     (key: SettingTab) => {
-      setSettingState({ activeTab: key });
+      setSettingState({ activeTab: resolveSettingTab(key) });
     },
     [setSettingState]
   );
-  const [openIssueFeedbackModal, setOpenIssueFeedbackModal] = useState(false);
-  const [openStarAFFiNEModal, setOpenStarAFFiNEModal] = useState(false);
-
-  const handleOpenIssueFeedbackModal = useCallback(() => {
-    setOpenIssueFeedbackModal(true);
-  }, [setOpenIssueFeedbackModal]);
-
-  const handleOpenStarAFFiNEModal = useCallback(() => {
-    setOpenStarAFFiNEModal(true);
-  }, [setOpenStarAFFiNEModal]);
-
   const addSubPageIsland = useCallback(() => {
     const island = createIsland();
     setSubPageIslands(prev => [...prev, island]);
@@ -172,14 +165,11 @@ const SettingModalInner = ({
   );
 
   useEffect(() => {
-    if (
-      isSelfhosted &&
-      (settingState.activeTab === 'plans' ||
-        settingState.activeTab === 'workspace:billing')
-    ) {
-      setSettingState({ activeTab: 'workspace:license' });
+    const resolved = resolveSettingTab(settingState.activeTab);
+    if (resolved !== settingState.activeTab) {
+      setSettingState({ activeTab: resolved });
     }
-  }, [isSelfhosted, settingState.activeTab]);
+  }, [settingState.activeTab]);
 
   useEffect(() => {
     if (settingState.scrollAnchor) {
@@ -225,6 +215,8 @@ const SettingModalInner = ({
                       onCloseSetting={onCloseSetting}
                       onChangeSettingState={setSettingState}
                     />
+                  ) : isServerSetting(settingState.activeTab) ? (
+                    <ServerSetting activeTab={settingState.activeTab} />
                   ) : !isWorkspaceSetting(settingState.activeTab) ? (
                     <GeneralSetting
                       activeTab={settingState.activeTab}
@@ -233,34 +225,6 @@ const SettingModalInner = ({
                   ) : null}
                 </Suspense>
               </div>
-              <div className={style.footer}>
-                <ContactWithUsIcon fontSize={16} />
-                <Trans
-                  i18nKey={'com.affine.settings.suggestion-2'}
-                  components={{
-                    1: (
-                      <span
-                        className={style.link}
-                        onClick={handleOpenStarAFFiNEModal}
-                      />
-                    ),
-                    2: (
-                      <span
-                        className={style.link}
-                        onClick={handleOpenIssueFeedbackModal}
-                      />
-                    ),
-                  }}
-                />
-              </div>
-              <StarAFFiNEModal
-                open={openStarAFFiNEModal}
-                setOpen={setOpenStarAFFiNEModal}
-              />
-              <IssueFeedbackModal
-                open={openIssueFeedbackModal}
-                setOpen={setOpenIssueFeedbackModal}
-              />
             </div>
             <Scrollable.Scrollbar />
           </Scrollable.Viewport>
@@ -293,7 +257,7 @@ export const SettingDialog = ({
       open
       onOpenChange={() => close()}
       closeButtonOptions={{
-        style: { right: 14, top: 14 },
+        style: { insetInlineEnd: 14, top: 14 },
       }}
     >
       <Suspense fallback={<CenteredLoading />}>

@@ -4,6 +4,7 @@ import {
   MindmapElementModel,
   ShapeElementModel,
 } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import {
   EdgelessIcon,
   FrameIcon,
@@ -113,24 +114,79 @@ export const noContentPlaceholder = html`
 
 export const TYPE_ICON_MAP: {
   [key: string]: {
-    name: string;
+    readonly name: string;
+    readonly notFoundTitle: string;
+    readonly notFoundDescription: string;
+    readonly cannotDisplayDescription: string;
     icon: TemplateResult;
   };
 } = {
   'affine:frame': {
-    name: 'Frame',
+    get name() {
+      return t('Frame');
+    },
+    get notFoundTitle() {
+      return t('This Frame not available');
+    },
+    get notFoundDescription() {
+      return t('The frame is deleted or not in this doc.');
+    },
+    get cannotDisplayDescription() {
+      return t(
+        'The frame is inserted but cannot display in edgeless mode. Switch to page mode to view the block.'
+      );
+    },
     icon: FrameIcon(),
   },
   group: {
-    name: 'Group',
+    get name() {
+      return t('Group');
+    },
+    get notFoundTitle() {
+      return t('This Group not available');
+    },
+    get notFoundDescription() {
+      return t('The group is deleted or not in this doc.');
+    },
+    get cannotDisplayDescription() {
+      return t(
+        'The group is inserted but cannot display in edgeless mode. Switch to page mode to view the block.'
+      );
+    },
     icon: GroupIcon(),
   },
   mindmap: {
-    name: 'Mind map',
+    get name() {
+      return t('Mind map');
+    },
+    get notFoundTitle() {
+      return t('This Mind map not available');
+    },
+    get notFoundDescription() {
+      return t('The mind map is deleted or not in this doc.');
+    },
+    get cannotDisplayDescription() {
+      return t(
+        'The mind map is inserted but cannot display in edgeless mode. Switch to page mode to view the block.'
+      );
+    },
     icon: MindmapIcon(),
   },
   edgeless: {
-    name: 'Edgeless content',
+    get name() {
+      return t('Edgeless content');
+    },
+    get notFoundTitle() {
+      return t('This Edgeless content not available');
+    },
+    get notFoundDescription() {
+      return t('The edgeless content is deleted or not in this doc.');
+    },
+    get cannotDisplayDescription() {
+      return t(
+        'The edgeless content is inserted but cannot display in edgeless mode. Switch to page mode to view the block.'
+      );
+    },
     icon: EdgelessIcon(),
   },
 };

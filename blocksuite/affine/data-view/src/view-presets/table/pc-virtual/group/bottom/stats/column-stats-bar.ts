@@ -10,7 +10,7 @@ import type { TableSingleView } from '../../../../table-view-manager';
 
 const styles = css`
   affine-database-virtual-column-stats {
-    margin-left: ${LEFT_TOOL_BAR_WIDTH}px;
+    margin-inline-start: ${LEFT_TOOL_BAR_WIDTH}px;
     height: ${STATS_BAR_HEIGHT}px;
     display: flex;
   }

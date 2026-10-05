@@ -1,6 +1,7 @@
 import type { TagMeta } from '@affine/core/components/page-list';
 import type { CollectionMeta } from '@affine/core/modules/collection';
 import track, { type EventArgs } from '@affine/track';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { scrollbarStyle } from '@blocksuite/affine/shared/styles';
 import { unsafeCSSVar, unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -148,7 +149,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
     items: [
       {
         key: 'tags',
-        name: 'Tags',
+        name: t('Tags'),
         testId: 'ai-chat-with-tags',
         icon: TagsIcon(),
         action: () => {
@@ -157,7 +158,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
       },
       {
         key: 'collections',
-        name: 'Collections',
+        name: t('Collections'),
         testId: 'ai-chat-with-collections',
         icon: CollectionsIcon(),
         action: () => {
@@ -191,14 +192,14 @@ export class ChatPanelAddPopover extends SignalWatcher(
     items: [
       {
         key: 'images',
-        name: 'Upload images',
+        name: t('Upload images'),
         testId: 'ai-chat-with-images',
         icon: ImageIcon(),
         action: this._addImageChip,
       },
       {
         key: 'files',
-        name: 'Upload files (pdf, txt, csv)',
+        name: t('Upload files (pdf, txt, csv)'),
         testId: 'ai-chat-with-files',
         icon: UploadIcon(),
         action: this._addFileChip,
@@ -234,7 +235,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
       }
       const more = {
         key: `${group.name} More`,
-        name: resolveSignal(group.overflowText) ?? 'more',
+        name: resolveSignal(group.overflowText) ?? t('more'),
         icon: MoreHorizontalIcon(),
         action: () => {
           this._resetMaxDisplay(group);
@@ -315,6 +316,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
       <input
         class="search-input"
         type="text"
+        dir="auto"
         placeholder=${this._getPlaceholder()}
         .value=${this._query}
         @input=${this._onInput}
@@ -326,11 +328,11 @@ export class ChatPanelAddPopover extends SignalWatcher(
   private _getPlaceholder() {
     switch (this._mode) {
       case AddPopoverMode.Tags:
-        return 'Search tags';
+        return t('Search tags');
       case AddPopoverMode.Collections:
-        return 'Search collections';
+        return t('Search collections');
       default:
-        return 'Search docs, tags, collections';
+        return t('Search docs, tags, collections');
     }
   }
 
@@ -339,7 +341,7 @@ export class ChatPanelAddPopover extends SignalWatcher(
   }
 
   private _renderNoResult() {
-    return html`<div class="no-result">No Result</div>`;
+    return html`<div class="no-result">${t('No Result')}</div>`;
   }
 
   private _renderMenuGroup(groups: MenuGroup[]) {

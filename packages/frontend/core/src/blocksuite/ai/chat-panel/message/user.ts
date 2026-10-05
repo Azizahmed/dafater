@@ -25,7 +25,7 @@ export class ChatMessageUser extends WithDisposable(ShadowlessElement) {
       justify-content: flex-end;
 
       .images-row {
-        margin-left: auto;
+        margin-inline-start: auto;
       }
     }
 
@@ -38,7 +38,30 @@ export class ChatMessageUser extends WithDisposable(ShadowlessElement) {
       margin-top: 6px;
       color: var(--affine-text-secondary-color);
       font-size: 11px;
-      text-align: right;
+      text-align: end;
+    }
+
+    /* Dafater: the user's own messages stay on the right in Arabic too */
+    chat-message-user:dir(rtl) {
+      align-items: flex-start;
+
+      .chat-content-images {
+        justify-content: flex-start;
+
+        .images-row {
+          margin-inline-start: 0;
+          margin-inline-end: auto;
+        }
+      }
+
+      .text-content-wrapper,
+      .scope-receipt {
+        align-self: flex-start;
+      }
+
+      .scope-receipt {
+        text-align: start;
+      }
     }
   `;
 

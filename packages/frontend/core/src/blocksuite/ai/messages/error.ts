@@ -1,4 +1,5 @@
 import { I18n } from '@affine/i18n';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { scrollbarStyle } from '@blocksuite/affine/shared/styles';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -137,7 +138,7 @@ export class AIErrorWrapper extends SignalWatcher(WithDisposable(LitElement)) {
                       (this._showDetailContent.value =
                         !this._showDetailContent.value)}
                   >
-                    <span>Show detail</span>
+                    <span>${t('Show detail')}</span>
                     <span
                       class="toggle ${
                         this._showDetailContent.value ? 'down' : 'up'
@@ -191,7 +192,7 @@ export class AIErrorWrapper extends SignalWatcher(WithDisposable(LitElement)) {
   accessor errorMessage: string = '';
 
   @property({ attribute: false })
-  accessor actionText: string = 'Contact us';
+  accessor actionText: string = '';
 
   @property({ attribute: false })
   accessor actionTooltip: string = '';
@@ -206,18 +207,21 @@ export class AIErrorWrapper extends SignalWatcher(WithDisposable(LitElement)) {
   accessor testId = 'ai-error';
 }
 
-const PaymentRequiredErrorRenderer = (host?: EditorHost | null) => html`
+// Dafater has no AI subscriptions: a 402 from the server is a configuration
+// or limit problem for the administrator, never an upgrade prompt.
+const PaymentRequiredErrorRenderer = () => html`
   <ai-error-wrapper
-    .text=${"You've reached the current usage cap for AFFiNE AI. You can subscribe to AFFiNE AI(with free 7-day-trial) to continue the AI experience!"}
-    .actionText=${'Upgrade'}
-    .onClick=${() => AIAppEvents.requestUpgradePlan.next({ host })}
+    .text=${t(
+      'The AI request could not be completed. Contact your system administrator.'
+    )}
+    .showAction=${false}
   ></ai-error-wrapper>
 `;
 
 const LoginRequiredErrorRenderer = (host?: EditorHost | null) => html`
   <ai-error-wrapper
-    .text=${'You need to login to AFFiNE Cloud to continue using AFFiNE AI.'}
-    .actionText=${'Login'}
+    .text=${t('You need to login to Dafater Cloud to continue using Dafater AI.')}
+    .actionText=${t('Login')}
     .onClick=${() => AIAppEvents.requestLogin.next({ host })}
   ></ai-error-wrapper>
 `;
@@ -231,22 +235,21 @@ type ErrorProps = {
   showAction?: boolean;
 };
 
-const generalErrorText =
-  'An error occurred, If this issue persists please let us know.';
-
+// Dafater: no "contact us" action (upstream mailed AFFiNE's support).
 const GeneralErrorRenderer = (props: ErrorProps = {}) => {
-  const contactSupport = () => {
-    window.open('mailto:support@toeverything.info', '_blank');
-  };
-
   return html`<ai-error-wrapper
-    .text=${props.text ?? generalErrorText}
+    .text=${
+      props.text ??
+      t(
+        'An error occurred. If this issue persists, contact your system administrator.'
+      )
+    }
     .errorMessage=${props.errorMessage ?? ''}
     .showDetailPanel=${!!props.errorMessage}
-    .actionText=${props.actionText ?? 'Contact us'}
-    .actionTooltip=${props.actionTooltip ?? 'support@toeverything.info'}
-    .onClick=${props.onClick ?? contactSupport}
-    .showAction=${props.showAction ?? true}
+    .actionText=${props.actionText ?? ''}
+    .actionTooltip=${props.actionTooltip ?? ''}
+    .onClick=${props.onClick ?? (() => {})}
+    .showAction=${props.showAction ?? false}
   ></ai-error-wrapper>`;
 };
 
@@ -256,7 +259,7 @@ export function AIChatErrorRenderer(
   retry?: () => void
 ) {
   if (error instanceof PaymentRequiredError) {
-    return PaymentRequiredErrorRenderer(host);
+    return PaymentRequiredErrorRenderer();
   } else if (error instanceof UnauthorizedError) {
     return LoginRequiredErrorRenderer(host);
   } else if (error instanceof SelectedSourcesProcessingError) {

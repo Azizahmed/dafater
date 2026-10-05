@@ -114,16 +114,18 @@ export const ProfilePanel = () => {
     (file: File) => {
       setWorkspaceAvatar(file)
         .then(() => {
-          notify.success({ title: 'Update workspace avatar success' });
+          notify.success({
+            title: t['com.affine.settings.workspace.avatar.update.success'](),
+          });
         })
         .catch(error => {
           notify.error({
-            title: 'Update workspace avatar failed',
+            title: t['com.affine.settings.workspace.avatar.update.failed'](),
             message: error,
           });
         });
     },
-    [setWorkspaceAvatar]
+    [setWorkspaceAvatar, t]
   );
 
   const canAdjustAvatar = workspaceIsReady && isOwner;
@@ -159,7 +161,7 @@ export const ProfilePanel = () => {
         />
       </Upload>
 
-      <Wrapper marginLeft={20}>
+      <Wrapper style={{ marginInlineStart: 20 }}>
         <div className={style.label}>{t['Workspace Name']()}</div>
         <FlexWrapper alignItems="center" flexGrow="1">
           <Input
@@ -178,7 +180,7 @@ export const ProfilePanel = () => {
               data-testid="save-workspace-name"
               onClick={handleClick}
               style={{
-                marginLeft: '12px',
+                marginInlineStart: '12px',
               }}
             >
               {t['com.affine.editCollection.save']()}

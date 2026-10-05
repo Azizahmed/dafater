@@ -33,7 +33,7 @@ export const FrameSettings = () => {
   }, [getCurrentColor, background]);
 
   const colorItems = useMemo(() => {
-    return palettes.map(({ key, value, resolvedValue }) => {
+    return palettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set('affine:frame', { background: value });
       };
@@ -45,7 +45,7 @@ export const FrameSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -77,7 +77,7 @@ export const FrameSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={currentColor.resolvedValue} />}
               >
-                {currentColor.key}
+                {currentColor.label}
               </MenuTrigger>
             }
           />

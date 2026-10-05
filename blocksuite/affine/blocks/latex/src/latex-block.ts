@@ -2,6 +2,7 @@ import { selectBlock } from '@blocksuite/affine-block-note';
 import { CaptionedBlockComponent } from '@blocksuite/affine-components/caption';
 import { createLitPortal } from '@blocksuite/affine-components/portal';
 import type { LatexBlockModel } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import { BlockSelection } from '@blocksuite/std';
 import type { Placement } from '@floating-ui/dom';
 import { effect } from '@preact/signals-core';
@@ -51,7 +52,9 @@ export class LatexBlockComponent extends CaptionedBlockComponent<LatexBlockModel
 
         if (latex.length === 0) {
           render(
-            html`<span class="latex-block-empty-placeholder">Equation</span>`,
+            html`<span class="latex-block-empty-placeholder"
+              >${t('Equation')}</span
+            >`,
             katexContainer
           );
         } else {
@@ -65,7 +68,7 @@ export class LatexBlockComponent extends CaptionedBlockComponent<LatexBlockModel
             delete katexContainer['_$litPart$'];
             render(
               html`<span class="latex-block-error-placeholder"
-                >Error equation</span
+                >${t('Error equation')}</span
               >`,
               katexContainer
             );

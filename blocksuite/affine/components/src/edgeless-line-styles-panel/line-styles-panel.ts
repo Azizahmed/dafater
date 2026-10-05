@@ -1,4 +1,5 @@
 import { LineWidth, StrokeStyle } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { BanIcon, DashLineIcon, StraightLineIcon } from '@blocksuite/icons/lit';
 import { css, html, LitElement } from 'lit';
@@ -80,7 +81,7 @@ export class EdgelessLineStylesPanel extends WithDisposable(LitElement) {
           return html`
             <editor-icon-button
               class=${classMap(classInfo)}
-              .tooltip="${key}"
+              .tooltip="${t(key)}"
               .withHover=${active}
               @click=${() => this.select({ type: 'style', value })}
             >

@@ -42,7 +42,7 @@ export class FootNotePopupChip extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-align: left;
+      text-align: start;
       height: 22px;
       line-height: 22px;
       color: ${unsafeCSSVarV2('text/primary')};
@@ -60,7 +60,9 @@ export class FootNotePopupChip extends LitElement {
             ? html`<div class="prefix-icon">${this.prefixIcon}</div>`
             : nothing
         }
-        <div class="popup-chip-label" title=${this.tooltip}>${this.label}</div>
+        <div class="popup-chip-label" title=${this.tooltip}>
+          <bdi>${this.label}</bdi>
+        </div>
       </div>
     `;
   }

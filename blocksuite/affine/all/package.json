@@ -97,6 +97,7 @@
     "./global/gfx": "./src/global/gfx.ts",
     "./global/disposable": "./src/global/disposable.ts",
     "./global/lit": "./src/global/lit.ts",
+    "./global/i18n": "./src/global/i18n.ts",
     "./store": "./src/store/index.ts",
     "./store/test": "./src/store/test.ts",
     "./blocks/attachment": "./src/blocks/attachment/index.ts",

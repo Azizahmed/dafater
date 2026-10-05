@@ -1,219 +1,49 @@
-import {
-  OAuthProviderType,
-  ServerDeploymentType,
-  ServerFeature,
-} from '@affine/graphql';
+import { ServerDeploymentType, ServerFeature } from '@affine/graphql';
 
 import { DEFAULT_SELF_HOSTED_SERVER_NAME } from './server-name';
 import type { ServerConfig, ServerMetadata } from './types';
 
-export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] =
-  environment.isSelfHosted
-    ? [
-        {
-          id: 'affine-cloud',
-          baseUrl: location.origin,
-          // selfhosted baseUrl is `location.origin`
-          // this is ok for web app, but not for desktop app
-          // since we never build desktop app in selfhosted mode, so it's fine
-          config: {
-            serverName: DEFAULT_SELF_HOSTED_SERVER_NAME,
-            features: [],
-            oauthProviders: [],
-            type: ServerDeploymentType.Selfhosted,
-            credentialsRequirement: {
-              password: {
-                minLength: 8,
-                maxLength: 32,
-              },
-            },
-          },
-        },
-      ]
-    : BUILD_CONFIG.debug
-      ? [
-          {
-            id: 'affine-cloud',
-            baseUrl: BUILD_CONFIG.isElectron
-              ? 'http://localhost:8080'
-              : location.origin,
-            config: {
-              serverName: 'AFFiNE Cloud',
-              features: [
-                ServerFeature.Indexer,
-                ServerFeature.Copilot,
-                ServerFeature.CopilotEmbedding,
-                ServerFeature.OAuth,
-                ServerFeature.Payment,
-                ServerFeature.LocalWorkspace,
-              ],
-              oauthProviders: [
-                OAuthProviderType.Google,
-                OAuthProviderType.Apple,
-              ],
-              type: ServerDeploymentType.Affine,
-              credentialsRequirement: {
-                password: {
-                  minLength: 8,
-                  maxLength: 32,
-                },
-              },
-            },
-          },
-        ]
-      : BUILD_CONFIG.appBuildType === 'stable'
-        ? [
-            {
-              id: 'affine-cloud',
-              baseUrl: BUILD_CONFIG.isNative
-                ? BUILD_CONFIG.isIOS
-                  ? 'https://apple.getaffineapp.com'
-                  : 'https://app.affine.pro'
-                : location.origin,
-              config: {
-                serverName: 'AFFiNE Cloud',
-                features: [
-                  ServerFeature.Indexer,
-                  ServerFeature.Copilot,
-                  ServerFeature.CopilotEmbedding,
-                  ServerFeature.OAuth,
-                  ServerFeature.Payment,
-                  ServerFeature.LocalWorkspace,
-                ],
-                oauthProviders: [
-                  OAuthProviderType.Google,
-                  OAuthProviderType.Apple,
-                ],
-                type: ServerDeploymentType.Affine,
-                credentialsRequirement: {
-                  password: {
-                    minLength: 8,
-                    maxLength: 32,
-                  },
-                },
-              },
-            },
-          ]
-        : BUILD_CONFIG.appBuildType === 'beta'
-          ? [
-              {
-                id: 'affine-cloud',
-                baseUrl: BUILD_CONFIG.isNative
-                  ? BUILD_CONFIG.isIOS
-                    ? 'https://apple.getaffineapp.com'
-                    : 'https://insider.affine.pro'
-                  : location.origin,
-                config: {
-                  serverName: 'AFFiNE Cloud',
-                  features: [
-                    ServerFeature.Indexer,
-                    ServerFeature.Copilot,
-                    ServerFeature.CopilotEmbedding,
-                    ServerFeature.OAuth,
-                    ServerFeature.Payment,
-                    ServerFeature.LocalWorkspace,
-                  ],
-                  oauthProviders: [
-                    OAuthProviderType.Google,
-                    OAuthProviderType.Apple,
-                  ],
-                  type: ServerDeploymentType.Affine,
-                  credentialsRequirement: {
-                    password: {
-                      minLength: 8,
-                      maxLength: 32,
-                    },
-                  },
-                },
-              },
-            ]
-          : BUILD_CONFIG.appBuildType === 'internal'
-            ? [
-                {
-                  id: 'affine-cloud',
-                  baseUrl: 'https://insider.affine.pro',
-                  config: {
-                    serverName: 'AFFiNE Cloud',
-                    features: [
-                      ServerFeature.Indexer,
-                      ServerFeature.Copilot,
-                      ServerFeature.CopilotEmbedding,
-                      ServerFeature.OAuth,
-                      ServerFeature.Payment,
-                      ServerFeature.LocalWorkspace,
-                    ],
-                    oauthProviders: [
-                      OAuthProviderType.Google,
-                      OAuthProviderType.Apple,
-                    ],
-                    type: ServerDeploymentType.Affine,
-                    credentialsRequirement: {
-                      password: {
-                        minLength: 8,
-                        maxLength: 32,
-                      },
-                    },
-                  },
-                },
-              ]
-            : BUILD_CONFIG.appBuildType === 'canary'
-              ? [
-                  {
-                    id: 'affine-cloud',
-                    baseUrl: BUILD_CONFIG.isNative
-                      ? 'https://affine.fail'
-                      : location.origin,
-                    config: {
-                      serverName: 'AFFiNE Cloud',
-                      features: [
-                        ServerFeature.Indexer,
-                        ServerFeature.Copilot,
-                        ServerFeature.CopilotEmbedding,
-                        ServerFeature.OAuth,
-                        ServerFeature.Payment,
-                        ServerFeature.LocalWorkspace,
-                      ],
-                      oauthProviders: [
-                        OAuthProviderType.Google,
-                        OAuthProviderType.Apple,
-                      ],
-                      type: ServerDeploymentType.Affine,
-                      credentialsRequirement: {
-                        password: {
-                          minLength: 8,
-                          maxLength: 32,
-                        },
-                      },
-                    },
-                  },
-                ]
-              : [];
-
-export type TelemetryChannel =
-  | 'stable'
-  | 'beta'
-  | 'internal'
-  | 'canary'
-  | 'local';
-
-const OFFICIAL_TELEMETRY_ENDPOINTS: Record<TelemetryChannel, string> = {
-  stable: 'https://app.affine.pro',
-  beta: 'https://insider.affine.pro',
-  internal: 'https://insider.affine.pro',
-  canary: 'https://affine.fail',
-  local: 'http://localhost:8080',
-};
-
-export function getOfficialTelemetryEndpoint(
-  channel = BUILD_CONFIG.appBuildType
-): string {
-  if (BUILD_CONFIG.debug) {
-    return BUILD_CONFIG.isNative
-      ? OFFICIAL_TELEMETRY_ENDPOINTS.local
-      : location.origin;
-  } else if (['beta', 'internal', 'canary', 'stable'].includes(channel)) {
-    return OFFICIAL_TELEMETRY_ENDPOINTS[channel];
+/**
+ * The Dafater server the app talks to (exactly one built-in server).
+ *
+ * - Web / mobile web: the server that serves the app (`location.origin`).
+ * - Native builds (electron / ios / android): the build-time
+ *   `BUILD_CONFIG.dafaterServerUrl` (env `DAFATER_SERVER_URL`).
+ *
+ * The id stays `affine-cloud` (internal identifier, used by storage keys and
+ * workspace flavours). The default config below is only a placeholder: the
+ * real name, features and `initialized` flag are fetched from the server's
+ * `serverConfig` query at runtime (`Server.revalidateConfig`).
+ *
+ * NOTE: a native build without `DAFATER_SERVER_URL` still registers the entry,
+ * because `DefaultServerService` (and everything built on it) requires the
+ * `affine-cloud` server to exist. It then points at the app's own origin
+ * (`assets://` / `capacitor://`), which is never reachable, so the app behaves
+ * as local-only (the server simply stays "offline") and users can still add
+ * their own server through the "add server" flow.
+ */
+function getDafaterServerBaseUrl(): string {
+  if (BUILD_CONFIG.isNative && BUILD_CONFIG.dafaterServerUrl) {
+    return BUILD_CONFIG.dafaterServerUrl.replace(/\/+$/, '');
   }
-
-  return OFFICIAL_TELEMETRY_ENDPOINTS.stable;
+  return location.origin;
 }
+
+export const BUILD_IN_SERVERS: (ServerMetadata & { config: ServerConfig })[] = [
+  {
+    id: 'affine-cloud',
+    baseUrl: getDafaterServerBaseUrl(),
+    config: {
+      serverName: DEFAULT_SELF_HOSTED_SERVER_NAME,
+      features: [ServerFeature.LocalWorkspace],
+      oauthProviders: [],
+      type: ServerDeploymentType.Selfhosted,
+      credentialsRequirement: {
+        password: {
+          minLength: 8,
+          maxLength: 32,
+        },
+      },
+    },
+  },
+];

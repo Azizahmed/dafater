@@ -60,7 +60,7 @@ export class EdgelessFrameOrderMenu extends SignalWatcher(
       border-radius: 1px;
       opacity: 0.2;
       background: var(--affine-placeholder-color);
-      margin-right: 2px;
+      margin-inline-end: 2px;
     }
 
     .title {
@@ -90,7 +90,7 @@ export class EdgelessFrameOrderMenu extends SignalWatcher(
       visibility: hidden;
       position: absolute;
       z-index: 1;
-      left: 8px;
+      inset-inline-start: 8px;
       background-color: var(--affine-primary-color);
       height: 1px;
       width: 90%;

@@ -30,6 +30,7 @@ import {
   renderCurrentMenuItemWith,
   renderMenu,
 } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import {
   TextAlignCenterIcon,
   TextAlignLeftIcon,
@@ -47,15 +48,21 @@ import {
 
 const FONT_WEIGHT_LIST = [
   {
-    key: 'Light',
+    get key() {
+      return t('Light');
+    },
     value: FontWeight.Light,
   },
   {
-    key: 'Regular',
+    get key() {
+      return t('Regular');
+    },
     value: FontWeight.Regular,
   },
   {
-    key: 'Semibold',
+    get key() {
+      return t('Semibold');
+    },
     value: FontWeight.SemiBold,
   },
 ] as const satisfies MenuItem<FontWeight>[];
@@ -65,7 +72,9 @@ const FONT_STYLE_LIST = [
     value: FontStyle.Normal,
   },
   {
-    key: 'Italic',
+    get key() {
+      return t('Italic');
+    },
     value: FontStyle.Italic,
   },
 ] as const satisfies MenuItem<FontStyle>[];
@@ -81,17 +90,23 @@ const FONT_SIZE_LIST = [
 
 const TEXT_ALIGN_LIST = [
   {
-    key: 'Left',
+    get key() {
+      return t('Left');
+    },
     value: TextAlign.Left,
     icon: TextAlignLeftIcon(),
   },
   {
-    key: 'Center',
+    get key() {
+      return t('Center');
+    },
     value: TextAlign.Center,
     icon: TextAlignCenterIcon(),
   },
   {
-    key: 'Right',
+    get key() {
+      return t('Right');
+    },
     value: TextAlign.Right,
     icon: TextAlignRightIcon(),
   },
@@ -158,7 +173,7 @@ export function createTextActions<
             .button=${html`
               <editor-icon-button
                 aria-label="Font"
-                .tooltip="${'Font'}"
+                .tooltip="${t('Font')}"
                 .justify="${'space-between'}"
                 .iconContainerWidth="${'40px'}"
               >
@@ -239,7 +254,7 @@ export function createTextActions<
         return html`
           <edgeless-color-picker-button
             class="text-color"
-            .label="${'Text color'}"
+            .label="${t('Text color')}"
             .pick=${onPick}
             .color=${color}
             .theme=${theme}
@@ -290,7 +305,7 @@ export function createTextActions<
             .button=${html`
               <editor-icon-button
                 aria-label="Font style"
-                .tooltip="${'Font style'}"
+                .tooltip="${t('Font style')}"
                 .justify="${'space-between'}"
                 .iconContainerWidth="${'90px'}"
                 .disabled=${disabled}
@@ -351,7 +366,7 @@ export function createTextActions<
 
         return html`<affine-size-dropdown-menu
           @select=${onPick}
-          .label="${'Font size'}"
+          .label="${t('Font size')}"
           .sizes=${FONT_SIZE_LIST}
           .sizeSignal=${fontSize$}
         ></affine-size-dropdown-menu>`;
@@ -379,6 +394,7 @@ export function createTextActions<
 
         return renderMenu({
           label: 'Alignment',
+          tooltip: t('Alignment'),
           items: TEXT_ALIGN_LIST,
           currentValue: textAlign,
           onPick,

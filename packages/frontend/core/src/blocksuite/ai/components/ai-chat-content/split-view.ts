@@ -57,7 +57,7 @@ export class ChatPanelSplitView extends SignalWatcher(
       height: 100%;
       position: absolute;
       top: 0;
-      left: calc((var(--drag-size) - var(--gap)) / 2 * -1);
+      inset-inline-start: calc((var(--drag-size) - var(--gap)) / 2 * -1);
       cursor: col-resize;
       display: flex;
       align-items: center;
@@ -133,6 +133,7 @@ export class ChatPanelSplitView extends SignalWatcher(
   private _initialBox: DOMRect | null = null;
   private _initialX: number | null = null;
   private _initialPercent: number | null = null;
+  private _isRtl = false;
   private _rafId: number | null = null;
 
   private _onDragStart(x: number) {
@@ -140,9 +141,12 @@ export class ChatPanelSplitView extends SignalWatcher(
     this._initialBox = this.getBoundingClientRect();
     this._initialX = x;
     this._initialPercent = this._percent;
+    this._isRtl = getComputedStyle(this).direction === 'rtl';
   }
   private _onDragMove(x: number) {
-    const offset = x - (this._initialX || 0);
+    // In RTL the first ("left") pane sits on the right, so it grows leftward.
+    const delta = x - (this._initialX || 0);
+    const offset = this._isRtl ? -delta : delta;
     const offsetPercent = (offset / (this._initialBox?.width || 1)) * 100;
 
     this._percent = Math.max(

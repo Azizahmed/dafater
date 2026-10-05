@@ -10,7 +10,7 @@ import type { TableViewUILogic } from '../pc/table-view-ui-logic.js';
 
 const styles = css`
   affine-database-column-stats {
-    margin-left: ${LEFT_TOOL_BAR_WIDTH}px;
+    margin-inline-start: ${LEFT_TOOL_BAR_WIDTH}px;
     height: ${STATS_BAR_HEIGHT}px;
     display: flex;
   }

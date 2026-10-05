@@ -1,4 +1,5 @@
 import type { InsertToPosition } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { nanoid } from '@blocksuite/store';
 import { computed, type ReadonlySignal, signal } from '@preact/signals-core';
 
@@ -78,7 +79,7 @@ export class ViewManagerBase implements ViewManager {
     const id = this.dataSource.viewDataAdd({
       ...data,
       id: nanoid(),
-      name: meta.model.defaultName,
+      name: t(meta.model.defaultName),
       mode: type,
     });
     this.setCurrentView(id);

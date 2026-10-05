@@ -4,6 +4,7 @@ import type {
   ParagraphBlockModel,
 } from '@blocksuite/affine-model';
 import { insertContent } from '@blocksuite/affine-rich-text';
+import { t } from '@blocksuite/global/i18n';
 import {
   ArrowDownBigIcon,
   ArrowUpBigIcon,
@@ -125,7 +126,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
           std.clipboard
             .copy(slice)
             .then(() => {
-              toast(std.host, 'Copied to clipboard');
+              toast(std.host, t('Copied to clipboard'));
             })
             .catch(e => {
               console.error(e);

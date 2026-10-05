@@ -2,6 +2,7 @@ import { ConfirmIcon } from '@blocksuite/affine-components/icons';
 import { toast } from '@blocksuite/affine-components/toast';
 import type { AttachmentBlockModel } from '@blocksuite/affine-model';
 import { CitationProvider } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import type { EditorHost } from '@blocksuite/std';
 import { html } from 'lit';
 import { createRef, ref } from 'lit/directives/ref.js';
@@ -40,7 +41,7 @@ export const RenameModal = ({
   const onConfirm = () => {
     const newFileName = fileName + extension;
     if (!newFileName) {
-      toast(editorHost, 'File name cannot be empty');
+      toast(editorHost, t('File name cannot be empty'));
       return;
     }
     model.store.updateBlock(model, {

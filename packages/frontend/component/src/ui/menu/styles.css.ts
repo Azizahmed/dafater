@@ -94,7 +94,7 @@ export const menuSpan = style({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-  textAlign: 'left',
+  textAlign: 'start',
 });
 export const menuItemIcon = style({
   display: 'flex',
@@ -117,7 +117,7 @@ export const menuSeparator = style({
     backgroundColor: cssVarV2('layer/insideBorder/border'),
     position: 'absolute',
     top: '50%',
-    left: 0,
+    insetInlineStart: 0,
     transform: 'translateY(-50%) scaleY(0.5)',
   },
 });

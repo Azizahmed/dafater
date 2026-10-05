@@ -7,6 +7,7 @@ import {
   type ToolbarActionGroup,
   type ToolbarModuleConfig,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import {
   CopyIcon,
   DeleteIcon,
@@ -62,7 +63,7 @@ export const builtinInlineLinkToolbarConfig = {
             ctx.reset();
 
             navigator.clipboard.writeText(link).catch(console.error);
-            toast(ctx.host, 'Copied link to clipboard');
+            toast(ctx.host, t('Copied link to clipboard'));
 
             ctx.track('CopiedLink', {
               ...trackBaseProps,

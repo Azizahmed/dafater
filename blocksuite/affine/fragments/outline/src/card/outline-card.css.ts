@@ -101,7 +101,7 @@ export const divider = style({
 export const displayModeButtonGroup = style({
   display: 'none',
   position: 'absolute',
-  right: '8px',
+  insetInlineEnd: '8px',
   top: '-6px',
   paddingTop: '8px',
   paddingBottom: '8px',
@@ -127,7 +127,8 @@ export const displayModeButton = style({
 
 export const currentModeLabel = style({
   display: 'flex',
-  padding: '2px 0px 2px 4px',
+  padding: '2px 0px',
+  paddingInlineStart: '4px',
   alignItems: 'center',
 });
 

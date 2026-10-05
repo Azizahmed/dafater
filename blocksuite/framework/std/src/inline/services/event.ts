@@ -460,16 +460,24 @@ export class EventService<TextAttributes extends BaseTextAttributes> {
         event.stopPropagation();
       };
 
+      // Arrow keys move visually: in right-to-left text the left arrow moves
+      // forward (to the next character) and the right arrow moves backward.
+      const rootElement = this.editor.rootElement;
+      const rtl =
+        !!rootElement && getComputedStyle(rootElement).direction === 'rtl';
+      const backwardKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+      const forwardKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+
       const deltas = this.editor.getDeltasByInlineRange(inlineRange);
       if (deltas.length === 2) {
-        if (event.key === 'ArrowLeft' && this.editor.isEmbed(deltas[0][0])) {
+        if (event.key === backwardKey && this.editor.isEmbed(deltas[0][0])) {
           prevent();
           this.editor.setInlineRange({
             index: inlineRange.index - 1,
             length: 1,
           });
         } else if (
-          event.key === 'ArrowRight' &&
+          event.key === forwardKey &&
           this.editor.isEmbed(deltas[1][0])
         ) {
           prevent();
@@ -481,14 +489,14 @@ export class EventService<TextAttributes extends BaseTextAttributes> {
       } else if (deltas.length === 1) {
         const delta = deltas[0][0];
         if (this.editor.isEmbed(delta)) {
-          if (event.key === 'ArrowLeft' && inlineRange.index - 1 >= 0) {
+          if (event.key === backwardKey && inlineRange.index - 1 >= 0) {
             prevent();
             this.editor.setInlineRange({
               index: inlineRange.index - 1,
               length: 1,
             });
           } else if (
-            event.key === 'ArrowRight' &&
+            event.key === forwardKey &&
             inlineRange.index + 1 <= this.editor.yTextLength
           ) {
             prevent();

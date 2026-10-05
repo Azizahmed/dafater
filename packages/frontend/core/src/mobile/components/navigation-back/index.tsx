@@ -1,6 +1,7 @@
 import {
   IconButton,
   type IconButtonProps,
+  mirrorInRtl,
   useIsInsideModal,
 } from '@affine/component';
 import { ArrowLeftSmallIcon, CloseIcon } from '@blocksuite/icons/rc';
@@ -42,7 +43,14 @@ export const NavigationBackButton = ({
       size={24}
       style={style}
       onClick={handleRouteBack}
-      icon={icon ?? (isInsideModal ? <CloseIcon /> : <ArrowLeftSmallIcon />)}
+      icon={
+        icon ??
+        (isInsideModal ? (
+          <CloseIcon />
+        ) : (
+          <ArrowLeftSmallIcon className={mirrorInRtl} />
+        ))
+      }
       data-testid="page-header-back"
       {...otherProps}
     />

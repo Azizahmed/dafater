@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import type { DndController } from '@blocksuite/std';
 
 import type { CalendarEntry, CalendarRowEntry } from '../types.js';
@@ -184,7 +185,7 @@ export class CalendarDnd {
       setDragPreview: ({ container, setOffset }) => {
         const currentEntry = this.callbacks.getEntry(entry.id);
         const preview = document.createElement('div');
-        preview.textContent = currentEntry?.title || 'Untitled';
+        preview.textContent = currentEntry?.title || t('Untitled');
         preview.style.cssText =
           'padding:0 6px;height:22px;line-height:22px;border-radius:4px;' +
           'font-size:12px;white-space:nowrap;overflow:hidden;' +

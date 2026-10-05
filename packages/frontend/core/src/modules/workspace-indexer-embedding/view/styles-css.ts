@@ -140,7 +140,7 @@ export const embeddingProgress = css({
 });
 
 export const embeddingProgressTitle = css({
-  textAlign: 'left',
+  textAlign: 'start',
   width: '100%',
   display: 'flex',
   alignItems: 'center',

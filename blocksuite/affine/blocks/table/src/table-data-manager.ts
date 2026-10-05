@@ -1,5 +1,6 @@
 import type { TableBlockModel, TableCell } from '@blocksuite/affine-model';
 import { generateFractionalIndexingKeyBetween } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { nanoid, Text } from '@blocksuite/store';
 import { computed, type ReadonlySignal, signal } from '@preact/signals-core';
 
@@ -24,9 +25,11 @@ export class TableDataManager {
   readonly virtualWidth$ = signal<
     { columnId: string; width: number } | undefined
   >();
-  readonly cellCountTips$ = computed(
-    () =>
-      `${this.virtualRowCount$.value + this.rows$.value.length} x ${this.virtualColumnCount$.value + this.columns$.value.length}`
+  readonly cellCountTips$ = computed(() =>
+    t('{rows} x {columns}', {
+      rows: this.virtualRowCount$.value + this.rows$.value.length,
+      columns: this.virtualColumnCount$.value + this.columns$.value.length,
+    })
   );
   readonly rows$ = computed(() => {
     return Object.values(this.model.props.rows$.value).sort(compareByOrder);

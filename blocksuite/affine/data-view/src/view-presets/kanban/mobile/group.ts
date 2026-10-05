@@ -3,6 +3,7 @@ import {
   popFilterableSimpleMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { AddCursorIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -75,7 +76,7 @@ export class MobileKanbanGroup extends SignalWatcher(
       menu.group({
         items: [
           menu.action({
-            name: 'Ungroup',
+            name: t('Ungroup'),
             hide: () => this.group.value == null,
             select: () => {
               this.group.rows.forEach(row => {
@@ -85,7 +86,7 @@ export class MobileKanbanGroup extends SignalWatcher(
             },
           }),
           menu.action({
-            name: 'Delete Cards',
+            name: t('Delete Cards'),
             select: () => {
               this.view.rowsDelete(this.group.rows.map(row => row.rowId));
               this.requestUpdate();
@@ -126,11 +127,11 @@ export class MobileKanbanGroup extends SignalWatcher(
             ? nothing
             : html` <div class="mobile-add-card" @click="${this.clickAddCard}">
                 <div
-                  style="margin-right: 4px;width: 16px;height: 16px;display:flex;align-items:center;"
+                  style="margin-inline-end: 4px;width: 16px;height: 16px;display:flex;align-items:center;"
                 >
                   ${AddCursorIcon()}
                 </div>
-                Add
+                ${t('Add')}
               </div>`
         }
       </div>

@@ -1,4 +1,5 @@
 import { AIStarIcon } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import { ColorScheme } from '@blocksuite/affine/model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -48,6 +49,7 @@ export class AIPanelInput extends SignalWatcher(WithDisposable(LitElement)) {
         resize: none;
         overflow: hidden;
         padding: 0px;
+        unicode-bidi: plaintext;
 
         color: ${unsafeCSSVarV2('text/primary')};
 
@@ -84,6 +86,10 @@ export class AIPanelInput extends SignalWatcher(WithDisposable(LitElement)) {
 
     .arrow[data-active='true'] {
       background: ${unsafeCSSVarV2('icon/activated')};
+    }
+
+    :host(:dir(rtl)) .arrow svg {
+      transform: scaleX(-1);
     }
 
     .arrow[data-active='true']:hover {
@@ -220,7 +226,7 @@ export class AIPanelInput extends SignalWatcher(WithDisposable(LitElement)) {
       <div class="star">${AIStarIcon}</div>
       <div class="textarea-container">
         <textarea
-          placeholder="What are your thoughts?"
+          placeholder=${t('What are your thoughts?')}
           rows="1"
           @keydown=${this._onKeyDown}
           @input=${this._onInput}
@@ -241,7 +247,9 @@ export class AIPanelInput extends SignalWatcher(WithDisposable(LitElement)) {
           ${SendIcon()}
           ${
             this._hasContent
-              ? html`<affine-tooltip .offsetY=${12}>Send to AI</affine-tooltip>`
+              ? html`<affine-tooltip .offsetY=${12}
+                  >${t('Send to AI')}</affine-tooltip
+                >`
               : nothing
           }
         </div>

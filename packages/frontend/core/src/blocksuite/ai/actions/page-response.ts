@@ -11,6 +11,7 @@ import {
   getCommonBound,
   type XYWH,
 } from '@blocksuite/affine/global/gfx';
+import { t } from '@blocksuite/affine/global/i18n';
 import type {
   MindmapElementModel,
   ShapeElementModel,
@@ -288,7 +289,7 @@ function addSurfaceRefBlock(host: EditorHost, bound: Bound, place: Place) {
   const frame = host.store.addBlock(
     'affine:frame',
     {
-      title: new Text(new Y.Text('Frame')),
+      title: new Text(new Y.Text(t('Frame'))),
       xywh: bound.serialize(),
       index: LayerManager.INITIAL_INDEX,
     },

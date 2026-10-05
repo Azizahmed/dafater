@@ -443,15 +443,18 @@ const MasonryItem = memo(function MasonryItem({
 
     const { x, y, w, h } = xywh;
 
+    // x is measured from the inline start, so the layout mirrors in RTL:
+    // the first item sits at the top right and items flow right to left.
+    const inlineX = `calc(${x}px * ${styles.inlineSign})`;
     const posStyle =
       locateMode === 'transform'
-        ? { transform: `translate(${x}px, ${y}px)` }
+        ? { transform: `translate(${inlineX}, ${y}px)` }
         : locateMode === 'leftTop'
-          ? { left: `${x}px`, top: `${y}px` }
-          : { transform: `translate3d(${x}px, ${y}px, 0)` };
+          ? { insetInlineStart: `${x}px`, top: `${y}px` }
+          : { transform: `translate3d(${inlineX}, ${y}px, 0)` };
 
     return {
-      left: 0,
+      insetInlineStart: 0,
       top: 0,
       ...styleProp,
       ...posStyle,

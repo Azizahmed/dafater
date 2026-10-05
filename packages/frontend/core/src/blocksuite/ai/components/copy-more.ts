@@ -1,5 +1,6 @@
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
 import { Tooltip } from '@blocksuite/affine/components/tooltip';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { noop } from '@blocksuite/affine/global/utils';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -71,7 +72,7 @@ export class ChatCopyMore extends WithDisposable(LitElement) {
         cursor: pointer;
 
         svg {
-          margin-left: 12px;
+          margin-inline-start: 12px;
         }
       }
 
@@ -185,13 +186,13 @@ export class ChatCopyMore extends WithDisposable(LitElement) {
                 @click=${async () => {
                   const success = await copyText(content);
                   if (success) {
-                    this._notifySuccess('Copied to clipboard');
+                    this._notifySuccess(t('Copied to clipboard'));
                   }
                 }}
                 data-testid="action-copy-button"
               >
                 ${CopyIcon({ width: '20px', height: '20px' })}
-                <affine-tooltip>Copy</affine-tooltip>
+                <affine-tooltip>${t('Copy')}</affine-tooltip>
               </div>`
             : nothing
         }
@@ -203,7 +204,9 @@ export class ChatCopyMore extends WithDisposable(LitElement) {
                 data-testid="action-retry-button"
               >
                 ${ResetIcon({ width: '20px', height: '20px' })}
-                <affine-tooltip .autoShift=${true}>Retry</affine-tooltip>
+                <affine-tooltip .autoShift=${true}
+                  >${t('Retry')}</affine-tooltip
+                >
               </div>`
             : nothing
         }
@@ -243,12 +246,13 @@ export class ChatCopyMore extends WithDisposable(LitElement) {
                       );
 
                       if (success) {
-                        this._notifySuccess(action.toast);
+                        // Action titles/toasts are static code strings.
+                        this._notifySuccess(t(action.toast));
                       }
                     }}
                   >
                     ${action.icon}
-                    <div>${action.title}</div>
+                    <div>${t(action.title)}</div>
                   </div>`;
                 }
               )

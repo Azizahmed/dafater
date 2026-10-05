@@ -1,4 +1,5 @@
 import type { PeekViewService } from '@affine/core/modules/peek-view';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { PageIcon, PenIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -96,26 +97,38 @@ export class DocWriteTool extends WithDisposable(ShadowlessElement) {
   private getCallLabel(title?: string) {
     switch (this.data.toolName) {
       case 'doc_create':
-        return title ? `Creating "${title}"` : 'Creating document';
+        return title
+          ? t('Creating "{title}"', { title })
+          : t('Creating document');
       case 'doc_update':
-        return title ? `Updating "${title}"` : 'Updating document';
+        return title
+          ? t('Updating "{title}"', { title })
+          : t('Updating document');
       case 'doc_update_meta':
-        return title ? `Renaming to "${title}"` : 'Updating document title';
+        return title
+          ? t('Renaming to "{title}"', { title })
+          : t('Updating document title');
       default:
-        return 'Updating document';
+        return t('Updating document');
     }
   }
 
   private getResultLabel(title?: string) {
     switch (this.data.toolName) {
       case 'doc_create':
-        return title ? `Created "${title}"` : 'Document created';
+        return title
+          ? t('Created "{title}"', { title })
+          : t('Document created');
       case 'doc_update':
-        return title ? `Updated "${title}"` : 'Document updated';
+        return title
+          ? t('Updated "{title}"', { title })
+          : t('Document updated');
       case 'doc_update_meta':
-        return title ? `Renamed "${title}"` : 'Document title updated';
+        return title
+          ? t('Renamed "{title}"', { title })
+          : t('Document title updated');
       default:
-        return 'Document updated';
+        return t('Document updated');
     }
   }
 
@@ -147,7 +160,9 @@ export class DocWriteTool extends WithDisposable(ShadowlessElement) {
 
     const result = this.data.result;
     if (!result || isToolError(result)) {
-      const name = isToolError(result) ? result.name : 'Document action failed';
+      const name = isToolError(result)
+        ? result.name
+        : t('Document action failed');
       return html`<tool-call-failed
         .name=${name}
         .icon=${this.getToolIcon()}
@@ -155,10 +170,10 @@ export class DocWriteTool extends WithDisposable(ShadowlessElement) {
     }
 
     const docId = this.getDocId();
-    const title = this.getDocTitle(docId) ?? 'Document';
+    const title = this.getDocTitle(docId) ?? t('Document');
     const parts: string[] = [];
     if (result.message) parts.push(result.message);
-    if (docId) parts.push(`Doc ID: ${docId}`);
+    if (docId) parts.push(t('Doc ID: {docId}', { docId }));
     const content = parts.length ? parts.join('\n') : undefined;
 
     return html`<tool-result-card

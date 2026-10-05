@@ -4,7 +4,7 @@ import { AudioAttachmentService } from '@affine/core/modules/media/services/audi
 import { WorkbenchService } from '@affine/core/modules/workbench';
 import { DebugLogger } from '@affine/debug';
 import { apis, events } from '@affine/electron-api';
-import { i18nTime } from '@affine/i18n';
+import { I18n, i18nTime } from '@affine/i18n';
 import track from '@affine/track';
 import type { AttachmentBlockModel } from '@blocksuite/affine/model';
 import type { Store } from '@blocksuite/affine/store';
@@ -173,8 +173,10 @@ async function createRecordingDoc(
     docsService.createDoc({
       id: targetDocId,
       docProps,
-      title:
-        'Recording ' + (status.appName ?? 'System Audio') + ' ' + timestamp,
+      title: I18n.t('com.affine.recording.doc-title', {
+        appName: status.appName ?? I18n['com.affine.recording.system-audio'](),
+        timestamp,
+      }),
       primaryMode: 'page',
     });
   }

@@ -48,7 +48,7 @@ export const previewContainer = style({
   flexGrow: 1,
   position: 'absolute',
   top: 0,
-  left: 40,
+  insetInlineStart: 40,
   borderRadius: 8,
   overflow: 'hidden',
   boxShadow: cssVar('shadow3'),
@@ -136,7 +136,7 @@ export const historyList = style({
   height: '100%',
   width: historyListWidth,
   flexShrink: 0,
-  borderLeft: `1px solid ${cssVar('borderColor')}`,
+  borderInlineStart: `1px solid ${cssVar('borderColor')}`,
 });
 export const historyListScrollable = style({
   height: `calc(100% - ${headerHeight})`,
@@ -169,22 +169,24 @@ export const historyItemGroupContent = style({
   display: 'flex',
   flexDirection: 'column',
   gap: 8,
-  paddingLeft: 24,
+  paddingInlineStart: 24,
   '::before': {
     position: 'absolute',
     top: 0,
-    left: 15.5,
+    insetInlineStart: 15.5,
     content: '""',
     display: 'block',
     height: '100%',
     width: '1px',
-    borderLeft: `1px solid ${cssVar('borderColor')}`,
+    borderInlineStart: `1px solid ${cssVar('borderColor')}`,
   },
 });
 export const historyItemGroupTitle = style({
   display: 'flex',
   alignItems: 'center',
-  padding: '0 12px 0 4px',
+  paddingBlock: '0 0',
+  paddingInlineStart: '4px',
+  paddingInlineEnd: '12px',
   borderRadius: 4,
   whiteSpace: 'nowrap',
   fontSize: cssVar('fontXs'),
@@ -252,7 +254,7 @@ export const historyItemLoadMore = style([
     cursor: 'pointer',
     color: cssVarV2('text/secondary'),
     flexShrink: 0,
-    textAlign: 'left',
+    textAlign: 'start',
     alignItems: 'flex-start',
   },
 ]);
@@ -268,8 +270,8 @@ export const historyFooter = style({
   padding: '0 24px',
   position: 'absolute',
   bottom: 0,
-  left: 0,
-  right: 0,
+  insetInlineStart: 0,
+  insetInlineEnd: 0,
 });
 export const spacer = style({
   flexGrow: 1,
@@ -333,5 +335,5 @@ export const planPromptTitle = style({
 export const planPromptUpdateButton = style({
   textDecoration: 'underline',
   cursor: 'pointer',
-  marginLeft: 4,
+  marginInlineStart: 4,
 });

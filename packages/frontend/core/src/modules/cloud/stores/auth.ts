@@ -12,7 +12,11 @@ import { z } from 'zod';
 
 import type { GlobalState, NbstoreService } from '../../storage';
 import type { AuthSessionInfo } from '../entities/session';
-import type { AuthProvider, SignInUserInfo } from '../provider/auth';
+import type {
+  AuthProvider,
+  SignInUserInfo,
+  SignUpCredential,
+} from '../provider/auth';
 import type { FetchService } from '../services/fetch';
 import type { GraphQLService } from '../services/graphql';
 import type { ServerService } from '../services/server';
@@ -148,6 +152,10 @@ export class AuthStore extends Store {
     challenge?: string;
   }) {
     return await this.authProvider.signInPassword(credential);
+  }
+
+  async signUp(credential: SignUpCredential) {
+    return await this.authProvider.signUp(credential);
   }
 
   async signInOpenAppSignInCode(code: string) {

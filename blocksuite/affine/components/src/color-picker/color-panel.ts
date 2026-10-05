@@ -2,6 +2,7 @@ import type { Color, ColorScheme, Palette } from '@blocksuite/affine-model';
 import { DefaultTheme, resolveColor } from '@blocksuite/affine-model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import { ColorEvent } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { css, html, LitElement, type PropertyValues } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -89,7 +90,10 @@ export class EdgelessColorButton extends LitElement {
   override render() {
     const { label, preprocessColor, hollowCircle } = this;
     const additionIcon = AdditionIcon(preprocessColor, !!hollowCircle);
-    return html`<div class="color-unit" aria-label=${ifDefined(label)}>
+    return html`<div
+      class="color-unit"
+      aria-label=${ifDefined(label && t(label))}
+    >
       ${additionIcon}
     </div>`;
   }

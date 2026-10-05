@@ -1,4 +1,5 @@
 import type { EmbedHtmlModel, EmbedHtmlStyles } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import { BlockSelection } from '@blocksuite/std';
 import { html } from 'lit';
 import { query } from 'lit/decorators.js';
@@ -49,7 +50,7 @@ export class EmbedHtmlBlockComponent extends EmbedBlockComponent<EmbedHtmlModel>
   }
 
   override renderBlock(): unknown {
-    const titleText = 'Basic HTML Page Structure';
+    const titleText = t('Basic HTML Page Structure');
 
     const htmlSrc = `
       <style>
@@ -62,7 +63,7 @@ export class EmbedHtmlBlockComponent extends EmbedBlockComponent<EmbedHtmlModel>
 
     return this.renderEmbed(() => {
       if (!this.model.props.html) {
-        return html` <div class="affine-html-empty">Empty</div>`;
+        return html` <div class="affine-html-empty">${t('Empty')}</div>`;
       }
       return html`
         <div

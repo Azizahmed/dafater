@@ -1,3 +1,4 @@
+import { mirrorInRtl } from '@affine/component';
 import { ConfigModal } from '@affine/core/components/mobile';
 import { ArrowRightSmallIcon } from '@blocksuite/icons/rc';
 import clsx from 'clsx';
@@ -66,7 +67,9 @@ export const RowLayout = ({
       <div className={styles.baseSettingItemAction}>
         {children ??
           (isInteractive ? (
-            <ArrowRightSmallIcon className={styles.linkIcon} />
+            <ArrowRightSmallIcon
+              className={clsx(styles.linkIcon, mirrorInRtl)}
+            />
           ) : null)}
       </div>
     </>

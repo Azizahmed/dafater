@@ -16,7 +16,7 @@ export class AffineEdgelessZoomToolbarWidget extends WidgetComponent<RootBlockMo
     :host {
       position: absolute;
       bottom: var(--affine-edgeless-zoom-toolbar-bottom, 20px);
-      left: 12px;
+      inset-inline-start: 12px;
       z-index: var(--affine-z-index-popover);
       display: flex;
       justify-content: center;

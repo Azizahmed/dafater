@@ -2,9 +2,10 @@ import { Avatar, uniReactRoot } from '@affine/component';
 import {
   createGroupByConfig,
   type GroupRenderProps,
-  t,
+  t as types,
   ungroups,
 } from '@blocksuite/affine/blocks/database';
+import { t } from '@blocksuite/affine/global/i18n';
 import type { UserService } from '@blocksuite/affine-shared/services';
 
 import { useMemberInfo } from '../hooks/use-member-info';
@@ -34,16 +35,16 @@ const MemberPreview = ({
         size={20}
       />
       <div className={memberName}>
-        {userInfo.removed ? 'Deleted user' : userInfo.name || 'Unnamed'}
+        {userInfo.removed ? t('Deleted user') : userInfo.name || t('Unnamed')}
       </div>
     </div>
   );
 };
 const MemberGroupView = (props: GroupRenderProps<string | null, {}>) => {
   const tType = props.group.tType;
-  if (!t.user.is(tType)) return 'Ungroup';
+  if (!types.user.is(tType)) return t('Ungroup');
   const memberId = props.group.value;
-  if (memberId == null) return 'Ungroup';
+  if (memberId == null) return t('Ungroup');
 
   return (
     <MemberPreview
@@ -55,9 +56,10 @@ const MemberGroupView = (props: GroupRenderProps<string | null, {}>) => {
 
 const MultiMemberGroupView = (props: GroupRenderProps<string | null, {}>) => {
   const tType = props.group.tType;
-  if (!t.array.is(tType) || !t.user.is(tType.element)) return 'Ungroup';
+  if (!types.array.is(tType) || !types.user.is(tType.element))
+    return t('Ungroup');
   const memberId = props.group.value;
-  if (memberId == null) return 'Ungroup';
+  if (memberId == null) return t('Ungroup');
 
   return (
     <MemberPreview
@@ -70,14 +72,14 @@ const MultiMemberGroupView = (props: GroupRenderProps<string | null, {}>) => {
 export const groupByConfigList = [
   createGroupByConfig({
     name: 'member',
-    matchType: t.user.instance(),
+    matchType: types.user.instance(),
     groupName: (type, value: string | null) => {
-      if (t.user.is(type) && typeof value === 'string') {
+      if (types.user.is(type) && typeof value === 'string') {
         const userService = type.data?.userService;
         if (userService) {
           const userInfo = userService.userInfo$(value).value;
           if (userInfo && !userInfo?.removed) {
-            return userInfo.name ?? 'Unnamed';
+            return userInfo.name ?? t('Unnamed');
           }
         }
       }
@@ -102,18 +104,18 @@ export const groupByConfigList = [
   }),
   createGroupByConfig({
     name: 'multi-member',
-    matchType: t.array.instance(t.user.instance()),
+    matchType: types.array.instance(types.user.instance()),
     groupName: (_type, value: string | null) => {
       if (
-        t.array.is(_type) &&
-        t.user.is(_type.element) &&
+        types.array.is(_type) &&
+        types.user.is(_type.element) &&
         typeof value === 'string'
       ) {
         const userService = _type.element.data?.userService;
         if (userService) {
           const userInfo = userService.userInfo$(value).value;
           if (userInfo && !userInfo?.removed) {
-            return userInfo.name ?? 'Unnamed';
+            return userInfo.name ?? t('Unnamed');
           }
         }
       }

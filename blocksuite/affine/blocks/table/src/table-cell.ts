@@ -11,6 +11,7 @@ import { RichText } from '@blocksuite/affine-rich-text';
 import { cssVarV2 } from '@blocksuite/affine-shared/theme';
 import { getViewportElement } from '@blocksuite/affine-shared/utils';
 import { IS_MAC } from '@blocksuite/global/env';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import {
   ArrowDownBigIcon,
@@ -59,6 +60,7 @@ import {
   threePointerIconStyle,
 } from './table-cell-css';
 import type { TableDataManager } from './table-data-manager';
+import { isRtl } from './utils';
 export const TableCellComponentName = 'affine-table-cell';
 export class TableCell extends SignalWatcher(
   WithDisposable(ShadowlessElement)
@@ -120,6 +122,23 @@ export class TableCell extends SignalWatcher(
       type: 'column',
       columnId: column.columnId,
     });
+    const insertBefore = () => {
+      this.dataManager.insertColumn(
+        columnIndex > 0 ? columnIndex - 1 : undefined
+      );
+    };
+    const insertAfter = () => {
+      this.dataManager.insertColumn(columnIndex);
+    };
+    const moveBackward = () => {
+      this.dataManager.moveColumn(columnIndex, columnIndex - 2);
+    };
+    const moveForward = () => {
+      this.dataManager.moveColumn(columnIndex, columnIndex + 1);
+    };
+    // "Left" and "Right" are the visual sides: in an RTL table the next
+    // column is on the left.
+    const rtl = isRtl(this);
     popMenu(target, {
       options: {
         onClose: () => {
@@ -129,11 +148,11 @@ export class TableCell extends SignalWatcher(
           menu.group({
             items: [
               menu.subMenu({
-                name: 'Background color',
+                name: t('Background color'),
                 prefix: ColorPickerIcon(),
                 options: {
                   items: [
-                    { name: 'Default', color: undefined },
+                    { name: t('Default'), color: undefined },
                     ...colorList,
                   ].map(item =>
                     menu.action({
@@ -159,7 +178,7 @@ export class TableCell extends SignalWatcher(
               ...(column.backgroundColor
                 ? [
                     menu.action({
-                      name: 'Clear column style',
+                      name: t('Clear column style'),
                       prefix: CloseIcon(),
                       select: () => {
                         this.dataManager.setColumnBackgroundColor(
@@ -175,41 +194,31 @@ export class TableCell extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Insert Left',
+                name: t('Insert Left'),
                 prefix: InsertLeftIcon(),
-                select: () => {
-                  this.dataManager.insertColumn(
-                    columnIndex > 0 ? columnIndex - 1 : undefined
-                  );
-                },
+                select: rtl ? insertAfter : insertBefore,
               }),
               menu.action({
-                name: 'Insert Right',
+                name: t('Insert Right'),
                 prefix: InsertRightIcon(),
-                select: () => {
-                  this.dataManager.insertColumn(columnIndex);
-                },
+                select: rtl ? insertBefore : insertAfter,
               }),
               menu.action({
-                name: 'Move Left',
+                name: t('Move Left'),
                 prefix: ArrowLeftBigIcon(),
-                select: () => {
-                  this.dataManager.moveColumn(columnIndex, columnIndex - 2);
-                },
+                select: rtl ? moveForward : moveBackward,
               }),
               menu.action({
-                name: 'Move Right',
+                name: t('Move Right'),
                 prefix: ArrowRightBigIcon(),
-                select: () => {
-                  this.dataManager.moveColumn(columnIndex, columnIndex + 1);
-                },
+                select: rtl ? moveBackward : moveForward,
               }),
             ],
           }),
           menu.group({
             items: [
               menu.action({
-                name: 'Duplicate',
+                name: t('Duplicate'),
                 prefix: DuplicateIcon(),
                 select: () => {
                   this.dataManager.duplicateColumn(columnIndex);
@@ -217,7 +226,7 @@ export class TableCell extends SignalWatcher(
               }),
 
               menu.action({
-                name: 'Clear column contents',
+                name: t('Clear column contents'),
                 prefix: CloseIcon(),
                 select: () => {
                   this.dataManager.clearColumn(column.columnId);
@@ -225,7 +234,7 @@ export class TableCell extends SignalWatcher(
               }),
 
               menu.action({
-                name: 'Delete',
+                name: t('Delete'),
                 class: {
                   'delete-item': true,
                 },
@@ -255,11 +264,11 @@ export class TableCell extends SignalWatcher(
           menu.group({
             items: [
               menu.subMenu({
-                name: 'Background color',
+                name: t('Background color'),
                 prefix: ColorPickerIcon(),
                 options: {
                   items: [
-                    { name: 'Default', color: undefined },
+                    { name: t('Default'), color: undefined },
                     ...colorList,
                   ].map(item =>
                     menu.action({
@@ -285,7 +294,7 @@ export class TableCell extends SignalWatcher(
               ...(row.backgroundColor
                 ? [
                     menu.action({
-                      name: 'Clear row style',
+                      name: t('Clear row style'),
                       prefix: CloseIcon(),
                       select: () => {
                         this.dataManager.setRowBackgroundColor(
@@ -301,7 +310,7 @@ export class TableCell extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Insert Above',
+                name: t('Insert Above'),
                 prefix: InsertAboveIcon(),
                 select: () => {
                   this.dataManager.insertRow(
@@ -310,21 +319,21 @@ export class TableCell extends SignalWatcher(
                 },
               }),
               menu.action({
-                name: 'Insert Below',
+                name: t('Insert Below'),
                 prefix: InsertBelowIcon(),
                 select: () => {
                   this.dataManager.insertRow(rowIndex);
                 },
               }),
               menu.action({
-                name: 'Move Up',
+                name: t('Move Up'),
                 prefix: ArrowUpBigIcon(),
                 select: () => {
                   this.dataManager.moveRow(rowIndex, rowIndex - 1);
                 },
               }),
               menu.action({
-                name: 'Move Down',
+                name: t('Move Down'),
                 prefix: ArrowDownBigIcon(),
                 select: () => {
                   this.dataManager.moveRow(rowIndex, rowIndex + 1);
@@ -335,21 +344,21 @@ export class TableCell extends SignalWatcher(
           menu.group({
             items: [
               menu.action({
-                name: 'Duplicate',
+                name: t('Duplicate'),
                 prefix: DuplicateIcon(),
                 select: () => {
                   this.dataManager.duplicateRow(rowIndex);
                 },
               }),
               menu.action({
-                name: 'Clear row contents',
+                name: t('Clear row contents'),
                 prefix: CloseIcon(),
                 select: () => {
                   this.dataManager.clearRow(row.rowId);
                 },
               }),
               menu.action({
-                name: 'Delete',
+                name: t('Delete'),
                 class: {
                   'delete-item': true,
                 },
@@ -370,24 +379,25 @@ export class TableCell extends SignalWatcher(
     select: (color?: string) => void
   ) {
     return menu.subMenu({
-      name: 'Background color',
+      name: t('Background color'),
       prefix: ColorPickerIcon(),
       options: {
-        items: [{ name: 'Default', color: undefined }, ...colorList].map(item =>
-          menu.action({
-            prefix: html`<div
-              style="color: ${
-                item.color ?? cssVarV2.layer.background.primary
-              };display: flex;align-items: center;justify-content: center;"
-            >
-              ${TextBackgroundDuotoneIcon}
-            </div>`,
-            name: item.name,
-            isSelected: currentColor === item.color,
-            select: () => {
-              select(item.color);
-            },
-          })
+        items: [{ name: t('Default'), color: undefined }, ...colorList].map(
+          item =>
+            menu.action({
+              prefix: html`<div
+                style="color: ${
+                  item.color ?? cssVarV2.layer.background.primary
+                };display: flex;align-items: center;justify-content: center;"
+              >
+                ${TextBackgroundDuotoneIcon}
+              </div>`,
+              name: item.name,
+              isSelected: currentColor === item.color,
+              select: () => {
+                select(item.color);
+              },
+            })
         ),
       },
     });
@@ -408,14 +418,14 @@ export class TableCell extends SignalWatcher(
             menu.group({
               items: [
                 menu.action({
-                  name: 'Copy',
+                  name: t('Copy'),
                   prefix: CopyIcon(),
                   select: () => {
                     this.selectionController.doCopyOrCut(selected, false);
                   },
                 }),
                 menu.action({
-                  name: 'Paste',
+                  name: t('Paste'),
                   prefix: PasteIcon(),
                   select: () => {
                     // oxlint-disable-next-line typescript/no-floating-promises
@@ -429,7 +439,7 @@ export class TableCell extends SignalWatcher(
             menu.group({
               items: [
                 menu.action({
-                  name: 'Clear contents',
+                  name: t('Clear contents'),
                   prefix: CloseIcon(),
                   select: () => {
                     this.dataManager.clearCellsBySelection(selected);
@@ -573,14 +583,15 @@ export class TableCell extends SignalWatcher(
     const isLastColumn =
       columnIndex === this.dataManager.uiColumns$.value.length - 1;
     const showIndicator = this.showRowIndicator$.value;
+    // Logical corners: the first column is on the right in an RTL table.
     const style = (show: boolean) =>
       styleMap({
         opacity: show ? 1 : 0,
-        borderRadius: isFirstColumn
-          ? '3px 0 0 3px'
-          : isLastColumn
-            ? '0 3px 3px 0'
-            : '0',
+        borderStartStartRadius: isFirstColumn ? '3px' : undefined,
+        borderEndStartRadius: isFirstColumn ? '3px' : undefined,
+        borderStartEndRadius:
+          !isFirstColumn && isLastColumn ? '3px' : undefined,
+        borderEndEndRadius: !isFirstColumn && isLastColumn ? '3px' : undefined,
       });
     const indicator0 =
       this.rowIndex === 0
@@ -827,7 +838,7 @@ export const createRowDragPreview = (cells: TableCell[]) => {
     const div = document.createElement('div');
     const td = cell.querySelector('td');
     if (index !== 0) {
-      div.style.borderLeft = `1px solid ${cssVarV2.layer.insideBorder.border}`;
+      div.style.borderInlineStart = `1px solid ${cssVarV2.layer.insideBorder.border}`;
     }
     if (td) {
       div.style.width = `${td.getBoundingClientRect().width}px`;

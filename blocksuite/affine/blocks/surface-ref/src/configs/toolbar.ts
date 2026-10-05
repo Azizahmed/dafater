@@ -8,6 +8,7 @@ import {
   blockCommentToolbarButton,
   type ToolbarModuleConfig,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { CaptionIcon, CopyIcon, DeleteIcon } from '@blocksuite/icons/lit';
 import { html } from 'lit';
 
@@ -47,7 +48,7 @@ export const surfaceRefToolbarModuleConfig: ToolbarModuleConfig = {
           .pipe(copySelectedModelsCommand)
           .run();
 
-        toast(surfaceRefBlock.std.host, 'Copied to clipboard');
+        toast(surfaceRefBlock.std.host, t('Copied to clipboard'));
       },
     },
     {

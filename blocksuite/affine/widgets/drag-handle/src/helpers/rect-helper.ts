@@ -82,11 +82,21 @@ export class RectHelper {
     bottom -= offsetParentRect.top;
 
     const scaleInNote = this.widget.scaleInNote.value;
-    // Add padding to hover rect
-    left -= (DRAG_HANDLE_CONTAINER_WIDTH + offsetLeft) * scaleInNote;
-    top -= DRAG_HOVER_RECT_PADDING * scaleInNote;
-    right += DRAG_HOVER_RECT_PADDING * scaleInNote;
-    bottom += DRAG_HOVER_RECT_PADDING * scaleInNote;
+    // Add padding to hover rect.
+    // The drag handle sits on the inline-start side of the block:
+    // left for LTR blocks, right (mirrored) for RTL blocks.
+    const handleSpace =
+      (DRAG_HANDLE_CONTAINER_WIDTH + offsetLeft) * scaleInNote;
+    const hoverPadding = DRAG_HOVER_RECT_PADDING * scaleInNote;
+    if (this.widget.anchorBlockIsRtl.value) {
+      left -= hoverPadding;
+      right += handleSpace;
+    } else {
+      left -= handleSpace;
+      right += hoverPadding;
+    }
+    top -= hoverPadding;
+    bottom += hoverPadding;
 
     return new Rect(left, top, right, bottom);
   };

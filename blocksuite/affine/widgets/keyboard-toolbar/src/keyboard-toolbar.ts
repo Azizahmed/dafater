@@ -190,6 +190,7 @@ export class AffineKeyboardToolbar extends SignalWatcher(
   private _renderItem(item: KeyboardToolbarItem, index: number) {
     let icon = item.icon;
     let style = styleMap({});
+    const mirrorInRtl = 'mirrorInRtl' in item && !!item.mirrorInRtl;
     const disabled =
       ('disableWhen' in item && item.disableWhen?.(this._context)) ?? false;
 
@@ -213,6 +214,7 @@ export class AffineKeyboardToolbar extends SignalWatcher(
 
     return html`<icon-button
       size="36px"
+      class=${mirrorInRtl ? 'mirror-in-rtl' : ''}
       style=${style}
       ?disabled=${disabled}
       @click=${() => {
@@ -230,7 +232,11 @@ export class AffineKeyboardToolbar extends SignalWatcher(
     const goPrevToolbarAction = when(
       this._isSubToolbarOpened,
       () =>
-        html`<icon-button size="36px" @click=${this._goPrevToolbar}>
+        html`<icon-button
+          size="36px"
+          class="mirror-in-rtl"
+          @click=${this._goPrevToolbar}
+        >
           ${ArrowLeftBigIcon()}
         </icon-button>`
     );

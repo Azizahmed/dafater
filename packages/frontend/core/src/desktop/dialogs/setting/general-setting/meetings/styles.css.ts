@@ -10,7 +10,7 @@ export const meetingWrapper = style({
 export const permissionSetting = style({
   color: cssVarV2('text/link'),
   cursor: 'pointer',
-  marginLeft: 4,
+  marginInlineStart: 4,
 });
 
 export const noPermissionIcon = style({

@@ -2,21 +2,23 @@ import { ConfirmModal } from '@affine/component/ui/modal';
 import { useI18n } from '@affine/i18n';
 import { useCallback } from 'react';
 
-import * as styles from './member-limit-modal.css';
-
 export interface MemberLimitModalProps {
-  isFreePlan: boolean;
+  /** @deprecated Dafater has no plans; ignored. */
+  isFreePlan?: boolean;
   open: boolean;
-  plan: string;
+  /** @deprecated Dafater has no plans; ignored. */
+  plan?: string;
   quota: string;
   setOpen: (value: boolean) => void;
-  onConfirm: () => void;
+  onConfirm?: () => void;
 }
 
+/**
+ * Shown when an invitation would exceed the workspace member limit set by the
+ * Dafater server. Informational only: Dafater has no plans to upgrade to.
+ */
 export const MemberLimitModal = ({
-  isFreePlan,
   open,
-  plan,
   quota,
   setOpen,
   onConfirm,
@@ -24,7 +26,7 @@ export const MemberLimitModal = ({
   const t = useI18n();
   const handleConfirm = useCallback(() => {
     setOpen(false);
-    onConfirm();
+    onConfirm?.();
   }, [onConfirm, setOpen]);
 
   return (
@@ -32,52 +34,17 @@ export const MemberLimitModal = ({
       open={open}
       onOpenChange={setOpen}
       title={t['com.affine.payment.member-limit.title']()}
-      description={
-        <ConfirmDescription plan={plan} quota={quota} isFreePlan={isFreePlan} />
-      }
-      confirmText={t['com.affine.payment.upgrade']()}
+      description={t['com.affine.dafater.member-limit.description']({
+        quota,
+      })}
+      confirmText={t['com.affine.payment.member-limit.pro.confirm']()}
       confirmButtonOptions={{
         variant: 'primary',
       }}
+      cancelButtonOptions={{
+        style: { visibility: 'hidden' },
+      }}
       onConfirm={handleConfirm}
     ></ConfirmModal>
-  );
-};
-
-export const ConfirmDescription = ({
-  isFreePlan,
-  plan,
-  quota,
-}: {
-  isFreePlan: boolean;
-  plan: string;
-  quota: string;
-}) => {
-  const t = useI18n();
-  return (
-    <div>
-      {t['com.affine.payment.member-limit.description']({
-        planName: plan,
-        quota: quota,
-      })}
-      <ul className={styles.ulStyle}>
-        {isFreePlan && (
-          <li className={styles.liStyle}>
-            <div className={styles.prefixDot} />
-            {t[
-              'com.affine.payment.member-limit.description.tips-for-free-plan'
-            ]()}
-          </li>
-        )}
-        <li className={styles.liStyle}>
-          <div className={styles.prefixDot} />
-          {t['com.affine.payment.member-limit.description.tips-1']()}
-        </li>
-        <li className={styles.liStyle}>
-          <div className={styles.prefixDot} />
-          {t['com.affine.payment.member-limit.description.tips-2']()}
-        </li>
-      </ul>
-    </div>
   );
 };

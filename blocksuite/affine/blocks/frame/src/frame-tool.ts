@@ -9,6 +9,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import type { IPoint, IVec } from '@blocksuite/global/gfx';
 import { Bound, Vec } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import type { PointerEventState } from '@blocksuite/std';
 import { BaseTool, getTopElements } from '@blocksuite/std/gfx';
 import { Text } from '@blocksuite/store';
@@ -73,7 +74,7 @@ export class FrameTool extends BaseTool {
       const props = this.std
         .get(EditPropsStore)
         .applyLastProps('affine:frame', {
-          title: new Text(new Y.Text(`Frame ${frames.length + 1}`)),
+          title: new Text(new Y.Text(t('Frame {n}', { n: frames.length + 1 }))),
           xywh: Bound.fromPoints([this._startPoint, currentPoint]).serialize(),
           index: this.gfx.layer.generateIndex(true),
           presentationIndex: this.frameManager.generatePresentationIndex(),

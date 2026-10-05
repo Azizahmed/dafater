@@ -11,7 +11,6 @@ import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hoo
 import { useCatchEventCallback } from '@affine/core/components/hooks/use-catch-event-hook';
 import { Upload } from '@affine/core/components/pure/file-upload';
 import { GlobalDialogService } from '@affine/core/modules/dialogs';
-import { SubscriptionPlan } from '@affine/graphql';
 import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
 import { ArrowRightSmallIcon, CameraIcon } from '@blocksuite/icons/rc';
@@ -24,7 +23,6 @@ import {
   ServerService,
 } from '../../../../modules/cloud';
 import type { SettingState } from '../types';
-import { AIUsagePanel } from './ai-usage-panel';
 import { DeleteAccount } from './delete-account';
 import { IntegrationsPanel } from './integrations-panel';
 import { StorageProgress } from './storage-progress';
@@ -40,16 +38,17 @@ export const UserAvatar = () => {
       try {
         track.$.settingsPanel.accountSettings.uploadAvatar();
         await session.uploadAvatar(file);
-        notify.success({ title: 'Update user avatar success' });
+        notify.success({
+          title: t['com.affine.setting.account.avatar.update.success'](),
+        });
       } catch (e) {
-        // TODO(@catsjuice): i18n
         notify.error({
-          title: 'Update user avatar failed',
+          title: t['com.affine.setting.account.avatar.update.failed'](),
           message: String(e),
         });
       }
     },
-    [session]
+    [session, t]
   );
 
   const handleRemoveUserAvatar = useCatchEventCallback(async () => {
@@ -100,11 +99,11 @@ export const AvatarAndName = () => {
       await session.updateLabel(input);
     } catch (e) {
       notify.error({
-        title: 'Failed to update user name.',
+        title: t['com.affine.setting.account.name.update.failed'](),
         message: String(e),
       });
     }
-  }, [account, allowUpdate, session, input]);
+  }, [account, allowUpdate, session, input, t]);
 
   return (
     <SettingRow
@@ -133,7 +132,7 @@ export const AvatarAndName = () => {
                 data-testid="save-user-name"
                 onClick={handleUpdateUserName}
                 style={{
-                  marginLeft: '12px',
+                  marginInlineStart: '12px',
                 }}
               >
                 {t['com.affine.editCollection.save']()}
@@ -146,22 +145,8 @@ export const AvatarAndName = () => {
   );
 };
 
-const StoragePanel = ({
-  onChangeSettingState,
-}: {
-  onChangeSettingState?: (settingState: SettingState) => void;
-}) => {
+const StoragePanel = () => {
   const t = useI18n();
-
-  const onUpgrade = useCallback(() => {
-    track.$.settingsPanel.accountUsage.viewPlans({
-      plan: SubscriptionPlan.Pro,
-    });
-    onChangeSettingState?.({
-      activeTab: 'plans',
-      scrollAnchor: 'cloudPricingPlan',
-    });
-  }, [onChangeSettingState]);
 
   return (
     <SettingRow
@@ -169,7 +154,7 @@ const StoragePanel = ({
       desc=""
       spreadCol={false}
     >
-      <StorageProgress onUpgrade={onUpgrade} />
+      <StorageProgress />
     </SettingRow>
   );
 };
@@ -292,7 +277,6 @@ export const AccountSetting = ({
     ServerService,
     GlobalDialogService,
   });
-  const serverFeatures = useLiveData(serverService.server.features$);
   const t = useI18n();
   const session = authService.session;
   useEffect(() => {
@@ -357,10 +341,7 @@ export const AccountSetting = ({
           </Button>
         </SettingRow>
         <DevicesPanel />
-        <StoragePanel onChangeSettingState={onChangeSettingState} />
-        {serverFeatures?.copilot && (
-          <AIUsagePanel onChangeSettingState={onChangeSettingState} />
-        )}
+        <StoragePanel />
         <IntegrationsPanel onChangeSettingState={onChangeSettingState} />
         <SettingRow
           name={t[`Sign out`]()}

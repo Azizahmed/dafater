@@ -17,6 +17,8 @@
     { "path": "../../common/nbstore" },
     { "path": "../../common/reader" },
     { "path": "../track" },
+    { "path": "../arabase-blocksuite" },
+    { "path": "../../common/arabase" },
     { "path": "../../../blocksuite/affine/all" },
     { "path": "../../../blocksuite/affine/blocks/root" },
     { "path": "../../../blocksuite/affine/components" },

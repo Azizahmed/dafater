@@ -35,6 +35,7 @@ import {
   renderMenu,
 } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { AddTextIcon, ShapeIcon } from '@blocksuite/icons/lit';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
 import { html } from 'lit';
@@ -87,6 +88,7 @@ export const shapeToolbarConfig = {
         return renderMenu({
           icon: ShapeIcon(),
           label: 'Switch shape type',
+          tooltip: t('Switch shape type'),
           items: ShapeComponentConfig.map(item => ({
             key: item.tooltip,
             value: item.name,
@@ -124,6 +126,7 @@ export const shapeToolbarConfig = {
 
         return renderMenu({
           label: 'Style',
+          tooltip: t('Style'),
           items: LINE_STYLE_LIST,
           currentValue: shapeStyle === ShapeStyle.Scribbled,
           onPick,

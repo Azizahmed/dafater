@@ -1,6 +1,7 @@
 import { DefaultTool } from '@blocksuite/affine-block-surface';
 import { toggleEmbedCardCreateModal } from '@blocksuite/affine-components/embed-card-modal';
 import type { SlashMenuConfig } from '@blocksuite/affine-widget-slash-menu';
+import { t } from '@blocksuite/global/i18n';
 import { YoutubeDuotoneIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 
@@ -30,7 +31,9 @@ export const embedYoutubeSlashMenuConfig: SlashMenuConfig = {
           await toggleEmbedCardCreateModal(
             host,
             'YouTube',
-            'The added YouTube video link will be displayed as an embed view.',
+            t(
+              'The added YouTube video link will be displayed as an embed view.'
+            ),
             { mode: 'page', parentModel, index },
             ({ mode }) => {
               if (mode === 'edgeless') {

@@ -38,6 +38,11 @@ export class TableVerticalIndicator extends WithDisposable(ShadowlessElement) {
       border-radius: 1px;
     }
 
+    .vertical-indicator.rtl::after {
+      right: auto;
+      left: 0;
+    }
+
     .with-shadow.vertical-indicator::after {
       box-shadow: 0px 0px 8px 0px rgba(30, 150, 235, 0.35);
     }
@@ -53,6 +58,7 @@ export class TableVerticalIndicator extends WithDisposable(ShadowlessElement) {
     const className = classMap({
       'with-shadow': this.shadow,
       'vertical-indicator': true,
+      rtl: this.rtl,
     });
     return html` <div class="${className}" style=${style}></div> `;
   }
@@ -62,6 +68,9 @@ export class TableVerticalIndicator extends WithDisposable(ShadowlessElement) {
 
   @property({ attribute: false })
   accessor left!: number;
+
+  @property({ attribute: false })
+  accessor rtl = false;
 
   @property({ attribute: false })
   accessor shadow = false;
@@ -98,20 +107,37 @@ export const startDragWidthAdjustmentBar = (
   column: TableProperty
 ) => {
   const scale = width / column.width$.value;
-  const left = ele.getBoundingClientRect().left;
+  const eleRect = ele.getBoundingClientRect();
+  // In a right-to-left table the column grows from its right edge leftwards.
+  const rtl = getComputedStyle(ele).direction === 'rtl';
+  const left = eleRect.left;
   const rect = getTableGroupRect(ele);
   if (!rect) {
     return;
   }
   const preview = getVerticalIndicator();
-  preview.display(left, rect.top, rect.bottom - rect.top, width * scale);
+  const display = (width: number) => {
+    preview.display(
+      rtl ? eleRect.right - width : left,
+      rect.top,
+      rect.bottom - rect.top,
+      width,
+      false,
+      rtl
+    );
+  };
+  display(width * scale);
   startDrag<{ width: number }>(evt, {
     onDrag: () => ({ width: column.width$.value }),
     onMove: ({ x }) => {
       const width = Math.round(
-        getResultInRange((x - left) / scale, column.minWidth, Infinity)
+        getResultInRange(
+          (rtl ? eleRect.right - x : x - left) / scale,
+          column.minWidth,
+          Infinity
+        )
       );
-      preview.display(left, rect.top, rect.bottom - rect.top, width * scale);
+      display(width * scale);
       return {
         width,
       };
@@ -131,7 +157,8 @@ type VerticalIndicator = {
     top: number,
     height: number,
     width?: number,
-    shadow?: boolean
+    shadow?: boolean,
+    rtl?: boolean
   ) => void;
   remove: () => void;
 };
@@ -144,7 +171,8 @@ export const getVerticalIndicator = (): VerticalIndicator => {
         top: number,
         height: number,
         width = 1,
-        shadow = false
+        shadow = false,
+        rtl = false
       ) {
         document.body.append(dragBar);
         dragBar.left = left;
@@ -152,6 +180,7 @@ export const getVerticalIndicator = (): VerticalIndicator => {
         dragBar.top = top;
         dragBar.width = width;
         dragBar.shadow = shadow;
+        dragBar.rtl = rtl;
       },
       remove() {
         dragBar.remove();

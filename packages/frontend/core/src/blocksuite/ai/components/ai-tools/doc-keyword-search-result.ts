@@ -1,4 +1,5 @@
 import type { PeekViewService } from '@affine/core/modules/peek-view';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { PageIcon, SearchIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -44,7 +45,9 @@ export class DocKeywordSearchResult extends WithDisposable(ShadowlessElement) {
 
   renderToolCall() {
     return html`<tool-call-card
-      .name=${`Searching workspace documents for "${this.data.args.query}"`}
+      .name=${t('Searching workspace documents for "{query}"', {
+        query: this.data.args.query,
+      })}
       .icon=${SearchIcon()}
       .width=${this.width}
     ></tool-call-card>`;
@@ -59,10 +62,11 @@ export class DocKeywordSearchResult extends WithDisposable(ShadowlessElement) {
       return html`<tool-call-failed
         .name=${getToolErrorDisplayName(
           isToolError(result) ? result : null,
-          'Document search failed',
+          t('Document search failed'),
           {
-            'Workspace Sync Required':
-              'Enable workspace sync to search documents',
+            'Workspace Sync Required': t(
+              'Enable workspace sync to search documents'
+            ),
           }
         )}
         .icon=${SearchIcon()}
@@ -89,7 +93,10 @@ export class DocKeywordSearchResult extends WithDisposable(ShadowlessElement) {
       console.error('Failed to parse result', err);
     }
     return html`<tool-result-card
-      .name=${`Found ${items.length} pages for "${this.data.args.query}"`}
+      .name=${t('Found {count} pages for "{query}"', {
+        count: items.length,
+        query: this.data.args.query,
+      })}
       .icon=${SearchIcon()}
       .width=${this.width}
       .results=${results}

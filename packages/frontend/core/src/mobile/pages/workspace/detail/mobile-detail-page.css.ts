@@ -80,8 +80,8 @@ export const affineDocViewport = style({
     '&[data-mode="edgeless"]': {
       position: 'absolute',
       top: 0,
-      left: 0,
-      right: 0,
+      insetInlineStart: 0,
+      insetInlineEnd: 0,
       bottom: 0,
       containerType: 'normal',
       overflow: 'hidden',
@@ -96,7 +96,7 @@ export const errorBoundary = style({
 });
 
 export const scrollbar = style({
-  marginRight: '4px',
+  marginInlineEnd: '4px',
 });
 
 globalStyle('.doc-title-container', {
@@ -116,8 +116,8 @@ globalStyle('[data-peek-view-wrapper] .doc-title-container', {
 globalStyle('.affine-page-root-block-container', {
   '@container': {
     [`viewport (width <= 640px)`]: {
-      paddingLeft: 16,
-      paddingRight: 16,
+      paddingInlineStart: 16,
+      paddingInlineEnd: 16,
     },
   },
 });
@@ -126,7 +126,7 @@ export const journalIconButton = style({
   position: 'absolute',
   zIndex: 1,
   top: 16,
-  right: 12,
+  insetInlineEnd: 12,
   display: 'flex',
 });
 

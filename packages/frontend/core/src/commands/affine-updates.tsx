@@ -30,8 +30,10 @@ export function registerAffineUpdatesCommands({
 
         quitAndInstall().catch(err => {
           notify.error({
-            title: 'Failed to restart to upgrade',
-            message: 'Please restart the app manually to upgrade.',
+            title:
+              t['com.affine.cmdk.affine.restart-to-upgrade.failed.title'](),
+            message:
+              t['com.affine.cmdk.affine.restart-to-upgrade.failed.message'](),
           });
           console.error(err);
         });

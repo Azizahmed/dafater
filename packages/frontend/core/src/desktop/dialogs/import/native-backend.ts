@@ -6,6 +6,7 @@ import type {
   NativeImportBrowserSource,
   NativeImportFormat,
 } from '@affine/electron-api';
+import { I18n } from '@affine/i18n';
 import type {
   ImportBatch,
   ImportCommitResult,
@@ -81,7 +82,7 @@ export async function commitNativeImport(
   }
 
   if (!docIds.length && !isWorkspaceFile) {
-    throw new Error('No importable documents were found in the selected file.');
+    throw new Error(I18n['com.affine.import.status.no-importable-docs']());
   }
 
   return {

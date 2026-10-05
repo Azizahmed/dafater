@@ -60,7 +60,7 @@ export function buildSlashMenuItems(
       if (isSubMenuItem(item)) {
         return {
           ...item,
-          subMenu: buildSlashMenuItems(item.subMenu, context),
+          subMenu: buildSlashMenuItems(item.subMenu, context, transform),
         };
       } else {
         return { ...item };

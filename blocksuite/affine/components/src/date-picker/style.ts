@@ -48,6 +48,14 @@ export const datePickerStyle = css`
     transform: rotate(180deg);
   }
 
+  :host(:dir(rtl)) .date-picker-small-action.left > svg {
+    transform: rotate(180deg);
+  }
+
+  :host(:dir(rtl)) .date-picker-small-action.right > svg {
+    transform: rotate(0deg);
+  }
+
   .date-picker-small-action.down > svg {
     transform: rotate(-90deg);
   }

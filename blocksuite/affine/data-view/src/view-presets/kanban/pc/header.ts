@@ -3,6 +3,7 @@ import {
   popMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { ShadowlessElement } from '@blocksuite/std';
 import { css } from 'lit';
@@ -66,7 +67,9 @@ export class KanbanHeader extends SignalWatcher(
     return html`
       <div></div>
       <div>
-        <div class="select-group" @click="${this.clickGroup}">Group</div>
+        <div class="select-group" @click="${this.clickGroup}">
+          ${t('Group')}
+        </div>
       </div>
     `;
   }

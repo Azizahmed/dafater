@@ -86,6 +86,7 @@ import {
   getSnapshotRect,
   includeTextSelection,
   isOutOfNoteBlock,
+  isRtlElement,
 } from '../utils.js';
 
 export type DragBlockEntity = {
@@ -215,7 +216,16 @@ export class DragEventWatcher {
     const scale = this.widget.scale.peek();
     let result: DropResult | null = null;
 
-    if (edge === 'right' && matchModels(dropModel, [ListBlockModel])) {
+    // Dropping near the inline-end edge of a list block nests the dragged
+    // blocks as its children. The inline-end edge is the right edge for LTR
+    // lists and the left edge for RTL lists, and the children are indented
+    // from the inline-start side accordingly.
+    const isListDrop =
+      (edge === 'left' || edge === 'right') &&
+      matchModels(dropModel, [ListBlockModel]);
+    const isDropRtl = isListDrop && isRtlElement(dropBlock);
+
+    if (isListDrop && edge === (isDropRtl ? 'left' : 'right')) {
       const domRect = getRectByBlockComponent(dropBlock);
       const placement = 'in';
 
@@ -225,7 +235,9 @@ export class DragEventWatcher {
         )
       ) {
         const rect = Rect.fromLWTH(
-          domRect.left + BLOCK_CHILDREN_CONTAINER_PADDING_LEFT,
+          isDropRtl
+            ? domRect.left
+            : domRect.left + BLOCK_CHILDREN_CONTAINER_PADDING_LEFT,
           domRect.width - BLOCK_CHILDREN_CONTAINER_PADDING_LEFT,
           domRect.top + domRect.height,
           3 * scale

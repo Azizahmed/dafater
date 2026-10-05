@@ -1,4 +1,4 @@
-import { Button, notify } from '@affine/component';
+import { Button, mirrorInRtl, notify } from '@affine/component';
 import {
   AuthContainer,
   AuthContent,
@@ -34,6 +34,7 @@ import {
 import { useSelfhostLoginVersionGuard } from '../hooks/affine/use-selfhost-login-version-guard';
 import type { SignInState } from '.';
 import { Back } from './back';
+import { FirstUserNote, useIsFirstUserOnServer } from './first-user-note';
 import * as style from './style.css';
 
 const emailRegex =
@@ -69,6 +70,7 @@ export const SignInStep = ({
     ? getSelfHostedServerName(serverName)
     : serverName;
   const authService = useService(AuthService);
+  const isFirstUser = useIsFirstUserOnServer();
   const [isMutating, setIsMutating] = useState(false);
 
   const [email, setEmail] = useState('');
@@ -97,16 +99,27 @@ export const SignInStep = ({
     setIsMutating(true);
 
     try {
-      const { methods } = await authService.checkUserByEmail(email);
+      const { registered, methods } = await authService.checkUserByEmail(email);
       const hasPassword = methods.password.available;
       const canUseMagicLink = methods.magicLink.available;
 
-      if (hasPassword) {
+      // no mailer on a Dafater server: registered users without a usable
+      // magic link fall back to the password step
+      if (hasPassword || (isSelfhosted && registered && !canUseMagicLink)) {
         changeState(prev => ({
           ...prev,
           email,
           step: 'signInWithPassword',
           hasPassword: true,
+        }));
+      } else if (isSelfhosted && !registered) {
+        // Dafater: accounts are created on the server itself (email +
+        // password, no email verification)
+        changeState(prev => ({
+          ...prev,
+          email,
+          step: 'signUp',
+          hasPassword: false,
         }));
       } else if (canUseMagicLink) {
         changeState(prev => ({
@@ -117,8 +130,8 @@ export const SignInStep = ({
         }));
       } else {
         notify.error({
-          title: 'Failed to sign in',
-          message: 'This email is not available for sign in.',
+          title: t['com.affine.auth.sign.failed'](),
+          message: t['com.affine.auth.sign.email.not-available'](),
         });
       }
     } catch (err: any) {
@@ -126,13 +139,13 @@ export const SignInStep = ({
 
       // TODO(@eyhn): better error handling
       notify.error({
-        title: 'Failed to sign in',
+        title: t['com.affine.auth.sign.failed'](),
         message: err.message,
       });
     }
 
     setIsMutating(false);
-  }, [authService, changeState, email]);
+  }, [authService, changeState, email, isSelfhosted, t]);
 
   const onAddSelfhosted = useCallback(() => {
     changeState(prev => ({
@@ -158,11 +171,16 @@ export const SignInStep = ({
   return (
     <AuthContainer>
       <AuthHeader
-        title={t['com.affine.auth.sign.in']()}
+        title={
+          isFirstUser
+            ? t['com.affine.auth.sign-up.admin.title']()
+            : t['com.affine.auth.sign.in']()
+        }
         subTitle={signInServerName}
       />
 
       <AuthContent>
+        {isFirstUser ? <FirstUserNote /> : null}
         <OAuth redirectUrl={state.redirectUrl} />
 
         <form
@@ -194,7 +212,7 @@ export const SignInStep = ({
             block
             loading={isMutating}
             disabled={isMutating}
-            suffix={<ArrowRightBigIcon />}
+            suffix={<ArrowRightBigIcon className={mirrorInRtl} />}
             suffixStyle={{ width: 20, height: 20, color: cssVar('blue') }}
           >
             {t['com.affine.auth.sign.email.continue']()}
@@ -207,12 +225,14 @@ export const SignInStep = ({
               {/*prettier-ignore*/}
               <Trans i18nKey="com.affine.auth.sign.message">
                 By clicking &quot;Continue with Google/Email&quot; above, you acknowledge that
-                you agree to AFFiNE&apos;s <a href="https://affine.pro/terms" target="_blank" rel="noreferrer">Terms of Conditions</a> and <a href="https://affine.pro/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>.
+                you agree to Dafater&apos;s <span>Terms of Conditions</span> and <span>Privacy Policy</span>.
             </Trans>
             </div>
             <div className={style.skipDivider}>
               <div className={style.skipDividerLine} />
-              <span className={style.skipDividerText}>or</span>
+              <span className={style.skipDividerText}>
+                {t['com.affine.auth.sign.divider.or']()}
+              </span>
               <div className={style.skipDividerLine} />
             </div>
             <div className={style.skipSection}>

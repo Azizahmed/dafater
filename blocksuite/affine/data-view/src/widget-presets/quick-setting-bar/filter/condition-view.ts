@@ -5,6 +5,7 @@ import {
   type PopupTarget,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import {
   ArrowDownSmallIcon,
@@ -24,7 +25,7 @@ import { literalItemsMatcher } from '../../../core/filter/literal/index.js';
 import type { Filter, SingleFilter } from '../../../core/filter/types.js';
 import {
   renderUniLit,
-  t,
+  t as types,
   type TypeInstance,
   typeSystem,
 } from '../../../core/index.js';
@@ -109,7 +110,7 @@ export class FilterConditionView extends SignalWatcher(ShadowlessElement) {
           menu.group({
             items: [
               menu.action({
-                name: fn.label,
+                name: t(fn.label),
                 postfix: ArrowRightSmallIcon(),
                 select: ele => {
                   const subHandler = popMenu(popupTargetFromElement(ele), {
@@ -143,7 +144,7 @@ export class FilterConditionView extends SignalWatcher(ShadowlessElement) {
           menu.group({
             items: [
               menu.action({
-                name: 'Delete',
+                name: t('Delete'),
                 class: { 'delete-item': true },
                 prefix: DeleteIcon(),
                 select: () => {
@@ -195,15 +196,15 @@ export class FilterConditionView extends SignalWatcher(ShadowlessElement) {
     if (!refType) {
       return;
     }
-    const fnTemplate = t.fn.instance(
+    const fnTemplate = types.fn.instance(
       [fnConfig.self, ...fnConfig.args],
-      t.boolean.instance(),
+      types.boolean.instance(),
       fnConfig.vars
     );
     return typeSystem.instanceFn(
       fnTemplate,
       [refType],
-      t.boolean.instance(),
+      types.boolean.instance(),
       {}
     );
   });
@@ -220,7 +221,7 @@ export class FilterConditionView extends SignalWatcher(ShadowlessElement) {
     return filterMatcher.filterListBySelfType(type).map(v => {
       const selected = v.name === filter.function;
       return menu.action({
-        name: v.label,
+        name: t(v.label),
         isSelected: selected,
         select: () => {
           this.setFilter({
@@ -299,7 +300,7 @@ export class FilterConditionView extends SignalWatcher(ShadowlessElement) {
     if (!leftVar) {
       return html` <data-view-component-button
         hoverType="border"
-        .text="${html`Invalid filter rule`}"
+        .text="${t('Invalid filter rule')}"
       ></data-view-component-button>`;
     }
     return html`

@@ -14,7 +14,7 @@ export const header = style({
 
 export const todayButton = style({
   position: 'absolute',
-  right: 0,
+  insetInlineEnd: 0,
 });
 
 export const body = style({

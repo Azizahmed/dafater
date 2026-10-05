@@ -41,8 +41,7 @@ export class ParagraphHeadingIcon extends SignalWatcher(
       align-items: start;
       margin-top: 0.3em;
       position: absolute;
-      left: 0;
-      transform: translateX(-80px);
+      inset-inline-start: -80px;
       border-radius: 4px;
       padding: 2px;
       cursor: pointer;

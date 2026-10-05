@@ -5,6 +5,7 @@ import {
   FontStyle,
   FontWeight,
 } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import { DoneIcon } from '@blocksuite/icons/lit';
 import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -13,9 +14,15 @@ import { join } from 'lit/directives/join.js';
 import { repeat } from 'lit/directives/repeat.js';
 
 const FONT_WEIGHT_CHOOSE: [FontWeight, () => string][] = [
-  [FontWeight.Light, () => 'Light'],
-  [FontWeight.Regular, () => 'Regular'],
-  [FontWeight.SemiBold, () => 'Semibold'],
+  [FontWeight.Light, () => t('Light')],
+  [FontWeight.Regular, () => t('Regular')],
+  [FontWeight.SemiBold, () => t('Semibold')],
+];
+
+const FONT_WEIGHT_ITALIC_CHOOSE: [FontWeight, () => string][] = [
+  [FontWeight.Light, () => t('Light Italic')],
+  [FontWeight.Regular, () => t('Regular Italic')],
+  [FontWeight.SemiBold, () => t('Semibold Italic')],
 ];
 
 export class EdgelessFontWeightAndStylePanel extends LitElement {
@@ -131,7 +138,7 @@ export class EdgelessFontWeightAndStylePanel extends LitElement {
                         FontStyle.Italic
                       )}
                   >
-                    ${choose(fontFace.weight, FONT_WEIGHT_CHOOSE)} Italic
+                    ${choose(fontFace.weight, FONT_WEIGHT_ITALIC_CHOOSE)}
                     ${active ? DoneIcon() : nothing}
                   </edgeless-tool-icon-button>
                 `;

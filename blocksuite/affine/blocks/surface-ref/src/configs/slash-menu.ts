@@ -8,6 +8,7 @@ import {
   type SlashMenuItem,
 } from '@blocksuite/affine-widget-slash-menu';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { FrameIcon, GroupingIcon, MindmapIcon } from '@blocksuite/icons/lit';
 import { BlockSelection } from '@blocksuite/std';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
@@ -98,7 +99,7 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
 
         const root: MindMapNode = {
           children: [],
-          text: 'Mind Map',
+          text: t('Mind Map'),
           xywh: `[${rootX},${rootY},${rootW},${rootH}]`,
         };
 
@@ -107,7 +108,7 @@ const surfaceRefSlashMenuConfig: SlashMenuConfig = {
           const nodeY = centerVertical - nodeH / 2 + (i - 1) * 50;
           root.children.push({
             children: [],
-            text: 'Text',
+            text: t('Text'),
             xywh: `[${nodeX},${nodeY},${nodeW},${nodeH}]`,
           });
         }

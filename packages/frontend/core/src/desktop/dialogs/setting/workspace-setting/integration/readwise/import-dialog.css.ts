@@ -115,7 +115,7 @@ export const tableCellSelect = style([
   {
     color: cssVarV2.icon.primary,
     width: 20,
-    marginRight: 8,
+    marginInlineEnd: 8,
     fontSize: '20px !important',
     lineHeight: '0px !important',
   },
@@ -141,8 +141,8 @@ export const tableCellTodo = style([
     fontSize: 12,
     lineHeight: '20px',
     width: 64,
-    marginLeft: 12,
-    marginRight: 12,
+    marginInlineStart: 12,
+    marginInlineEnd: 12,
   },
 ]);
 export const todoNew = style({

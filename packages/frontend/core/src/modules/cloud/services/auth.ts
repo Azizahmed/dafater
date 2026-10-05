@@ -14,6 +14,7 @@ import { AccountChanged } from '../events/account-changed';
 import { AccountLoggedIn } from '../events/account-logged-in';
 import { AccountLoggedOut } from '../events/account-logged-out';
 import { ServerStarted } from '../events/server-started';
+import type { SignUpCredential } from '../provider/auth';
 import type { AuthStore } from '../stores/auth';
 import { assertSupportedServerVersion } from '../stores/server-config';
 import type { FetchService } from './fetch';
@@ -278,6 +279,25 @@ export class AuthService extends Service {
       });
       throw e;
     }
+  }
+
+  /**
+   * Create an email + password account on the current server and sign in.
+   * Resolves with `isAdmin: true` when this was the first account on the
+   * server (it becomes the administrator).
+   */
+  async signUp(credential: SignUpCredential): Promise<{ isAdmin: boolean }> {
+    this.assertSupportedServerVersion();
+    const user = await this.store.signUp(credential);
+    if (user) {
+      this.store.setCachedSignInUser(user);
+      this.session.revalidate();
+    } else {
+      await this.session.revalidateOnce();
+    }
+    // the server is now initialized (it has at least one user)
+    this.serverService.server.revalidateConfig();
+    return { isAdmin: !!user?.isAdmin };
   }
 
   async signOut() {

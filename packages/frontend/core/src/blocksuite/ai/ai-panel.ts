@@ -268,8 +268,8 @@ export function buildFinishConfig<T extends keyof BlockSuitePresets.AIActions>(
 
 export function buildErrorConfig(panel: AffineAIPanelWidget) {
   return {
+    // Dafater: no plans to upgrade to (the 402 error shows no upgrade button)
     upgrade: () => {
-      AIAppEvents.requestUpgradePlan.next({ host: panel.host });
       panel.hide();
     },
     login: () => {

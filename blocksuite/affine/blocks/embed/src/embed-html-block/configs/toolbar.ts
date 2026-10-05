@@ -8,6 +8,7 @@ import {
   ToolbarModuleExtension,
 } from '@blocksuite/affine-shared/services';
 import { getBlockProps } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import {
   CaptionIcon,
   CopyIcon,
@@ -121,7 +122,7 @@ const builtinToolbarConfig = {
             const slice = Slice.fromModels(ctx.store, [model]);
             ctx.clipboard
               .copySlice(slice)
-              .then(() => toast(ctx.host, 'Copied to clipboard'))
+              .then(() => toast(ctx.host, t('Copied to clipboard')))
               .catch(console.error);
           },
         },

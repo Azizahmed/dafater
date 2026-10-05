@@ -949,7 +949,7 @@ export const USER_FRIENDLY_ERRORS = {
       requiredVersion: 'string',
     },
     message: ({ requiredVersion }) =>
-      `This AFFiNE server is too old for this client. Please upgrade the server to ${requiredVersion}.`,
+      `This Dafater server is too old for this client. Please upgrade the server to ${requiredVersion}.`,
   },
 
   // Notification Errors

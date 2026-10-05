@@ -2,6 +2,7 @@ import {
   type ToolbarAction,
   ToolbarContext,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
 import type { ReadonlySignal, Signal } from '@preact/signals-core';
@@ -40,13 +41,13 @@ export class ViewDropdownMenu extends SignalWatcher(LitElement) {
         .contentPadding="${'8px'}"
         .button=${html`
           <editor-icon-button
-            aria-label="Switch view"
-            .tooltip="${'Switch view'}"
+            aria-label=${t('Switch view')}
+            .tooltip="${t('Switch view')}"
             .justify="${'space-between'}"
             .labelHeight="${'20px'}"
             .iconContainerWidth="${'110px'}"
           >
-            <span class="label">${viewType}</span>
+            <span class="label">${t(viewType)}</span>
             ${EditorChevronDown}
           </editor-icon-button>
         `}
@@ -61,7 +62,7 @@ export class ViewDropdownMenu extends SignalWatcher(LitElement) {
             action => action.id,
             ({ id, label, disabled, run }) => html`
               <editor-menu-action
-                aria-label="${ifDefined(label)}"
+                aria-label="${ifDefined(label && t(label))}"
                 data-testid="${`link-to-${id}`}"
                 ?data-selected="${label === viewType}"
                 ?disabled="${ifDefined(
@@ -69,7 +70,7 @@ export class ViewDropdownMenu extends SignalWatcher(LitElement) {
                 )}"
                 @click=${() => run?.(context)}
               >
-                ${label}
+                ${label && t(label)}
               </editor-menu-action>
             `
           )}

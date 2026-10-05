@@ -4,6 +4,7 @@ import {
   type PopupTarget,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import {
   ArrowDownSmallIcon,
@@ -214,7 +215,9 @@ export class FilterRootView extends SignalWatcher(ShadowlessElement) {
         items: [
           menu.action({
             name:
-              filter.type === 'filter' ? 'Turn into group' : 'Wrap in group',
+              filter.type === 'filter'
+                ? t('Turn into group')
+                : t('Wrap in group'),
             prefix: ConvertIcon(),
             hide: () => getDepth(filter) > 3,
             select: () => {
@@ -226,7 +229,7 @@ export class FilterRootView extends SignalWatcher(ShadowlessElement) {
             },
           }),
           menu.action({
-            name: 'Duplicate',
+            name: t('Duplicate'),
             prefix: DuplicateIcon(),
             select: () => {
               const conditions = [...this.filterGroup.value.conditions];
@@ -245,7 +248,7 @@ export class FilterRootView extends SignalWatcher(ShadowlessElement) {
             name: '',
             items: [
               menu.action({
-                name: 'Delete',
+                name: t('Delete'),
                 prefix: DeleteIcon(),
                 class: { 'delete-item': true },
                 select: () => {
@@ -337,7 +340,10 @@ export class FilterRootView extends SignalWatcher(ShadowlessElement) {
       );
     };
     const length = condition.conditions.length;
-    const text = length > 1 ? `${length} rules` : `${length} rule`;
+    const text =
+      length > 1
+        ? t('{count} rules', { count: length })
+        : t('{count} rule', { count: length });
     return html` <data-view-component-button
       hoverType="border"
       .icon="${FilterIcon()}"
@@ -386,7 +392,7 @@ export const popFilterRoot = (
     middleware,
     options: {
       title: {
-        text: 'Filters',
+        text: t('Filters'),
         onBack: props.onBack,
         onClose: props.onClose,
       },
@@ -406,7 +412,7 @@ export const popFilterRoot = (
         menu.group({
           items: [
             menu.action({
-              name: 'Add',
+              name: t('Add'),
               prefix: PlusIcon(),
               select: ele => {
                 const value = filterTrait.filter$.value;

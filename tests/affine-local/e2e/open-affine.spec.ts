@@ -25,18 +25,16 @@ test('Open last workspace when back to affine', async ({ page }) => {
   expect(currentWorkspaceName).toEqual('New Workspace 2');
 });
 
-test('Download client tip', async ({ page }) => {
+test('no AFFiNE sign-up banner or download tip on a local workspace', async ({
+  page,
+}) => {
+  // Dafater removed the "enable AFFiNE Cloud" local-storage banner and the
+  // desktop-app download prompts; nothing should push users to AFFiNE.
   await openHomePage(page);
-  const localDemoTipsItem = page.locator('[data-testid=local-demo-tips]');
-  await expect(localDemoTipsItem).toBeVisible();
-  const closeButton = page.locator(
-    '[data-testid=local-demo-tips-close-button]'
+  await waitForEditorLoad(page);
+  await expect(page.locator('[data-testid=local-demo-tips]')).toHaveCount(0);
+  await expect(page.locator('[data-testid=app-download-button]')).toHaveCount(
+    0
   );
-  await closeButton.click();
-  await expect(localDemoTipsItem).not.toBeVisible();
-  await page.reload();
-  const currentLocalDemoTipsItemItem = page.locator(
-    '[data-testid=local-demo-tips]'
-  );
-  await expect(currentLocalDemoTipsItemItem).toBeVisible();
+  await expect(page.locator('body')).not.toContainText(/AFFiNE/);
 });

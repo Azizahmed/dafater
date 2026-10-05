@@ -381,6 +381,8 @@ export const test = base.extend<{
       delete env.ELECTRON_RUN_AS_NODE;
       env.SKIP_ONBOARDING = '1';
       env.AFFINE_E2E = env.AFFINE_E2E || '1';
+      // Fresh installs start in Arabic; these suites assert English strings.
+      env.AFFINE_E2E_LANGUAGE = env.AFFINE_E2E_LANGUAGE || 'en';
 
       const launch = () =>
         electron.launch({

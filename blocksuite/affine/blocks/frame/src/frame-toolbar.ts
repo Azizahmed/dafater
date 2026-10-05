@@ -27,6 +27,7 @@ import {
 } from '@blocksuite/affine-shared/utils';
 import { mountFrameTitleEditor } from '@blocksuite/affine-widget-frame-title';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   EditIcon,
   InsertIntoPageIcon,
@@ -90,12 +91,12 @@ const builtinSurfaceToolbarConfig = {
         const notification = ctx.std.getOptional(NotificationProvider);
         if (notification) {
           notification.notifyWithUndoAction({
-            title: 'Frame inserted into Page.',
-            message: 'Frame has been inserted into doc',
+            title: t('Frame inserted into Page.'),
+            message: t('Frame has been inserted into doc'),
             accent: 'success',
           });
         } else {
-          toast(ctx.host, 'Frame has been inserted into doc');
+          toast(ctx.host, t('Frame has been inserted into doc'));
         }
       },
     },
@@ -188,7 +189,7 @@ const builtinSurfaceToolbarConfig = {
         return html`
           <edgeless-color-picker-button
             class="background"
-            .label="${'Background'}"
+            .label="${t('Background')}"
             .pick=${onPick}
             .color=${background}
             .theme=${theme}

@@ -1,5 +1,6 @@
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
 import { createLitPortal } from '@blocksuite/affine/components/portal';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import type { NotificationService } from '@blocksuite/affine/shared/services';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -101,7 +102,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
                 data-testid="ai-panel-new-chat"
               >
                 ${PlusIcon()}
-                <affine-tooltip>New Chat</affine-tooltip>
+                <affine-tooltip>${t('New Chat')}</affine-tooltip>
               </div>`
             : null
         }
@@ -114,7 +115,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
         >
           ${pinned ? PinedIcon() : PinIcon()}
           <affine-tooltip>
-            ${pinned ? 'Unpin this Chat' : 'Pin this Chat'}
+            ${pinned ? t('Unpin this Chat') : t('Pin this Chat')}
           </affine-tooltip>
         </div>
         <div
@@ -123,7 +124,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
           data-testid="ai-panel-chat-history"
         >
           ${HistoryIcon()}
-          <affine-tooltip>Chat History</affine-tooltip>
+          <affine-tooltip>${t('Chat History')}</affine-tooltip>
         </div>
       </div>
     `;
@@ -132,7 +133,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
   private readonly onPinClick = async () => {
     if (this.isGenerating) {
       this.notificationService.toast(
-        'Cannot pin a chat while generating an answer'
+        t('Cannot pin a chat while generating an answer')
       );
       return;
     }
@@ -143,18 +144,19 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
     if (this.session && this.session.pinned) {
       try {
         const confirm = await this.notificationService.confirm({
-          title: 'Switch Chat? Current chat is pinned',
-          message:
-            'Switching will unpinned the current chat. This will change the active chat panel, allowing you to navigate between different conversation histories.',
-          confirmText: 'Switch Chat',
-          cancelText: 'Cancel',
+          title: t('Switch Chat? Current chat is pinned'),
+          message: t(
+            'Switching will unpinned the current chat. This will change the active chat panel, allowing you to navigate between different conversation histories.'
+          ),
+          confirmText: t('Switch Chat'),
+          cancelText: t('Cancel'),
         });
         if (!confirm) {
           return false;
         }
         await this.runtime.dispatch({ type: 'togglePinActiveSession' });
       } catch {
-        this.notificationService.toast('Failed to unpin the chat');
+        this.notificationService.toast(t('Failed to unpin the chat'));
       }
     }
     return true;
@@ -169,7 +171,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
 
   private readonly onSessionClick = async (sessionId: string) => {
     if (this.session?.sessionId === sessionId) {
-      this.notificationService.toast('You are already in this chat');
+      this.notificationService.toast(t('You are already in this chat'));
       return;
     }
     const confirm = await this.unpinConfirm();
@@ -184,7 +186,7 @@ export class AIChatToolbar extends WithDisposable(ShadowlessElement) {
 
   private readonly onDocClick = async (docId: string, sessionId: string) => {
     if (this.docId === docId && this.session?.sessionId === sessionId) {
-      this.notificationService.toast('You are already in this chat');
+      this.notificationService.toast(t('You are already in this chat'));
       return;
     }
     this.onOpenDoc(docId, sessionId);

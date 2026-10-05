@@ -94,7 +94,7 @@ export const previewBox = style({
 export const attachmentButton = style({
   position: 'absolute',
   top: -6,
-  right: -6,
+  insetInlineEnd: -6,
   background: cssVarV2('layer/background/primary'),
   border: '1px solid',
   borderColor: cssVarV2('layer/insideBorder/border'),
@@ -157,7 +157,7 @@ export const fileSize = style({
 export const deleteBtn = style({
   position: 'absolute',
   top: -6,
-  right: -6,
+  insetInlineEnd: -6,
   width: 16,
   height: 16,
   borderRadius: '50%',
@@ -177,7 +177,7 @@ export const deleteBtn = style({
 export const spinnerWrapper = style({
   position: 'absolute',
   top: 0,
-  left: 0,
+  insetInlineStart: 0,
   width: '100%',
   height: '100%',
   background: cssVarV2('layer/background/tertiary'),

@@ -59,7 +59,10 @@ export const CreatedAtGroupHeader = ({
   groupId,
   docCount,
 }: GroupHeaderProps) => {
-  const date = groupId ? toRelativeDate(groupId) : 'No Date';
+  const t = useI18n();
+  const date = groupId
+    ? toRelativeDate(groupId)
+    : t['com.affine.all-docs.group.no-date']();
   return (
     <PlainTextDocGroupHeader
       style={{ textTransform: 'capitalize' }}

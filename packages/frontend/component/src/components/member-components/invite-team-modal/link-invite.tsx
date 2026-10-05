@@ -76,11 +76,12 @@ export const LinkInvite = ({
     generateInvitationLink(selectedValue).catch(err => {
       console.error('Failed to generate invitation link: ', err);
       notify.error({
-        title: 'Failed to generate invitation link',
+        title:
+          t['com.affine.payment.member.team.invite.generate-link-failed'](),
         message: err.message,
       });
     });
-  }, [generateInvitationLink, selectedValue]);
+  }, [generateInvitationLink, selectedValue, t]);
 
   const onCopy = useCallback(() => {
     if (!invitationLink) {
@@ -95,7 +96,7 @@ export const LinkInvite = ({
       .catch(err => {
         console.error('Failed to copy text: ', err);
         notify.error({
-          title: 'Failed to copy link to clipboard',
+          title: t['com.affine.payment.member.team.invite.copy-link-failed'](),
           message: err.message,
         });
       });
@@ -105,11 +106,11 @@ export const LinkInvite = ({
     revokeInvitationLink().catch(err => {
       console.error('Failed to revoke invitation link: ', err);
       notify.error({
-        title: 'Failed to revoke invitation link',
+        title: t['com.affine.payment.member.team.invite.revoke-link-failed'](),
         message: err.message,
       });
     });
-  }, [revokeInvitationLink]);
+  }, [revokeInvitationLink, t]);
 
   const expireTime = useMemo(() => {
     return t['com.affine.payment.member.team.invite.expire-at']({

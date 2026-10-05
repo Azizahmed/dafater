@@ -43,7 +43,7 @@ export const RequestToJoinPage = ({
               url={`data:image/png;base64,${inviteInfo?.workspace.avatar}`}
               name={inviteInfo?.workspace.name}
               size={20}
-              style={{ marginLeft: 4 }}
+              style={{ marginInlineStart: 4 }}
               colorfulFallback
             />
             <span className={styles.inviteName}>

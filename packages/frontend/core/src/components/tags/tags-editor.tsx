@@ -232,8 +232,10 @@ export const TagsEditor = ({
         if (inputValue.length > 0 || selectedTags.length === 0) {
           return;
         }
+        // in RTL the inline list runs right-to-left, so ArrowLeft moves forward
+        const isRtl = getComputedStyle(e.currentTarget).direction === 'rtl';
         const newItemToFocus =
-          e.key === 'ArrowLeft'
+          (e.key === 'ArrowLeft') !== isRtl
             ? safeInlineFocusedIndex - 1
             : safeInlineFocusedIndex + 1;
 
@@ -278,7 +280,7 @@ export const TagsEditor = ({
             onEnter={onEnter}
             autoFocus
             className={styles.searchInput}
-            placeholder="Type here ..."
+            placeholder={t['com.affine.search-tags.placeholder']()}
           />
         </InlineTagList>
 
@@ -302,7 +304,9 @@ export const TagsEditor = ({
             className={styles.tagSelectorTagsScrollContainer}
           >
             {tagOptions.length === 0 && (
-              <div className={styles.tagSelectorEmpty}>Nothing here yet</div>
+              <div className={styles.tagSelectorEmpty}>
+                {t['com.affine.search-tags.empty']()}
+              </div>
             )}
 
             {tagOptions.map((tag, idx) => {

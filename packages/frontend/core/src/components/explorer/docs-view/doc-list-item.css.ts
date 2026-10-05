@@ -1,3 +1,4 @@
+import { userText } from '@affine/component/styles/direction.css';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import { style } from '@vanilla-extract/css';
 
@@ -10,7 +11,9 @@ export const dragPreview = style({
   display: 'flex',
   alignItems: 'center',
   gap: 8,
-  padding: '8px 16px 8px 12px',
+  paddingBlock: '8px 8px',
+  paddingInlineStart: '12px',
+  paddingInlineEnd: '16px',
   background: cssVarV2.layer.background.primary,
   borderRadius: 4,
   border: `1px solid ${cssVarV2.layer.insideBorder.border}`,
@@ -47,11 +50,12 @@ export const dragHandle = style({
 export const listDragHandle = style([
   dragHandle,
   {
-    left: -4,
+    insetInlineStart: -4,
     top: '50%',
     transform: 'translateY(-50%) translateX(-100%)',
     opacity: 0,
     selectors: {
+      '&:dir(rtl)': { transform: 'translateY(-50%) translateX(100%)' },
       [`${listViewRoot}:hover &`]: {
         opacity: 1,
       },
@@ -65,21 +69,21 @@ export const listSelect = style({
   padding: 2,
   // to make sure won't take place when hidden
   // 12 = gap + padding * 2
-  marginLeft: -12,
+  marginInlineStart: -12,
   flexShrink: 0,
   display: 'flex',
   color: cssVarV2.icon.primary,
   overflow: 'hidden',
   alignItems: 'center',
   justifyContent: 'end',
-  transition: 'width 0.25s ease, margin-left 0.25s ease',
+  transition: 'width 0.25s ease, margin-inline-start 0.25s ease',
   // when select mode is on, the whole item can be clicked,
   // the selection will be handled by the parent, the checkbox here just for the visual effect
   pointerEvents: 'none',
   selectors: {
     '&[data-select-mode="true"]': {
       width: 24,
-      marginLeft: 0,
+      marginInlineStart: 0,
     },
   },
 });
@@ -108,7 +112,7 @@ export const listBrief = style({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  marginLeft: 4,
+  marginInlineStart: 4,
   minWidth: 200,
 });
 export const listSpace = style({
@@ -130,6 +134,7 @@ const ellipsis = style({
 });
 export const listTitle = style([
   ellipsis,
+  userText,
   {
     fontSize: 14,
     lineHeight: '22px',
@@ -139,6 +144,7 @@ export const listTitle = style([
 ]);
 export const listPreview = style([
   ellipsis,
+  userText,
   {
     fontSize: 12,
     lineHeight: '20px',
@@ -230,30 +236,36 @@ export const cardViewIcon = style({
   color: cssVarV2.icon.primary,
   lineHeight: 0,
 });
-export const cardViewTitle = style({
-  fontSize: 18,
-  lineHeight: '26px',
-  fontWeight: 600,
-  color: cssVarV2.text.primary,
-  letterSpacing: '-0.24px',
-  width: 0,
-  flexGrow: 1,
-  flexShrink: 1,
-  textOverflow: 'ellipsis',
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-});
-export const cardPreviewContainer = style({
-  width: '100%',
-  fontSize: 12,
-  lineHeight: '20px',
-  fontWeight: 400,
-  color: cssVarV2.text.primary,
-  minHeight: 20,
-  flexGrow: 1,
-  flexShrink: 1,
-  overflow: 'hidden',
-});
+export const cardViewTitle = style([
+  userText,
+  {
+    fontSize: 18,
+    lineHeight: '26px',
+    fontWeight: 600,
+    color: cssVarV2.text.primary,
+    letterSpacing: '-0.24px',
+    width: 0,
+    flexGrow: 1,
+    flexShrink: 1,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  },
+]);
+export const cardPreviewContainer = style([
+  userText,
+  {
+    width: '100%',
+    fontSize: 12,
+    lineHeight: '20px',
+    fontWeight: 400,
+    color: cssVarV2.text.primary,
+    minHeight: 20,
+    flexGrow: 1,
+    flexShrink: 1,
+    overflow: 'hidden',
+  },
+]);
 export const cardViewCheckbox = style({
   width: 20,
   height: 20,
@@ -265,11 +277,12 @@ export const cardViewCheckbox = style({
 export const cardDragHandle = style([
   dragHandle,
   {
-    left: -4,
+    insetInlineStart: -4,
     top: 0,
     transform: 'translateX(-100%)',
     opacity: 0,
     selectors: {
+      '&:dir(rtl)': { transform: 'translateX(100%)' },
       [`${cardViewRoot}:hover &`]: {
         opacity: 1,
       },

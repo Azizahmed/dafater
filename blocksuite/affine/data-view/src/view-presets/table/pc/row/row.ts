@@ -64,7 +64,7 @@ export class TableRowView extends SignalWatcher(
     }
 
     .row-op:last-child {
-      margin-right: 8px;
+      margin-inline-end: 8px;
     }
 
     .affine-database-block-row .show-on-hover-row {

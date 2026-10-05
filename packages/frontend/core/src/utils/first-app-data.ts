@@ -2,7 +2,8 @@
 import '../blocksuite/block-suite-editor';
 
 import { DebugLogger } from '@affine/debug';
-import { DEFAULT_WORKSPACE_NAME } from '@affine/env/constant';
+import { I18n } from '@affine/i18n';
+import onboardingArUrl from '@affine/templates/onboarding.ar.zip';
 import onboardingUrl from '@affine/templates/onboarding.zip';
 import { ZipTransformer } from '@blocksuite/affine/widgets/linked-doc';
 
@@ -13,6 +14,21 @@ import {
   type WorkspacesService,
 } from '../modules/workspace';
 
+/** Doc ids in `onboarding.zip` and its translations. */
+const SHOWCASE_DOC_IDS = {
+  gettingStarted: 'F-TNy6Tt3t',
+  folderTutorial: 'kV_wO0ALWs',
+};
+
+/**
+ * Doc titles in `onboarding.zip` and its translations. The import assigns
+ * new ids (`replaceIdMiddleware`), so the docs are found by title.
+ */
+const SHOWCASE_DOC_TITLES = {
+  gettingStarted: ['Getting Started', 'دليل البدء'],
+  folderTutorial: ['How to use folder and Tags', 'كيفية استخدام المجلدات'],
+};
+
 export async function buildShowcaseWorkspace(
   workspacesService: WorkspacesService,
   flavour: string,
@@ -21,7 +37,9 @@ export async function buildShowcaseWorkspace(
   const meta = await workspacesService.create(flavour, async docCollection => {
     docCollection.meta.initialize();
     docCollection.doc.getMap('meta').set('name', workspaceName);
-    const blob = await (await fetch(onboardingUrl)).blob();
+    // The showcase docs are user data once created: use the active language.
+    const url = I18n.language === 'ar' ? onboardingArUrl : onboardingUrl;
+    const blob = await (await fetch(url)).blob();
 
     await ZipTransformer.importDocs(
       docCollection,
@@ -36,19 +54,23 @@ export async function buildShowcaseWorkspace(
 
   const docsService = workspace.scope.get(DocsService);
 
-  // should jump to "Getting Started"
-  const defaultDoc = docsService.list.docs$.value.find(p =>
-    p.title$.value.startsWith('Getting Started')
+  // should jump to "Getting Started" (same doc ids in every language)
+  const defaultDoc = docsService.list.docs$.value.find(
+    p =>
+      p.id === SHOWCASE_DOC_IDS.gettingStarted ||
+      SHOWCASE_DOC_TITLES.gettingStarted.some(t => p.title$.value.startsWith(t))
   );
-  const folderTutorialDoc = docsService.list.docs$.value.find(p =>
-    p.title$.value.startsWith('How to use folder and Tags')
+  const folderTutorialDoc = docsService.list.docs$.value.find(
+    p =>
+      p.id === SHOWCASE_DOC_IDS.folderTutorial ||
+      SHOWCASE_DOC_TITLES.folderTutorial.some(t => p.title$.value.startsWith(t))
   );
 
   // create default organize
   if (folderTutorialDoc) {
     const organizeService = workspace.scope.get(OrganizeService);
     const folderId = organizeService.folderTree.rootFolder.createFolder(
-      'First Folder',
+      I18n['com.affine.workspace.showcase.first-folder'](),
       organizeService.folderTree.rootFolder.indexAt('after')
     );
     const firstFolderNode =
@@ -86,7 +108,8 @@ export function createFirstAppData(workspacesService: WorkspacesService) {
   firstAppDataPromise ??= buildShowcaseWorkspace(
     workspacesService,
     'local',
-    DEFAULT_WORKSPACE_NAME
+    // Created in the active language; it is user data afterwards.
+    I18n['com.affine.workspace.showcase.name']()
   ).finally(() => {
     firstAppDataPromise = undefined;
   });

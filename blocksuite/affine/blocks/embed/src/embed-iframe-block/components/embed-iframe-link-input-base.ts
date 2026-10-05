@@ -4,6 +4,7 @@ import {
   NotificationProvider,
 } from '@blocksuite/affine-shared/services';
 import { isValidUrl, stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { noop } from '@blocksuite/global/utils';
 import {
@@ -28,8 +29,8 @@ export class EmbedIframeLinkInputBase extends WithDisposable(LitElement) {
   protected tryToAddBookmark(url: string) {
     if (!isValidUrl(url)) {
       this.notificationService?.notify({
-        title: 'Invalid URL',
-        message: 'Please enter a valid URL',
+        title: t('Invalid URL'),
+        message: t('Please enter a valid URL'),
         accent: 'error',
         onClose: function (): void {},
       });
@@ -95,8 +96,8 @@ export class EmbedIframeLinkInputBase extends WithDisposable(LitElement) {
     } catch (error) {
       this.track('failure');
       this.notificationService?.notify({
-        title: 'Error in embed iframe creation',
-        message: error instanceof Error ? error.message : 'Please try again',
+        title: t('Error in embed iframe creation'),
+        message: error instanceof Error ? error.message : t('Please try again'),
         accent: 'error',
         onClose: function (): void {},
       });

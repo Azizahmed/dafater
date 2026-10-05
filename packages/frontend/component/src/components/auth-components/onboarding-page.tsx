@@ -1,3 +1,4 @@
+import { useI18n } from '@affine/i18n';
 import { ArrowRightSmallIcon } from '@blocksuite/icons/rc';
 import clsx from 'clsx';
 import { useMemo, useState } from 'react';
@@ -5,9 +6,9 @@ import type { Location } from 'react-router-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 
+import { mirrorInRtl } from '../../styles';
 import { Button } from '../../ui/button';
 import { Checkbox } from '../../ui/checkbox';
-import { Divider } from '../../ui/divider';
 import Input from '../../ui/input';
 import { ScrollableContainer } from '../../ui/scrollbar';
 import * as styles from './onboarding-page.css';
@@ -70,27 +71,7 @@ export const ScrollableLayout = ({
       <ScrollableContainer className={styles.scrollableContainer}>
         <div className={styles.onboardingContainer}>{children}</div>
       </ScrollableContainer>
-      <footer className={styles.footer}>
-        <div className={styles.linkGroup}>
-          <a
-            className={styles.link}
-            href="https://affine.pro/terms"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Terms of Conditions
-          </a>
-          <Divider orientation="vertical" />
-          <a
-            className={styles.link}
-            href="https://affine.pro/privacy"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Privacy Policy
-          </a>
-        </div>
-      </footer>
+      {/* Dafater: no links to AFFiNE's terms / privacy policy */}
     </div>
   );
 };
@@ -102,6 +83,7 @@ export const OnboardingPage = ({
   user: User;
   onOpenAffine: () => void;
 }) => {
+  const t = useI18n();
   const location = useLocation();
   const navigate = useNavigate();
   const [questionIdx, setQuestionIdx] = useState(0);
@@ -137,7 +119,7 @@ export const OnboardingPage = ({
             size="extraLarge"
             onClick={() => setQuestionIdx(questions.length)}
           >
-            Skip
+            {t['com.affine.onboarding.questionnaire.skip']()}
           </Button>
         }
         isMacosDesktop={isMacosDesktop}
@@ -196,7 +178,7 @@ export const OnboardingPage = ({
               size="extraLarge"
               onClick={() => setQuestionIdx(questions.length)}
             >
-              Skip
+              {t['com.affine.onboarding.questionnaire.skip']()}
             </Button>
             <Button
               className={styles.button}
@@ -229,9 +211,11 @@ export const OnboardingPage = ({
                   setQuestionIdx(questionIdx + 1);
                 }
               }}
-              suffix={<ArrowRightSmallIcon />}
+              suffix={<ArrowRightSmallIcon className={mirrorInRtl} />}
             >
-              {questionIdx === 0 ? 'start' : 'Next'}
+              {questionIdx === 0
+                ? t['com.affine.onboarding.questionnaire.start']()
+                : t['com.affine.onboarding.questionnaire.next']()}
             </Button>
           </div>
         </div>
@@ -244,10 +228,11 @@ export const OnboardingPage = ({
       isWindowsDesktop={isWindowsDesktop}
     >
       <div className={styles.thankContainer}>
-        <h1 className={styles.thankTitle}>Thank you!</h1>
+        <h1 className={styles.thankTitle}>
+          {t['com.affine.onboarding.questionnaire.thank-you.title']()}
+        </h1>
         <p className={styles.thankText}>
-          We will continue to enhance our products based on your feedback. Thank
-          you once again for your supports.
+          {t['com.affine.onboarding.questionnaire.thank-you.message']()}
         </p>
         <Button
           className={clsx(styles.button, styles.openAFFiNEButton)}
@@ -260,9 +245,9 @@ export const OnboardingPage = ({
               onOpenAffine();
             }
           }}
-          suffix={<ArrowRightSmallIcon />}
+          suffix={<ArrowRightSmallIcon className={mirrorInRtl} />}
         >
-          Get Started
+          {t['com.affine.onboarding.questionnaire.get-started']()}
         </Button>
       </div>
     </ScrollableLayout>

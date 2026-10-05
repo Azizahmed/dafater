@@ -27,7 +27,7 @@ export class AffineBlockDiffWidgetForBlock extends WidgetComponent {
     .ai-block-diff.delete {
       position: absolute;
       top: -8px;
-      left: 4px;
+      inset-inline-start: 4px;
       width: 100%;
       height: 100%;
       margin: 0;

@@ -1,4 +1,5 @@
 import { LoadingIcon } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVar } from '@blocksuite/affine/shared/theme';
 import { baseTheme } from '@toeverything/theme';
@@ -86,7 +87,9 @@ export class GeneratingPlaceholder extends WithDisposable(LitElement) {
   `;
 
   protected override render() {
-    const loadingText = this.stages[this.loadingProgress - 1] || '';
+    // stages are static UI strings from code (see actions/consts.ts)
+    const stage = this.stages[this.loadingProgress - 1];
+    const loadingText = stage ? t(stage) : '';
 
     return html`<style>
         .generating-body {
@@ -95,7 +98,7 @@ export class GeneratingPlaceholder extends WithDisposable(LitElement) {
       </style>
       ${
         this.showHeader
-          ? html`<div class="generating-header">Answer</div>`
+          ? html`<div class="generating-header">${t('Answer')}</div>`
           : nothing
       }
       <div class="generating-body">

@@ -1,4 +1,4 @@
-import { InsideModalContext, Scrollable } from '@affine/component';
+import { InsideModalContext, mirrorInRtl, Scrollable } from '@affine/component';
 import { PageHeader } from '@affine/core/mobile/components';
 import { ArrowLeftSmallIcon } from '@blocksuite/icons/rc';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
@@ -234,7 +234,7 @@ export const SwipeDialog = ({
               <div className={styles.content}>
                 <PageHeader
                   back
-                  backIcon={<ArrowLeftSmallIcon />}
+                  backIcon={<ArrowLeftSmallIcon className={mirrorInRtl} />}
                   backAction={animateClose}
                   className={styles.header}
                 >

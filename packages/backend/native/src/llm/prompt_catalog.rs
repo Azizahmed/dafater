@@ -561,7 +561,8 @@ mod tests {
         .and_then(|params| params.get("language"))
         .and_then(Value::as_array)
         .map(|values| values.len()),
-      Some(11)
+      // Dafater adds Arabic to the upstream 11 target languages
+      Some(12)
     );
 
     let chat = built_in_prompt("Chat With AFFiNE AI").expect("chat prompt");

@@ -5,6 +5,7 @@ import {
   normalizeUrl,
   stopPropagation,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { DoneIcon } from '@blocksuite/icons/lit';
 import {
@@ -47,7 +48,7 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
           class="affine-link-popover-input"
           type="text"
           spellcheck="false"
-          placeholder="Paste or type a link"
+          placeholder=${t('Paste or type a link')}
           @paste=${this._updateConfirmBtn}
           @input=${this._updateConfirmBtn}
         />
@@ -83,10 +84,10 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
             class="affine-edit-input"
             id="text-input"
             type="text"
-            placeholder="Enter text"
+            placeholder=${t('Enter text')}
             @input=${this._updateConfirmBtn}
           />
-          <label class="affine-edit-label" for="text-input">Text</label>
+          <label class="affine-edit-label" for="text-input">${t('Text')}</label>
         </div>
         <div class="affine-edit-area link">
           <input
@@ -94,10 +95,10 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
             class="affine-edit-input"
             type="text"
             spellcheck="false"
-            placeholder="Paste or type a link"
+            placeholder=${t('Paste or type a link')}
             @input=${this._updateConfirmBtn}
           />
-          <label class="affine-edit-label" for="link-input">Link</label>
+          <label class="affine-edit-label" for="link-input">${t('Link')}</label>
         </div>
         ${this._confirmBtnTemplate()}
       </div>

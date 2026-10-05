@@ -128,7 +128,7 @@ export const blobPreview = style({
 export const blobGridItemCheckbox = style({
   position: 'absolute',
   top: 8,
-  right: 8,
+  insetInlineEnd: 8,
   fontSize: 24,
   opacity: 0,
   selectors: {

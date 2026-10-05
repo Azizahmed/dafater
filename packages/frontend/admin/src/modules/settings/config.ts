@@ -119,12 +119,12 @@ export const KNOWN_CONFIG_GROUPS = [
     fields: ['providers.google', 'providers.github', 'providers.oidc'],
   } as ConfigGroup<'oauth'>,
   {
-    name: 'AI BYOK',
+    name: 'AI',
     module: 'copilot',
     fields: [
       {
         key: 'enabled',
-        desc: 'Enable AI features. Workspace owners configure provider keys in Workspace Settings → Integrations → AI BYOK.',
+        desc: 'Enable AI features. The AI provider (any OpenAI-compatible endpoint, API key and model) is configured by the server administrator in the Dafater app: Settings → Server administration → AI.',
       },
       'byok.enabled',
       'byok.allowedProviders',

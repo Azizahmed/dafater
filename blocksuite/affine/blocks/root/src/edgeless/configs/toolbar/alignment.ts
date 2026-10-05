@@ -12,6 +12,7 @@ import type {
 } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { renderMenuItems } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   AlignBottomIcon,
   AlignHorizontalCenterIcon,
@@ -47,64 +48,67 @@ type AlignmentMap = Record<
   (ctx: ToolbarContext, elements: GfxModel[]) => void
 >;
 
-const HORIZONTAL_ALIGNMENT = [
-  {
-    key: 'Align left',
-    value: Alignment.Left,
-    icon: AlignLeftIcon(),
-  },
-  {
-    key: 'Align horizontally',
-    value: Alignment.Horizontally,
-    icon: AlignHorizontalCenterIcon(),
-  },
-  {
-    key: 'Align right',
-    value: Alignment.Right,
-    icon: AlignRightIcon(),
-  },
-  {
-    key: 'Distribute horizontally',
-    value: Alignment.DistributeHorizontally,
-    icon: DistributeHorizontalIcon(),
-  },
-] as const satisfies MenuItem<Alignment>[];
+const getHorizontalAlignment = () =>
+  [
+    {
+      key: t('Align left'),
+      value: Alignment.Left,
+      icon: AlignLeftIcon(),
+    },
+    {
+      key: t('Align horizontally'),
+      value: Alignment.Horizontally,
+      icon: AlignHorizontalCenterIcon(),
+    },
+    {
+      key: t('Align right'),
+      value: Alignment.Right,
+      icon: AlignRightIcon(),
+    },
+    {
+      key: t('Distribute horizontally'),
+      value: Alignment.DistributeHorizontally,
+      icon: DistributeHorizontalIcon(),
+    },
+  ] as const satisfies MenuItem<Alignment>[];
 
-const VERTICAL_ALIGNMENT = [
-  {
-    key: 'Align top',
-    value: Alignment.Top,
-    icon: AlignTopIcon(),
-  },
-  {
-    key: 'Align vertically',
-    value: Alignment.Vertically,
-    icon: AlignVerticalCenterIcon(),
-  },
-  {
-    key: 'Align bottom',
-    value: Alignment.Bottom,
-    icon: AlignBottomIcon(),
-  },
-  {
-    key: 'Distribute vertically',
-    value: Alignment.DistributeVertically,
-    icon: DistributeVerticalIcon(),
-  },
-] as const satisfies MenuItem<Alignment>[];
+const getVerticalAlignment = () =>
+  [
+    {
+      key: t('Align top'),
+      value: Alignment.Top,
+      icon: AlignTopIcon(),
+    },
+    {
+      key: t('Align vertically'),
+      value: Alignment.Vertically,
+      icon: AlignVerticalCenterIcon(),
+    },
+    {
+      key: t('Align bottom'),
+      value: Alignment.Bottom,
+      icon: AlignBottomIcon(),
+    },
+    {
+      key: t('Distribute vertically'),
+      value: Alignment.DistributeVertically,
+      icon: DistributeVerticalIcon(),
+    },
+  ] as const satisfies MenuItem<Alignment>[];
 
-const AUTO_ALIGNMENT = [
-  {
-    key: 'Auto arrange',
-    value: Alignment.AutoArrange,
-    icon: AutoTidyUpIcon(),
-  },
-  {
-    key: 'Resize & Align',
-    value: Alignment.AutoResize,
-    icon: ResizeTidyUpIcon(),
-  },
-] as const satisfies MenuItem<Alignment>[];
+const getAutoAlignment = () =>
+  [
+    {
+      key: t('Auto arrange'),
+      value: Alignment.AutoArrange,
+      icon: AutoTidyUpIcon(),
+    },
+    {
+      key: t('Resize & Align'),
+      value: Alignment.AutoResize,
+      icon: ResizeTidyUpIcon(),
+    },
+  ] as const satisfies MenuItem<Alignment>[];
 
 const alignment = {
   // None: do nothing
@@ -281,12 +285,12 @@ export function renderAlignmentMenu(
     >
       <div data-orientation="vertical">
         <div style=${styleMap({ display: 'grid', gridGap: '8px', gridTemplateColumns: 'repeat(4, 1fr)' })}>
-          ${renderMenuItems(HORIZONTAL_ALIGNMENT, Alignment.None, onPick)}
-          ${renderMenuItems(VERTICAL_ALIGNMENT, Alignment.None, onPick)}
+          ${renderMenuItems(getHorizontalAlignment(), Alignment.None, onPick)}
+          ${renderMenuItems(getVerticalAlignment(), Alignment.None, onPick)}
         </div>
         <editor-toolbar-separator data-orientation="horizontal"></editor-toolbar-separator>
         <div style=${styleMap({ display: 'grid', gridGap: '8px', gridTemplateColumns: 'repeat(4, 1fr)' })}>
-          ${renderMenuItems(AUTO_ALIGNMENT, Alignment.None, onPick)}
+          ${renderMenuItems(getAutoAlignment(), Alignment.None, onPick)}
         </div>
     </editor-menu-button>
   `;

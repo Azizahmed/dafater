@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import { consume } from '@lit/context';
 import { css, html, LitElement } from 'lit';
@@ -29,7 +30,7 @@ export class AdapterMenu extends SignalWatcher(LitElement) {
       padding: 6px 8px;
       border: none;
       background: none;
-      text-align: left;
+      text-align: start;
       cursor: pointer;
       color: var(--affine-text-primary-color);
       font-family: var(--affine-font-family);
@@ -66,7 +67,7 @@ export class AdapterMenu extends SignalWatcher(LitElement) {
             class=${classes}
             @click=${() => this._handleAdapterChange(adapter)}
           >
-            ${adapter.label}
+            ${t(adapter.label)}
           </button>
         `;
       })}

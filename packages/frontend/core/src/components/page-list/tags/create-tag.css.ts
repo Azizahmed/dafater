@@ -55,11 +55,11 @@ export const tagItem = style({
 });
 
 export const cancelBtn = style({
-  marginLeft: '20px',
-  marginRight: '8px',
+  marginInlineStart: '20px',
+  marginInlineEnd: '8px',
 });
 
 export const menuBtn = style({
   padding: '0px 10px',
-  marginRight: '4px',
+  marginInlineEnd: '4px',
 });

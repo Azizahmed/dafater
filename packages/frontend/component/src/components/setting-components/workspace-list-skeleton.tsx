@@ -11,7 +11,7 @@ export const WorkspaceListItemSkeleton = () => {
         variant="circular"
         width={14}
         height={14}
-        style={{ marginRight: 10 }}
+        style={{ marginInlineEnd: 10 }}
       />
       <Skeleton
         variant="rectangular"

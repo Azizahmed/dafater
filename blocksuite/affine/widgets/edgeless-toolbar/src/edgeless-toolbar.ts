@@ -18,6 +18,7 @@ import {
   ThemeProvider,
 } from '@blocksuite/affine-shared/services';
 import { stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import {
   ArrowLeftSmallIcon,
   ArrowRightSmallIcon,
@@ -179,7 +180,7 @@ export class EdgelessToolbarWidget extends WidgetComponent<RootBlockModel> {
     }
     [data-dense-quick='true'] .quick-tool-more {
       width: ${unsafeCSS(QUICK_TOOL_MORE_SIZE)}px;
-      margin-left: ${unsafeCSS(DIVIDER_SPACE)}px;
+      margin-inline-start: ${unsafeCSS(DIVIDER_SPACE)}px;
     }
     .quick-tool-more-button {
       padding: 0;
@@ -211,10 +212,13 @@ export class EdgelessToolbarWidget extends WidgetComponent<RootBlockModel> {
       width: ${unsafeCSS(SENIOR_TOOL_NAV_SIZE)}px;
     }
     [data-dense-senior='true'] .senior-nav-button-wrapper.prev {
-      margin-right: ${unsafeCSS(DIVIDER_SPACE)}px;
+      margin-inline-end: ${unsafeCSS(DIVIDER_SPACE)}px;
     }
     [data-dense-senior='true'] .senior-nav-button-wrapper.next {
-      margin-left: ${unsafeCSS(DIVIDER_SPACE)}px;
+      margin-inline-start: ${unsafeCSS(DIVIDER_SPACE)}px;
+    }
+    :host(:dir(rtl)) .senior-nav-button svg {
+      transform: scaleX(-1);
     }
     .transform-button svg {
       transition: 0.3s ease-in-out;
@@ -363,13 +367,13 @@ export class EdgelessToolbarWidget extends WidgetComponent<RootBlockModel> {
     if (this._seniorScrollNextDisabled) return '';
     const nextTool =
       this._seniorTools[this.scrollSeniorToolIndex + this.scrollSeniorToolSize];
-    return nextTool?.name ?? '';
+    return nextTool ? t(nextTool.name) : '';
   }
 
   private get _seniorPrevTooltip() {
     if (this._seniorScrollPrevDisabled) return '';
     const prevTool = this._seniorTools[this.scrollSeniorToolIndex - 1];
-    return prevTool?.name ?? '';
+    return prevTool ? t(prevTool.name) : '';
   }
 
   private get _seniorScrollNextDisabled() {
@@ -529,7 +533,7 @@ export class EdgelessToolbarWidget extends WidgetComponent<RootBlockModel> {
         >
           ${MoreHorizontalIcon({ width: '20px', height: '20px' })}
           <affine-tooltip tip-position="top" .offset=${25}>
-            More Tools
+            ${t('More Tools')}
           </affine-tooltip>
         </icon-button>
       </div>

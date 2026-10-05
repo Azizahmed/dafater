@@ -9,10 +9,8 @@ import { SettingRow } from '@affine/component/setting-components';
 import { EditorSettingService } from '@affine/core/modules/editor-setting';
 import { useI18n } from '@affine/i18n';
 import {
-  createEnumMap,
   DefaultTheme,
   NoteShadow,
-  NoteShadowMap,
   StrokeStyle,
 } from '@blocksuite/affine/model';
 import type { Store } from '@blocksuite/affine/store';
@@ -22,7 +20,7 @@ import { useCallback, useMemo } from 'react';
 
 import { DropdownMenu } from '../menu';
 import { menuTrigger, settingWrapper } from '../style.css';
-import { usePalettes } from '../utils';
+import { getNoteShadowLabel, usePalettes } from '../utils';
 import { Point } from './point';
 import { EdgelessSnapshot } from './snapshot';
 
@@ -34,7 +32,18 @@ enum CornerSize {
   Huge = 32,
 }
 
-const CornerSizeMap = createEnumMap(CornerSize);
+const CORNER_SIZE_LABELS = {
+  [CornerSize.None]:
+    'com.affine.settings.editorSettings.edgeless.note.corners.none',
+  [CornerSize.Small]:
+    'com.affine.settings.editorSettings.edgeless.note.corners.small',
+  [CornerSize.Medium]:
+    'com.affine.settings.editorSettings.edgeless.note.corners.medium',
+  [CornerSize.Large]:
+    'com.affine.settings.editorSettings.edgeless.note.corners.large',
+  [CornerSize.Huge]:
+    'com.affine.settings.editorSettings.edgeless.note.corners.huge',
+} as const;
 
 const CORNER_SIZE = [
   { name: 'None', value: CornerSize.None },
@@ -105,7 +114,7 @@ export const NoteSettings = () => {
 
   const backgroundItems = useMemo(() => {
     const { background } = settings['affine:note'];
-    return palettes.map(({ key, value, resolvedValue }) => {
+    return palettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set('affine:note', { background: value });
       };
@@ -117,7 +126,7 @@ export const NoteSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -138,11 +147,11 @@ export const NoteSettings = () => {
       const isSelected = borderRadius === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {t[CORNER_SIZE_LABELS[value]]()}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const shadowItems = useMemo(() => {
     const { shadowType } = settings['affine:note'].edgeless.style;
@@ -159,11 +168,11 @@ export const NoteSettings = () => {
       const isSelected = shadowType === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getNoteShadowLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const currentColor = useMemo(() => {
     const { background } = settings['affine:note'];
@@ -197,7 +206,7 @@ export const NoteSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={currentColor.resolvedValue} />}
               >
-                {currentColor.key}
+                {currentColor.label}
               </MenuTrigger>
             }
           />
@@ -211,12 +220,12 @@ export const NoteSettings = () => {
           items={cornerItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {
-                CornerSizeMap[
+              {t[
+                CORNER_SIZE_LABELS[
                   settings['affine:note'].edgeless.style
                     .borderRadius as CornerSize
                 ]
-              }
+              ]()}
             </MenuTrigger>
           }
         />
@@ -229,7 +238,10 @@ export const NoteSettings = () => {
           items={shadowItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {NoteShadowMap[settings['affine:note'].edgeless.style.shadowType]}
+              {getNoteShadowLabel(
+                t,
+                settings['affine:note'].edgeless.style.shadowType
+              )}
             </MenuTrigger>
           }
         />

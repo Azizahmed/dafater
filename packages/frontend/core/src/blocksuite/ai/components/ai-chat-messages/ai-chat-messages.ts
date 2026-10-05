@@ -2,6 +2,7 @@ import type { AIToolsConfigService } from '@affine/core/modules/ai-button';
 import type { PeekViewService } from '@affine/core/modules/peek-view';
 import type { AppThemeService } from '@affine/core/modules/theme';
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import {
   DocModeProvider,
@@ -259,7 +260,7 @@ export class AIChatMessages extends WithDisposable(ShadowlessElement) {
                 class="onboarding-item"
               >
                 <div class="onboarding-item-icon">${config.icon}</div>
-                <div class="onboarding-item-text">${config.text}</div>
+                <div class="onboarding-item-text">${t(config.text)}</div>
               </div>`;
             }
           )}
@@ -355,10 +356,10 @@ export class AIChatMessages extends WithDisposable(ShadowlessElement) {
                   ${
                     this.isHistoryLoading
                       ? html`<span data-testid="chat-panel-loading-state"
-                          >AFFiNE AI is loading history...</span
+                          >${t('Dafater AI is loading history...')}</span
                         >`
                       : html`<span data-testid="chat-panel-empty-state"
-                          >What can I help you with?</span
+                          >${t('What can I help you with?')}</span
                         >`
                   }
                 </div>

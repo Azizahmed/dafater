@@ -62,7 +62,7 @@ globalStyle(
 );
 
 export const scrollbar = style({
-  marginRight: '4px',
+  marginInlineEnd: '4px',
 });
 
 export const sidebarScrollArea = style({

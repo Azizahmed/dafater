@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { nanoid } from '@blocksuite/store';
 
 import type { GroupBy } from '../../core/common/types.js';
@@ -8,6 +9,7 @@ import { getGroupByService } from '../../core/group-by/matcher.js';
 
 type KanbanGroupCapability = 'mutable' | 'immutable' | 'none';
 
+// Created in the active language; translated by `t()` when used.
 const KANBAN_DEFAULT_STATUS_OPTIONS = ['Todo', 'In Progress', 'Done'];
 const SHOW_EMPTY_GROUPS_BY_DEFAULT = new Set(['select', 'multi-select']);
 
@@ -98,7 +100,7 @@ export const ensureKanbanGroupColumn = (
 
   const statusId = dataSource.propertyAdd('end', {
     type: 'select',
-    name: 'Status',
+    name: t('Status'),
   });
   if (!statusId) {
     return;
@@ -107,7 +109,7 @@ export const ensureKanbanGroupColumn = (
   dataSource.propertyDataSet(statusId, {
     options: KANBAN_DEFAULT_STATUS_OPTIONS.map(value => ({
       id: nanoid(),
-      value,
+      value: t(value),
       color: getTagColor(),
     })),
   });

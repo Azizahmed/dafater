@@ -112,7 +112,7 @@
     },
     "SMTP.sender": {
       "type": "String",
-      "desc": "Sender of all the emails (e.g. \"AFFiNE Self Hosted &lt;noreply@example.com&gt;\")",
+      "desc": "Sender of all the emails (e.g. \"Dafater Self Hosted &lt;noreply@example.com&gt;\")",
       "env": "MAILER_SENDER"
     },
     "SMTP.ignoreTLS": {
@@ -158,7 +158,7 @@
     },
     "fallbackSMTP.sender": {
       "type": "String",
-      "desc": "Sender of all the emails (e.g. \"AFFiNE Self Hosted &lt;noreply@example.com&gt;\")"
+      "desc": "Sender of all the emails (e.g. \"Dafater Self Hosted &lt;noreply@example.com&gt;\")"
     },
     "fallbackSMTP.ignoreTLS": {
       "type": "Boolean",
@@ -203,11 +203,11 @@
   "server": {
     "name": {
       "type": "String",
-      "desc": "A recognizable name for the server. Will be shown when connected with AFFiNE Desktop."
+      "desc": "A recognizable name for the server. Will be shown when connected with Dafater Desktop."
     },
     "externalUrl": {
       "type": "String",
-      "desc": "Base url of AFFiNE server, used for generating external urls.\nDefault to be `[server.protocol]://[server.host][:server.port]` if not specified.\n    ",
+      "desc": "Base url of Dafater server, used for generating external urls.\nDefault to be `[server.protocol]://[server.host][:server.port]` if not specified.\n    ",
       "env": "AFFINE_SERVER_EXTERNAL_URL"
     },
     "https": {

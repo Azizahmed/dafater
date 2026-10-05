@@ -21,7 +21,7 @@ import {
   type TableCell,
   TableCellComponentName,
 } from './table-cell';
-import { cleanSelection } from './utils';
+import { cleanSelection, isRtl } from './utils';
 type Cells = string[][];
 const TEXT = 'text/plain';
 export class SelectionController implements ReactiveController {
@@ -64,6 +64,9 @@ export class SelectionController implements ReactiveController {
     event.preventDefault();
     event.stopPropagation();
     const initialX = event.clientX;
+    // The handle sits on the inline-end edge: dragging it leftwards widens a
+    // column of an RTL table.
+    const xSign = isRtl(this.host) ? -1 : 1;
     const currentWidth =
       dragHandle.closest('td')?.getBoundingClientRect().width ??
       DefaultColumnWidth;
@@ -78,7 +81,7 @@ export class SelectionController implements ReactiveController {
         columnId,
         width: Math.max(
           ColumnMinWidth,
-          (event.clientX - initialX) / this.scale + adjustedWidth
+          ((event.clientX - initialX) * xSign) / this.scale + adjustedWidth
         ),
       };
     };
@@ -156,9 +159,20 @@ export class SelectionController implements ReactiveController {
     const columns = Array.from(
       this.host.querySelectorAll(`td[data-row-id="${firstCell?.row?.rowId}"]`)
     ).map(td => td.getBoundingClientRect());
-    const columnOffsets = columns.flatMap((column, index) =>
-      index === columns.length - 1 ? [column.left, column.right] : [column.left]
-    );
+    // RTL columns run right to left: compute in mirrored (negated) x so the
+    // offsets still increase with the column index.
+    const rtl = isRtl(this.host);
+    const columnOffsets = rtl
+      ? columns.flatMap((column, index) =>
+          index === columns.length - 1
+            ? [-column.right, -column.left]
+            : [-column.right]
+        )
+      : columns.flatMap((column, index) =>
+          index === columns.length - 1
+            ? [column.left, column.right]
+            : [column.left]
+        );
     const columnDragPreview = createColumnDragPreview(cells);
     columnDragPreview.style.top = `${cellRect.top - containerRect.top - 0.5}px`;
     columnDragPreview.style.left = `${cellRect.left - containerRect.left}px`;
@@ -166,10 +180,11 @@ export class SelectionController implements ReactiveController {
     this.host.append(columnDragPreview);
     document.body.style.pointerEvents = 'none';
     const onMove = (x: number) => {
+      const previewLeft = x - initialDiffX;
       const { targetIndex, isForward } = getTargetIndexByDraggingOffset(
         columnOffsets,
         draggingIndex,
-        x - initialDiffX
+        rtl ? -(previewLeft + cellRect.width) : previewLeft
       );
       if (targetIndex != null) {
         this.dataManager.ui.columnIndicatorIndex$.value = isForward
@@ -178,7 +193,7 @@ export class SelectionController implements ReactiveController {
       } else {
         this.dataManager.ui.columnIndicatorIndex$.value = undefined;
       }
-      columnDragPreview.style.left = `${x - initialDiffX - containerRect.left}px`;
+      columnDragPreview.style.left = `${previewLeft - containerRect.left}px`;
     };
     const onEnd = () => {
       const targetIndex = this.dataManager.ui.columnIndicatorIndex$.value;
@@ -248,7 +263,12 @@ export class SelectionController implements ReactiveController {
       index === rows.length - 1 ? [row.top, row.bottom] : [row.top]
     );
     const rowDragPreview = createRowDragPreview(cells);
-    rowDragPreview.style.left = `${cellRect.left - containerRect.left}px`;
+    // The handle is in the first column, which is the rightmost one in RTL.
+    if (isRtl(this.host)) {
+      rowDragPreview.style.right = `${containerRect.right - cellRect.right}px`;
+    } else {
+      rowDragPreview.style.left = `${cellRect.left - containerRect.left}px`;
+    }
     rowDragPreview.style.top = `${cellRect.top - containerRect.top - 0.5}px`;
     rowDragPreview.style.height = `${cellRect.height}px`;
     this.host.append(rowDragPreview);
@@ -485,7 +505,18 @@ export class SelectionController implements ReactiveController {
     }
     const offsets = domToOffsets(this.host, 'tr', 'td');
     if (!offsets) return;
-    const startX = event.clientX;
+    // RTL columns run right to left: select in mirrored (negated) x.
+    const rtl = isRtl(this.host);
+    if (rtl) {
+      const firstRowCells = this.host
+        .querySelector('tr')
+        ?.querySelectorAll('td');
+      offsets.columns = Array.from(firstRowCells ?? []).flatMap((td, index) => {
+        const rect = td.getBoundingClientRect();
+        return index === 0 ? [-rect.right, -rect.left] : [-rect.left];
+      });
+    }
+    const startX = rtl ? -event.clientX : event.clientX;
     const startY = event.clientY;
     let selected = false;
     const initCell = target.closest('affine-table-cell');
@@ -500,7 +531,7 @@ export class SelectionController implements ReactiveController {
           return;
         }
         selected = true;
-        const endX = event.clientX;
+        const endX = rtl ? -event.clientX : event.clientX;
         const endY = event.clientY;
         const [left, right] = startX > endX ? [endX, startX] : [startX, endX];
         const [top, bottom] = startY > endY ? [endY, startY] : [startY, endY];

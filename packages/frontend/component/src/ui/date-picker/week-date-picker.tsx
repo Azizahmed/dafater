@@ -1,4 +1,6 @@
+import { useI18n } from '@affine/i18n';
 import { ArrowLeftSmallIcon, ArrowRightSmallIcon } from '@blocksuite/icons/rc';
+import { useDirection } from '@radix-ui/react-direction';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import type { ForwardedRef, HTMLAttributes } from 'react';
@@ -13,6 +15,7 @@ import {
   useState,
 } from 'react';
 
+import { mirrorInRtl } from '../../styles';
 import { observeResize } from '../../utils';
 import { IconButton } from '../button';
 import * as styles from './week-date-picker.css';
@@ -31,10 +34,15 @@ export interface WeekDatePickerProps extends Omit<
   handleRef?: ForwardedRef<WeekDatePickerHandle>;
 }
 
-// TODO(catsjuice): i18n
-const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-// const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
 const format = 'YYYY-MM-DD';
+
+/** Localised weekday names, Sunday first (2023-01-01 was a Sunday). */
+function weekdayNames(language: string, width: 'short' | 'narrow') {
+  const formatter = new Intl.DateTimeFormat(language, { weekday: width });
+  return Array.from({ length: 7 }, (_, i) =>
+    formatter.format(new Date(2023, 0, 1 + i))
+  );
+}
 
 export const WeekDatePicker = memo(function WeekDatePicker({
   value,
@@ -46,6 +54,16 @@ export const WeekDatePicker = memo(function WeekDatePicker({
   const weekRef = useRef<HTMLDivElement | null>(null);
 
   const [cursor, setCursor] = useState(dayjs(value));
+  const i18n = useI18n();
+  const language = i18n.language;
+  const dir = useDirection();
+  const weekdays = useMemo(
+    () => ({
+      short: weekdayNames(language, 'short'),
+      narrow: weekdayNames(language, 'narrow'),
+    }),
+    [language]
+  );
   const [dense, setDense] = useState(false);
   const [viewPortSize, setViewPortSize] = useState(7);
 
@@ -151,7 +169,9 @@ export const WeekDatePicker = memo(function WeekDatePicker({
       if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
       e.preventDefault();
       e.stopPropagation();
-      setCursor(cursor => cursor.add(e.key === 'ArrowLeft' ? -1 : 1, 'day'));
+      // Arrow keys move visually: in RTL, the earlier day is on the right.
+      const backward = dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft';
+      setCursor(cursor => cursor.add(e.key === backward ? -1 : 1, 'day'));
       setTimeout(focusCursorCell);
     };
 
@@ -160,17 +180,18 @@ export const WeekDatePicker = memo(function WeekDatePicker({
     return () => {
       el.removeEventListener('keydown', onKeyDown);
     };
-  }, [focusCursorCell, onNext, onPrev]);
+  }, [dir, focusCursorCell, onNext, onPrev]);
 
   return (
     <div className={clsx(styles.weekDatePicker, className)} {...attrs}>
       <IconButton onClick={onPrev} data-testid="week-picker-prev">
-        <ArrowLeftSmallIcon />
+        <ArrowLeftSmallIcon className={mirrorInRtl} />
       </IconButton>
 
       <div ref={weekRef} className={styles.weekDatePickerContent}>
         {displayDays.map(day => (
           <Cell
+            weekdays={weekdays}
             key={day.toISOString()}
             dense={dense}
             value={value}
@@ -182,7 +203,7 @@ export const WeekDatePicker = memo(function WeekDatePicker({
       </div>
 
       <IconButton onClick={onNext} data-testid="week-picker-next">
-        <ArrowRightSmallIcon />
+        <ArrowRightSmallIcon className={mirrorInRtl} />
       </IconButton>
     </div>
   );
@@ -194,14 +215,15 @@ interface CellProps {
   cursor: dayjs.Dayjs;
   value?: string;
   onClick: (day: dayjs.Dayjs) => void;
+  weekdays: { short: string[]; narrow: string[] };
 }
-const Cell = ({ day, dense, value, cursor, onClick }: CellProps) => {
+const Cell = ({ day, dense, value, cursor, onClick, weekdays }: CellProps) => {
   const isActive = day.format(format) === value;
   const isCurrentMonth = day.month() === cursor.month();
   const isToday = day.isSame(dayjs(), 'day');
 
   const dayIndex = day.day();
-  const label = weekDays[dayIndex];
+  const label = (dense ? weekdays.narrow : weekdays.short)[dayIndex];
 
   return (
     <button
@@ -216,9 +238,7 @@ const Cell = ({ day, dense, value, cursor, onClick }: CellProps) => {
       className={styles.dayCell}
       onClick={() => onClick(day)}
     >
-      <div className={styles.dayCellWeek}>
-        {dense ? label.slice(0, 1) : label}
-      </div>
+      <div className={styles.dayCellWeek}>{label}</div>
       <div className={styles.dayCellDate}>{day.format('D')}</div>
     </button>
   );

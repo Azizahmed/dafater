@@ -87,7 +87,7 @@ export const IntegrationTypeGroupHeader = ({
       ? t['com.affine.integration.readwise.name']()
       : groupId
         ? groupId
-        : 'No integrations';
+        : t['com.affine.all-docs.group.no-integrations']();
 
   return (
     <PlainTextDocGroupHeader groupId={groupId} docCount={docCount}>

@@ -6,6 +6,7 @@ import {
   MarkdownAdapter,
 } from '@blocksuite/affine-shared/adapters';
 import { Container } from '@blocksuite/global/di';
+import { t } from '@blocksuite/global/i18n';
 import { sha } from '@blocksuite/global/utils';
 import type {
   DocSnapshot,
@@ -466,7 +467,9 @@ async function planBearBackup({
 
   if (validBundles.length === 0) {
     throw new Error(
-      'No valid Bear textbundles found in the archive. Please select a .bear2bk backup file.'
+      t(
+        'No valid Bear textbundles found in the archive. Please select a .bear2bk backup file.'
+      )
     );
   }
 

@@ -12,7 +12,7 @@ export const fakeWrapper = style({
       width: '100%',
       height: '100%',
       position: 'absolute',
-      left: 0,
+      insetInlineStart: 0,
       top: 0,
       cursor: 'not-allowed',
     },
@@ -44,7 +44,7 @@ export const goUpgrade = style({
   fontSize: cssVar('fontXs'),
   color: cssVarV2('text/emphasis'),
   cursor: 'pointer',
-  marginLeft: '4px',
+  marginInlineStart: '4px',
   display: 'inline',
 });
 
@@ -64,7 +64,9 @@ export const membersFallback = style({
 });
 
 export const memberListItem = style({
-  padding: '0 4px 0 16px',
+  paddingBlock: '0 0',
+  paddingInlineStart: '16px',
+  paddingInlineEnd: '4px',
   height: '58px',
   display: 'flex',
   width: '100%',
@@ -84,8 +86,8 @@ export const memberContainer = style({
   display: 'flex',
   flexDirection: 'column',
   flexShrink: 0,
-  marginLeft: '12px',
-  marginRight: '20px',
+  marginInlineStart: '12px',
+  marginInlineEnd: '20px',
 });
 
 export const roleOrStatus = style({
@@ -144,7 +146,7 @@ export const prefixDot = style({
   width: '5px',
   height: '5px',
   borderRadius: '50%',
-  marginRight: '12px',
+  marginInlineEnd: '12px',
   marginTop: '10px',
 });
 

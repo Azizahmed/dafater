@@ -1,4 +1,5 @@
 import { EnterIcon } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { stopPropagation } from '@blocksuite/affine/shared/utils';
 import {
@@ -74,7 +75,7 @@ export class AISubItemList extends WithDisposable(LitElement) {
             class="menu-item"
             @click=${() => this._handleClick(subItem)}
           >
-            <div class="item-name">${subItem.type}</div>
+            <div class="item-name">${t(subItem.type)}</div>
             <span class="enter-icon">${EnterIcon}</span>
           </div>`
       )}

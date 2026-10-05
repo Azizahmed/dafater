@@ -18,7 +18,7 @@ export const headerContent = style([
 export const headerIcon = style({
   width: 24,
   height: 24,
-  marginRight: 8,
+  marginInlineEnd: 8,
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',

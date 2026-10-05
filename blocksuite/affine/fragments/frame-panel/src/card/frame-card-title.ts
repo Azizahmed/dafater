@@ -34,7 +34,7 @@ const styles = css`
     box-sizing: border-box;
     border-radius: 2px;
     background: var(--affine-black);
-    margin-left: 2px;
+    margin-inline-start: 2px;
 
     color: var(--affine-white);
     text-align: center;

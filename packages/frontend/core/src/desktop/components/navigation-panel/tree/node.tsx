@@ -487,7 +487,7 @@ export const NavigationPanelTreeNode = ({
               <IconButton
                 size="16"
                 data-testid="navigation-panel-tree-node-operation-button"
-                style={{ marginLeft: 4 }}
+                style={{ marginInlineStart: 4 }}
               >
                 <MoreHorizontalIcon />
               </IconButton>

@@ -48,8 +48,8 @@ export const innerContainer = style({
 export const innerBackdrop = style({
   position: 'absolute',
   top: 0,
-  left: 0,
-  right: 0,
+  insetInlineStart: 0,
+  insetInlineEnd: 0,
   height: '100%',
   opacity: 0,
   transition: 'all 0.2s',
@@ -113,7 +113,7 @@ export const tagListItem = style([
 ]);
 export const showMoreTag = style({
   fontSize: cssVar('fontH5'),
-  right: 0,
+  insetInlineEnd: 0,
   position: 'sticky',
   display: 'inline-flex',
 });

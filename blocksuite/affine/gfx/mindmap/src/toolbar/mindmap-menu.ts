@@ -13,6 +13,7 @@ import {
 } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { ErrorCode } from '@blocksuite/global/exceptions';
 import type { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher } from '@blocksuite/global/lit';
 import type { BlockStdScope } from '@blocksuite/std';
 import { modelContext, stdContext } from '@blocksuite/std';
@@ -173,7 +174,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
       </button>
       <affine-tooltip tip-position="top" .offset=${12}>
         <affine-tooltip-content-with-shortcut
-          data-tip="${'Support import of FreeMind,OPML.'}"
+          data-tip="${t('Support import of FreeMind,OPML.')}"
         ></affine-tooltip-content-with-shortcut>
       </affine-tooltip>
     </div>`;
@@ -205,7 +206,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
           other: 'failed',
           module: 'toolbar',
         });
-        toast(this.edgeless.host, 'Import failed, please try again');
+        toast(this.edgeless.host, t('Import failed, please try again'));
         console.error(e);
       })
       .finally(() => {
@@ -305,7 +306,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
           </button>
           <affine-tooltip tip-position="top" .offset=${12}>
             <affine-tooltip-content-with-shortcut
-              data-tip="${'Add media'}"
+              data-tip="${t('Add media')}"
             ></affine-tooltip-content-with-shortcut>
           </affine-tooltip>
         </div>
@@ -338,7 +339,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
           </button>
           <affine-tooltip tip-position="top" .offset=${12}>
             <affine-tooltip-content-with-shortcut
-              data-tip="${'Edgeless Text'}"
+              data-tip="${t('Edgeless Text')}"
               data-shortcup="${'T'}"
             ></affine-tooltip-content-with-shortcut>
           </affine-tooltip>
@@ -386,7 +387,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
               </button>
               <affine-tooltip tip-position="top" .offset=${12}>
                 <affine-tooltip-content-with-shortcut
-                  data-tip="${'Mind Map'}"
+                  data-tip="${t('Mind Map')}"
                   data-shortcup="${'M'}"
                 ></affine-tooltip-content-with-shortcut>
               </affine-tooltip>

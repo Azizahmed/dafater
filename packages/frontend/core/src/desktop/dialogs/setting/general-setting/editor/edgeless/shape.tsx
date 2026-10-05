@@ -18,7 +18,6 @@ import {
   FontFamily,
   FontFamilyMap,
   FontStyle,
-  FontWeightMap,
   getShapeName,
   ShapeStyle,
   ShapeType,
@@ -38,7 +37,12 @@ import {
   settingWrapper,
   shapeIndicator,
 } from '../style.css';
-import { sortedFontWeightEntries, usePalettes } from '../utils';
+import {
+  getFontStyleLabel,
+  getFontWeightLabel,
+  sortedFontWeightEntries,
+  usePalettes,
+} from '../utils';
 import type { DocName } from './docs';
 import { Point } from './point';
 import { EdgelessSnapshot } from './snapshot';
@@ -218,7 +222,7 @@ export const ShapeSettings = () => {
 
   const fillColorItems = useMemo(() => {
     const { fillColor } = settings[`shape:${currentShape}`];
-    return fillColorPalettes.map(({ key, value, resolvedValue }) => {
+    return fillColorPalettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set(`shape:${currentShape}`, { fillColor: value });
       };
@@ -230,7 +234,7 @@ export const ShapeSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -238,7 +242,7 @@ export const ShapeSettings = () => {
 
   const strokeColorItems = useMemo(() => {
     const { strokeColor } = settings[`shape:${currentShape}`];
-    return strokeColorPalettes.map(({ key, value, resolvedValue }) => {
+    return strokeColorPalettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set(`shape:${currentShape}`, { strokeColor: value });
       };
@@ -250,7 +254,7 @@ export const ShapeSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -290,11 +294,11 @@ export const ShapeSettings = () => {
       const isSelected = fontStyle === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getFontStyleLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings, currentShape]);
+  }, [editorSetting, settings, currentShape, t]);
 
   const fontWeightItems = useMemo(() => {
     const { fontWeight } = settings[`shape:${currentShape}`];
@@ -305,11 +309,11 @@ export const ShapeSettings = () => {
       const isSelected = fontWeight === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getFontWeightLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings, currentShape]);
+  }, [editorSetting, settings, currentShape, t]);
 
   const fontSizeItems = useMemo(() => {
     const { fontSize } = settings[`shape:${currentShape}`];
@@ -328,7 +332,7 @@ export const ShapeSettings = () => {
 
   const textColorItems = useMemo(() => {
     const { color } = settings[`shape:${currentShape}`];
-    return textColorPalettes.map(({ key, value, resolvedValue }) => {
+    return textColorPalettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set(`shape:${currentShape}`, { color: value });
       };
@@ -340,7 +344,7 @@ export const ShapeSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -411,7 +415,7 @@ export const ShapeSettings = () => {
           onChange={setCurrentDoc}
           style={{
             position: 'absolute',
-            right: '10px',
+            insetInlineEnd: '10px',
             bottom: '10px',
           }}
           className={preViewLabelWrapper}
@@ -455,7 +459,7 @@ export const ShapeSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={fillColor.resolvedValue} />}
               >
-                {fillColor.key}
+                {fillColor.label}
               </MenuTrigger>
             }
           />
@@ -475,7 +479,7 @@ export const ShapeSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={strokeColor.resolvedValue} />}
               >
-                {strokeColor.key}
+                {strokeColor.label}
               </MenuTrigger>
             }
           />
@@ -525,7 +529,7 @@ export const ShapeSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={textColor.resolvedValue} />}
               >
-                {textColor.key}
+                {textColor.label}
               </MenuTrigger>
             }
           />
@@ -571,7 +575,10 @@ export const ShapeSettings = () => {
           items={fontStyleItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {settings[`shape:${currentShape}`].fontStyle}
+              {getFontStyleLabel(
+                t,
+                settings[`shape:${currentShape}`].fontStyle
+              )}
             </MenuTrigger>
           }
         />
@@ -586,7 +593,10 @@ export const ShapeSettings = () => {
           items={fontWeightItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {FontWeightMap[settings[`shape:${currentShape}`].fontWeight]}
+              {getFontWeightLabel(
+                t,
+                settings[`shape:${currentShape}`].fontWeight
+              )}
             </MenuTrigger>
           }
         />

@@ -1,4 +1,5 @@
 import { clamp } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { isSameDay, isSameMonth, isToday } from 'date-fns';
 import {
@@ -31,6 +32,26 @@ const months = [
   'Nov',
   'Dec',
 ];
+
+/**
+ * Weekday and month names in the document language. English keeps the
+ * compact upstream labels.
+ */
+function localeNames() {
+  const lang = document.documentElement.lang;
+  if (!lang || lang.startsWith('en')) return { days, months };
+  try {
+    const weekday = new Intl.DateTimeFormat(lang, { weekday: 'narrow' });
+    const month = new Intl.DateTimeFormat(lang, { month: 'short' });
+    return {
+      // 2023-01-01 is a Sunday
+      days: days.map((_, i) => weekday.format(new Date(2023, 0, 1 + i))),
+      months: months.map((_, i) => month.format(new Date(2023, i, 1))),
+    };
+  } catch {
+    return { days, months };
+  }
+}
 
 export interface DateCell {
   date: Date;
@@ -89,7 +110,7 @@ export class DatePicker extends WithDisposable(LitElement) {
   }
 
   get dayLabel() {
-    return days[this.day];
+    return localeNames().days[this.day];
   }
 
   get minHeight() {
@@ -102,7 +123,7 @@ export class DatePicker extends WithDisposable(LitElement) {
   }
 
   get monthLabel() {
-    return months[this.month];
+    return localeNames().months[this.month];
   }
 
   get year() {
@@ -159,13 +180,13 @@ export class DatePicker extends WithDisposable(LitElement) {
           () => this._moveMonth(1),
           html`<button
             tabindex="0"
-            aria-label="today"
+            aria-label=${t('today')}
             class="action-label interactive today"
             @click=${() => {
               this._onChange(new Date());
             }}
           >
-            <span>TODAY</span>
+            <span>${t('TODAY')}</span>
           </button>`
         )}
       </div>
@@ -183,11 +204,11 @@ export class DatePicker extends WithDisposable(LitElement) {
           ? html`<div class="date-picker-footer">
               <button
                 tabindex="0"
-                aria-label="clear"
+                aria-label=${t('clear')}
                 class="footer-button interactive"
                 @click=${() => this.onClear?.()}
               >
-                Clear
+                ${t('Clear')}
               </button>
             </div>`
           : nothing
@@ -197,7 +218,7 @@ export class DatePicker extends WithDisposable(LitElement) {
   /** Week header */
   private _dayHeaderRenderer() {
     return html`<div class="days-header">
-      ${days.map(day => html`<div class="date-cell">${day}</div>`)}
+      ${localeNames().days.map(day => html`<div class="date-cell">${day}</div>`)}
     </div>`;
   }
 
@@ -259,7 +280,7 @@ export class DatePicker extends WithDisposable(LitElement) {
         )}
       </div>
       <div class="date-picker-month">
-        ${months.map((month, index) => {
+        ${localeNames().months.map((month, index) => {
           const isActive = this.value
             ? isSameMonth(
                 this.value,
@@ -319,7 +340,7 @@ export class DatePicker extends WithDisposable(LitElement) {
     });
     return html`<div class=${classes}>
       <button
-        aria-label="previous month"
+        aria-label=${t('previous month')}
         class="date-picker-small-action interactive left"
         @click=${onPrev}
         ?disabled=${prevDisable}
@@ -328,7 +349,7 @@ export class DatePicker extends WithDisposable(LitElement) {
       </button>
       ${slot ?? nothing}
       <button
-        aria-label="next month"
+        aria-label=${t('next month')}
         class="date-picker-small-action interactive right"
         @click=${onNext}
         ?disabled=${nextDisable}
@@ -420,12 +441,16 @@ export class DatePicker extends WithDisposable(LitElement) {
           'ArrowUp',
           'ArrowDown',
         ]);
+        // Horizontal arrows follow the reading direction.
+        const rtl = getComputedStyle(this).direction === 'rtl';
+        const prevKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+        const nextKey = rtl ? 'ArrowLeft' : 'ArrowRight';
         if (directions.has(e.key) && this.isDateCellFocused()) {
           e.preventDefault();
 
-          if (e.key === 'ArrowLeft') {
+          if (e.key === prevKey) {
             this._cursor.setDate(this._cursor.getDate() - 1);
-          } else if (e.key === 'ArrowRight') {
+          } else if (e.key === nextKey) {
             this._cursor.setDate(this._cursor.getDate() + 1);
           } else if (e.key === 'ArrowUp') {
             this._cursor.setDate(this._cursor.getDate() - 7);
@@ -439,9 +464,9 @@ export class DatePicker extends WithDisposable(LitElement) {
 
         if (directions.has(e.key) && this.isMonthCellFocused()) {
           e.preventDefault();
-          if (e.key === 'ArrowLeft') {
+          if (e.key === prevKey) {
             this._monthCursor = (this._monthCursor - 1 + 12) % 12;
-          } else if (e.key === 'ArrowRight') {
+          } else if (e.key === nextKey) {
             this._monthCursor = (this._monthCursor + 1) % 12;
           } else if (e.key === 'ArrowUp') {
             this._monthCursor = (this._monthCursor - 3 + 12) % 12;
@@ -453,9 +478,9 @@ export class DatePicker extends WithDisposable(LitElement) {
 
         if (directions.has(e.key) && this.isYearCellFocused()) {
           e.preventDefault();
-          if (e.key === 'ArrowLeft') {
+          if (e.key === prevKey) {
             this._modeDecade(-1);
-          } else if (e.key === 'ArrowRight') {
+          } else if (e.key === nextKey) {
             this._modeDecade(1);
           } else if (e.key === 'ArrowUp') {
             this._modeDecade(-3);

@@ -2,6 +2,7 @@ import type {
   MeetingSummaryV2Type,
   NormalizedTranscriptSegmentType,
 } from '@affine/graphql';
+import { I18n } from '@affine/i18n';
 
 import type { TranscriptionResult } from './types';
 
@@ -38,9 +39,19 @@ export function summaryJsonToMarkdown(
 
   return [
     ...summaryJson.keyPoints.map(item => `- ${item}`),
-    ...formatSection('Decisions', summaryJson.decisions),
-    ...formatSection('Open Questions', summaryJson.openQuestions),
-    ...formatSection('Blockers', summaryJson.blockers),
+    // Section headings become doc content, written in the active language.
+    ...formatSection(
+      I18n['com.affine.audio.summary.decisions'](),
+      summaryJson.decisions
+    ),
+    ...formatSection(
+      I18n['com.affine.audio.summary.open-questions'](),
+      summaryJson.openQuestions
+    ),
+    ...formatSection(
+      I18n['com.affine.audio.summary.blockers'](),
+      summaryJson.blockers
+    ),
   ]
     .join('\n')
     .trim();

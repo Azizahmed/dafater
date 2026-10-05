@@ -1,3 +1,4 @@
+import { useI18n } from '@affine/i18n';
 import { SearchIcon } from '@blocksuite/icons/rc';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import { type KeyboardEvent, useCallback, useState } from 'react';
@@ -25,6 +26,7 @@ export const EmojiPicker = ({
 }: {
   onSelect?: (emoji: string) => void;
 }) => {
+  const t = useI18n();
   const [keyword, setKeyword] = useState<string>('');
 
   const [skin, setSkin] = useState<number | undefined>(undefined);
@@ -54,13 +56,13 @@ export const EmojiPicker = ({
           onKeyDown={handleSearchKeyDown}
           className={pickerStyles.searchInput}
           preFix={
-            <div style={{ marginLeft: 10, lineHeight: 0 }}>
+            <div style={{ marginInlineStart: 10, lineHeight: 0 }}>
               <SearchIcon
                 style={{ color: cssVarV2.icon.primary, fontSize: 16 }}
               />
             </div>
           }
-          placeholder="Filter..."
+          placeholder={t['com.affine.icon-picker.filter']()}
         />
         <Menu
           contentOptions={{

@@ -61,7 +61,7 @@ export const sectionButton = style([
     padding: 0,
     background: 'transparent',
     color: 'inherit',
-    textAlign: 'left',
+    textAlign: 'start',
   },
 ]);
 

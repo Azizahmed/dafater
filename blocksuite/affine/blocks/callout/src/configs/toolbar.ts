@@ -13,6 +13,7 @@ import {
   type ToolbarModuleConfig,
   ToolbarModuleExtension,
 } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import { DeleteIcon, PaletteIcon, SmileIcon } from '@blocksuite/icons/lit';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
 import type { ExtensionType } from '@blocksuite/store';
@@ -34,6 +35,29 @@ const colors = [
   'purple',
   'grey',
 ] as const;
+
+const backgroundColorName = (color: (typeof colors)[number]) => {
+  switch (color) {
+    case 'default':
+      return t('Default Background');
+    case 'red':
+      return t('Red Background');
+    case 'orange':
+      return t('Orange Background');
+    case 'yellow':
+      return t('Yellow Background');
+    case 'green':
+      return t('Green Background');
+    case 'teal':
+      return t('Teal Background');
+    case 'blue':
+      return t('Blue Background');
+    case 'purple':
+      return t('Purple Background');
+    case 'grey':
+      return t('Grey Background');
+  }
+};
 
 const backgroundColorAction = {
   id: 'background-color',
@@ -57,20 +81,20 @@ const backgroundColorAction = {
         .button=${html`
           <editor-icon-button
             aria-label="background"
-            .tooltip=${'Background Color'}
+            .tooltip=${t('Background Color')}
           >
             ${PaletteIcon()} ${EditorChevronDown}
           </editor-icon-button>
         `}
       >
         <div data-size="large" data-orientation="vertical">
-          <div class="highlight-heading">Background</div>
+          <div class="highlight-heading">${t('Background')}</div>
           ${repeat(colors, color => {
             const isDefault = color === 'default';
             const value = isDefault
               ? cssVarV2.block.callout.background.grey
               : `var(--affine-text-highlight-${color})`;
-            const displayName = `${color} Background`;
+            const displayName = backgroundColorName(color);
 
             return html`
               <editor-menu-action
@@ -153,7 +177,7 @@ const iconPickerAction = {
     return html`
       <editor-icon-button
         aria-label="icon-picker"
-        .tooltip=${'Change Icon'}
+        .tooltip=${t('Change Icon')}
         @click=${handleIconPickerClick}
       >
         ${SmileIcon()} ${EditorChevronDown}

@@ -12,6 +12,7 @@ import {
   ThemeProvider,
 } from '@blocksuite/affine-shared/services';
 import type { ColorEvent } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { StyleGeneralIcon, StyleScribbleIcon } from '@blocksuite/icons/lit';
 import type { BlockComponent } from '@blocksuite/std';
@@ -143,7 +144,7 @@ export class EdgelessShapeMenu extends SignalWatcher(
               () => html`
                 <div class="shape-style-container">
                   <edgeless-tool-icon-button
-                    .tooltip=${'General'}
+                    .tooltip=${t('General')}
                     .active=${shapeStyle === ShapeStyle.General}
                     .activeMode=${'background'}
                     .iconSize=${'20px'}
@@ -154,7 +155,7 @@ export class EdgelessShapeMenu extends SignalWatcher(
                     ${StyleGeneralIcon()}
                   </edgeless-tool-icon-button>
                   <edgeless-tool-icon-button
-                    .tooltip=${'Scribbled'}
+                    .tooltip=${t('Scribbled')}
                     .active=${shapeStyle === ShapeStyle.Scribbled}
                     .activeMode=${'background'}
                     .iconSize=${'20px'}

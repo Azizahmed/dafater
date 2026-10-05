@@ -319,10 +319,14 @@ export class DndContext {
       const run = (delta: number) => {
         if (leftDiff) {
           const newScrollLeft = node.scrollLeft + moveDistance(leftDiff, delta);
-          if (newScrollLeft < 0) {
-            node.scrollLeft = 0;
-          } else if (newScrollLeft > max.x) {
-            node.scrollLeft = max.x;
+          // scrollLeft runs from -max to 0 in a right-to-left container.
+          const rtl = getComputedStyle(node).direction === 'rtl';
+          const minLeft = rtl ? -max.x : 0;
+          const maxLeft = rtl ? 0 : max.x;
+          if (newScrollLeft < minLeft) {
+            node.scrollLeft = minLeft;
+          } else if (newScrollLeft > maxLeft) {
+            node.scrollLeft = maxLeft;
           } else {
             node.scrollLeft = newScrollLeft;
           }

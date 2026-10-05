@@ -15,6 +15,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { matchModels } from '@blocksuite/affine-shared/utils';
 import { BlockSuiteError, ErrorCode } from '@blocksuite/global/exceptions';
+import { t } from '@blocksuite/global/i18n';
 import { BlockSelection } from '@blocksuite/std';
 import { flip, offset, shift } from '@floating-ui/dom';
 import {
@@ -134,8 +135,8 @@ export class EmbedIframeBlockComponent extends CaptionedBlockComponent<EmbedIfra
     const link = this.model.props.url;
     if (!link) {
       this.notificationService?.notify({
-        title: 'No link found',
-        message: 'Please set a link to the block',
+        title: t('No link found'),
+        message: t('Please set a link to the block'),
         accent: 'warning',
         onClose: function (): void {},
       });
@@ -350,7 +351,7 @@ export class EmbedIframeBlockComponent extends CaptionedBlockComponent<EmbedIfra
     const { iframeUrl } = this.model.props;
     if (!iframeUrl || !this._isIframeUrlAllowed(iframeUrl)) {
       return html`<embed-iframe-error-card
-        .error=${new Error('Invalid iframe URL')}
+        .error=${new Error(t('Invalid iframe URL'))}
         .model=${this.model}
         .onRetry=${this._handleRetry}
         .std=${this.std}

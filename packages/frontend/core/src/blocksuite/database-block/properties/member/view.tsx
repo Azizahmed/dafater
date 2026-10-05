@@ -6,6 +6,7 @@ import {
   type DataViewCellLifeCycle,
   EditorHostKey,
 } from '@blocksuite/affine/blocks/database';
+import { t } from '@blocksuite/affine/global/i18n';
 import {
   UserListProvider,
   type UserListService,
@@ -96,7 +97,7 @@ const MemberCellComponent: ForwardRefRenderFunction<
     if (!manager.userService || !manager.userListService) {
       return (
         <div className={styles.memberPopoverContainer}>
-          member list only works in cloud
+          {t('member list only works in cloud')}
         </div>
       );
     }
@@ -162,7 +163,7 @@ const MemberPreview = ({
         size={24}
       />
       <div className={styles.memberName}>
-        {userInfo.removed ? 'Deleted user' : userInfo.name || 'Unnamed'}
+        {userInfo.removed ? t('Deleted user') : userInfo.name || t('Unnamed')}
       </div>
     </div>
   );

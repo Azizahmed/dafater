@@ -10,6 +10,7 @@ import type {
 } from '@blocksuite/affine-model';
 import { DocDisplayMetaProvider } from '@blocksuite/affine-shared/services';
 import type { AffineTextAttributes } from '@blocksuite/affine-shared/types';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { noop } from '@blocksuite/global/utils';
 import { LinkedPageIcon } from '@blocksuite/icons/lit';
@@ -61,7 +62,7 @@ export class OutlineBlockPreview extends SignalWatcher(
           ? LinkedPageIcon({ width: '1.1em', height: '1.1em' })
           : this._docDisplayMetaService.icon(refMeta.id).value;
         const title = unavailable
-          ? 'Deleted doc'
+          ? t('Deleted doc')
           : this._docDisplayMetaService.title(refMeta.id).value;
 
         return html`<span
@@ -76,7 +77,7 @@ export class OutlineBlockPreview extends SignalWatcher(
               [styles.linkedDocText]: true,
               [styles.linkedDocTextUnavailable]: unavailable,
             })}
-            >${title.length ? title : 'Untitled'}</span
+            >${title.length ? title : t('Untitled')}</span
           ></span
         >`;
       } else {
@@ -151,7 +152,9 @@ export class OutlineBlockPreview extends SignalWatcher(
         return html`
           <span class="${styles.text} ${styles.textGeneral}"
             >${
-              block.props.title || block.props.url || placeholderMap['bookmark']
+              block.props.title ||
+              block.props.url ||
+              t(placeholderMap['bookmark'])
             }</span
           >
           ${
@@ -166,7 +169,7 @@ export class OutlineBlockPreview extends SignalWatcher(
         assertType<CodeBlockModel>(block);
         return html`
           <span class="${styles.text} ${styles.textGeneral}"
-            >${block.props.language ?? placeholderMap['code']}</span
+            >${block.props.language ?? t(placeholderMap['code'])}</span
           >
           ${
             showPreviewIcon
@@ -181,7 +184,7 @@ export class OutlineBlockPreview extends SignalWatcher(
             >${
               block.props.title.toString().length
                 ? block.props.title.toString()
-                : placeholderMap['database']
+                : t(placeholderMap['database'])
             }</span
           >
           ${
@@ -197,7 +200,7 @@ export class OutlineBlockPreview extends SignalWatcher(
             >${
               block.props.caption?.length
                 ? block.props.caption
-                : placeholderMap['image']
+                : t(placeholderMap['image'])
             }</span
           >
           ${
@@ -213,7 +216,7 @@ export class OutlineBlockPreview extends SignalWatcher(
             >${
               block.props.name?.length
                 ? block.props.name
-                : placeholderMap['attachment']
+                : t(placeholderMap['attachment'])
             }</span
           >
           ${

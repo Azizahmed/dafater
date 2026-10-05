@@ -3,6 +3,7 @@ import {
   NotionHtmlAdapter,
 } from '@blocksuite/affine-shared/adapters';
 import { Container } from '@blocksuite/global/di';
+import { t } from '@blocksuite/global/i18n';
 import { sha } from '@blocksuite/global/utils';
 import {
   type ExtensionType,
@@ -310,8 +311,9 @@ async function planNotionHtmlZip({
       if (index === 0 && fileName.endsWith('.csv')) {
         warnings.push({
           code: 'notion-csv-export',
-          message:
-            'The imported Notion export appears to be CSV instead of HTML.',
+          message: t(
+            'The imported Notion export appears to be CSV instead of HTML.'
+          ),
           sourcePath: path,
         });
         continue;

@@ -1,4 +1,5 @@
 import { createIdentifier } from '@blocksuite/global/di';
+import { t } from '@blocksuite/global/i18n';
 import { CenterPeekIcon, ExpandFullIcon } from '@blocksuite/icons/lit';
 import { type ExtensionType } from '@blocksuite/store';
 import type { TemplateResult } from 'lit';
@@ -33,12 +34,16 @@ const defaultConfig: OpenDocConfig = {
   items: [
     {
       type: 'open-in-active-view',
-      label: 'Open this doc',
+      get label() {
+        return t('Open this doc');
+      },
       icon: ExpandFullIcon(),
     },
     {
       type: 'open-in-center-peek',
-      label: 'Open in center peek',
+      get label() {
+        return t('Open in center peek');
+      },
       icon: CenterPeekIcon(),
     },
   ],

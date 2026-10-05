@@ -46,6 +46,6 @@ export const migrationBackgroundCover = style({
   padding: '16px',
   marginTop: '-48px',
   objectFit: 'cover',
-  float: 'right',
+  float: 'inline-end',
   userSelect: 'none',
 });

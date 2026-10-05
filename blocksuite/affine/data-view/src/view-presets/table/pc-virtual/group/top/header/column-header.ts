@@ -3,6 +3,7 @@ import {
   popMenu,
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { PlusIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -30,18 +31,18 @@ export class VirtualTableHeader extends SignalWatcher(
     popMenu(popupTargetFromElement(ele), {
       options: {
         title: {
-          text: 'Property type',
+          text: t('Property type'),
         },
         items: [
           menu.group({
             items: this.tableViewManager.propertyMetas$.value.map(config => {
               return menu.action({
-                name: config.config.name,
+                name: t(config.config.name),
                 prefix: renderUniLit(config.renderer.icon),
                 select: () => {
                   const id = this.tableViewManager.propertyAdd('end', {
                     type: config.type,
-                    name: config.config.name,
+                    name: t(config.config.name),
                   });
                   if (id) {
                     requestAnimationFrame(() => {

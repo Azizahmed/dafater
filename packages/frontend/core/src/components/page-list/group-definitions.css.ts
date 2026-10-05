@@ -11,8 +11,8 @@ export const tagIcon = style({
   width: '8px',
   height: '8px',
   borderRadius: '50%',
-  marginLeft: '4px',
-  marginRight: '6px',
+  marginInlineStart: '4px',
+  marginInlineEnd: '6px',
 });
 
 export const groupLabel = style({
@@ -25,17 +25,17 @@ export const pageCount = style({
   fontSize: cssVar('fontBase'),
   lineHeight: '1.6em',
   color: cssVar('textSecondaryColor'),
-  marginRight: '12px',
+  marginInlineEnd: '12px',
 });
 
 export const favouritedIcon = style({
   color: cssVar('primaryColor'),
-  marginRight: '6px',
+  marginInlineEnd: '6px',
   fontSize: '16px',
 });
 
 export const notFavouritedIcon = style({
   color: cssVar('iconColor'),
-  marginRight: '6px',
+  marginInlineEnd: '6px',
   fontSize: '16px',
 });

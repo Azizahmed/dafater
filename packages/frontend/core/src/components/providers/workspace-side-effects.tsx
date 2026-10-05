@@ -17,10 +17,7 @@ import {
   GraphQLService,
   RealtimeService,
 } from '@affine/core/modules/cloud';
-import {
-  GlobalDialogService,
-  WorkspaceDialogService,
-} from '@affine/core/modules/dialogs';
+import { GlobalDialogService } from '@affine/core/modules/dialogs';
 import { DocsService } from '@affine/core/modules/doc';
 import { EditorSettingService } from '@affine/core/modules/editor-setting';
 import { useRegisterNavigationCommands } from '@affine/core/modules/navigation/view/use-register-navigation-commands';
@@ -32,7 +29,6 @@ import {
   WorkspaceService,
 } from '@affine/core/modules/workspace';
 import { useI18n } from '@affine/i18n';
-import track from '@affine/track';
 import type { DocMode } from '@blocksuite/affine/model';
 import { ZipTransformer } from '@blocksuite/affine/widgets/linked-doc';
 import {
@@ -125,20 +121,9 @@ export const WorkspaceSideEffects = () => {
     workbench,
   ]);
 
-  const workspaceDialogService = useService(WorkspaceDialogService);
   const globalDialogService = useService(GlobalDialogService);
 
-  useEffect(() => {
-    const disposable = AIAppEvents.requestUpgradePlan.subscribe(() => {
-      workspaceDialogService.open('setting', {
-        activeTab: 'billing',
-      });
-      track.$.paywall.aiAction.viewPlans();
-    });
-    return () => {
-      disposable.unsubscribe();
-    };
-  }, [workspaceDialogService]);
+  // Dafater has no plans or payments: `requestUpgradePlan` is a no-op.
 
   const graphqlService = useService(GraphQLService);
   const eventSourceService = useService(EventSourceService);

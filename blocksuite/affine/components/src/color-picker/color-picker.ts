@@ -1,5 +1,6 @@
 import type { Color } from '@blocksuite/affine-model';
 import { on, once, stopPropagation } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { batch, computed, signal } from '@preact/signals-core';
 import { html, LitElement } from 'lit';
@@ -43,6 +44,21 @@ const TABS: NavTab<NavType>[] = [
   { type: 'colors', name: 'Colors' },
   { type: 'custom', name: 'Custom' },
 ];
+
+/**
+ * "Light" / "Dark" are color modes here, not font weights: translated with
+ * their own keys, the English label is kept as is.
+ */
+function modeLabel(type: string, name: string) {
+  const key =
+    type === 'light'
+      ? 'Light color mode'
+      : type === 'dark'
+        ? 'Dark color mode'
+        : name;
+  const text = t(key);
+  return text === key ? name : text;
+}
 
 export class EdgelessColorPicker extends SignalWatcher(
   WithDisposable(LitElement)
@@ -490,7 +506,7 @@ export class EdgelessColorPicker extends SignalWatcher(
                 ?active=${type === this.navType$.value}
                 @click=${() => this.#switchNavTab(type)}
               >
-                ${name}
+                ${t(name)}
               </button>
             `
           )}
@@ -514,7 +530,7 @@ export class EdgelessColorPicker extends SignalWatcher(
                   ${TransparentIcon()}
                   <div class="color"></div>
                 </div>
-                <div>${name}</div>
+                <div>${modeLabel(type, name)}</div>
               </button>
             </div>
           `

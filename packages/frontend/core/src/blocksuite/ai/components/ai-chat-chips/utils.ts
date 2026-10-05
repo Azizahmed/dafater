@@ -1,4 +1,5 @@
 import { LoadingIcon } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { WarningIcon } from '@blocksuite/icons/lit';
 import { type TemplateResult } from 'lit';
 
@@ -22,13 +23,13 @@ export function getChipTooltip(
     return tooltip;
   }
   if (state === 'candidate') {
-    return 'Click to add doc';
+    return t('Click to add doc');
   }
   if (state === 'processing') {
-    return 'Processing...';
+    return t('Processing...');
   }
   if (state === 'failed') {
-    return 'Failed to add to context';
+    return t('Failed to add to context');
   }
   return name;
 }

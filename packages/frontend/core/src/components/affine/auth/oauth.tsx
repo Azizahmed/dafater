@@ -5,6 +5,7 @@ import { AuthService, ServerService } from '@affine/core/modules/cloud';
 import { UrlService } from '@affine/core/modules/url';
 import { UserFriendlyError } from '@affine/error';
 import { OAuthProviderType } from '@affine/graphql';
+import { useI18n } from '@affine/i18n';
 import track from '@affine/track';
 import {
   AppleIcon,
@@ -112,6 +113,7 @@ interface OauthProviderProps {
 }
 
 function OAuthProvider({ onContinue, provider }: OauthProviderProps) {
+  const t = useI18n();
   const { icon } =
     provider in OAuthProviderMap
       ? OAuthProviderMap[provider]
@@ -130,7 +132,7 @@ function OAuthProvider({ onContinue, provider }: OauthProviderProps) {
       prefix={icon}
       onClick={onClick}
     >
-      Continue with {provider}
+      {t['com.affine.auth.sign.oauth.continue-with']({ provider })}
     </Button>
   );
 }

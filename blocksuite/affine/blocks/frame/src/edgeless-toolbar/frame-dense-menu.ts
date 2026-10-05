@@ -1,6 +1,7 @@
 import { DefaultTool } from '@blocksuite/affine-block-surface';
 import { menu } from '@blocksuite/affine-components/context-menu';
 import type { DenseMenuBuilder } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { FrameIcon } from '@blocksuite/icons/lit';
 
 import { EdgelessFrameManagerIdentifier } from '../frame-manager.js';
@@ -9,19 +10,19 @@ import { FrameConfig } from './config.js';
 
 export const buildFrameDenseMenu: DenseMenuBuilder = (edgeless, gfx) =>
   menu.subMenu({
-    name: 'Frame',
+    name: t('Frame'),
     prefix: FrameIcon({ width: '20px', height: '20px' }),
     select: () => gfx.tool.setTool(FrameTool),
     isSelected: gfx.tool.currentToolName$.peek() === 'frame',
     options: {
       items: [
         menu.action({
-          name: 'Custom',
+          name: t('Custom'),
           select: () => gfx.tool.setTool(FrameTool),
         }),
         ...FrameConfig.map(config =>
           menu.action({
-            name: `Slide ${config.name}`,
+            name: t('Slide {ratio}', { ratio: config.name }),
             select: () => {
               const frame = edgeless.std.get(EdgelessFrameManagerIdentifier);
               gfx.tool.setTool(DefaultTool);

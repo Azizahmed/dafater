@@ -15,7 +15,8 @@
     "./types": "./src/types/index.ts",
     "./gfx": "./src/gfx/index.ts",
     "./disposable": "./src/disposable/index.ts",
-    "./lit": "./src/lit/index.ts"
+    "./lit": "./src/lit/index.ts",
+    "./i18n": "./src/i18n/index.ts"
   },
   "typesVersions": {
     "*": {
@@ -42,6 +43,9 @@
       ],
       "lit": [
         "dist/lit/index.d.ts"
+      ],
+      "i18n": [
+        "dist/i18n/index.d.ts"
       ]
     }
   },

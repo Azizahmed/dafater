@@ -158,7 +158,7 @@ export const EdgelessThemeGroupHeader = ({
         ? t['com.affine.themeSettings.dark']()
         : groupId === 'system'
           ? t['com.affine.themeSettings.auto']()
-          : 'Default';
+          : t['com.affine.all-docs.group.default']();
 
   return (
     <PlainTextDocGroupHeader groupId={groupId} docCount={docCount}>

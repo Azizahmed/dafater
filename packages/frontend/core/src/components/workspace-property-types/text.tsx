@@ -278,7 +278,8 @@ export const TextDocListProperty = ({ value }: { value: string }) => {
 };
 
 export const TextGroupHeader = ({ groupId, docCount }: GroupHeaderProps) => {
-  const text = groupId || 'No Text';
+  const t = useI18n();
+  const text = groupId || t['com.affine.all-docs.group.no-text']();
   return (
     <PlainTextDocGroupHeader groupId={groupId} docCount={docCount}>
       {text}

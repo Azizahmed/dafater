@@ -10,6 +10,7 @@ import {
   getPopperPosition,
   getViewportElement,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { MoreHorizontalIcon } from '@blocksuite/icons/lit';
 import { PropTypes, requiredProperties } from '@blocksuite/std';
@@ -136,7 +137,7 @@ export class LinkedDocPopover extends SignalWatcher(
     if (isOverflow && !isExpanded && group.maxDisplay) {
       items = items.concat({
         key: `${group.name} More`,
-        name: resolveSignal(group.overflowText) || 'more',
+        name: resolveSignal(group.overflowText) || t('more'),
         icon: MoreHorizontalIcon({ width: '24px', height: '24px' }),
         action: () => {
           this._expanded.set(group.name, true);
@@ -276,6 +277,9 @@ export class LinkedDocPopover extends SignalWatcher(
       };
     });
 
+    const tooltipPosition =
+      getComputedStyle(this).direction === 'rtl' ? 'left' : 'right';
+
     return html`<div class="linked-doc-popover" style="${style}">
       ${actionGroups
         .filter(
@@ -297,7 +301,7 @@ export class LinkedDocPopover extends SignalWatcher(
               ${group.items.map(({ key, name, icon, action }) => {
                 const tooltip = this._showTooltip
                   ? html`<affine-tooltip
-                      tip-position=${'right'}
+                      tip-position=${tooltipPosition}
                       .tooltipStyle=${css`
                         * {
                           color: ${unsafeCSSVar('white')} !important;

@@ -155,6 +155,7 @@ const Scroller = forwardRef<
 Scroller.displayName = 'Scroller';
 
 const FontMenuItems = ({ onSelect }: { onSelect: (font: string) => void }) => {
+  const t = useI18n();
   const { systemFontFamilyService, editorSettingService } = useServices({
     SystemFontFamilyService,
     EditorSettingService,
@@ -198,7 +199,9 @@ const FontMenuItems = ({ onSelect }: { onSelect: (font: string) => void }) => {
           onKeyDown={onInputKeyDown}
           autoFocus
           className={styles.searchInput}
-          placeholder="Fonts"
+          placeholder={t[
+            'com.affine.settings.editorSettings.general.font-family.custom.search-placeholder'
+          ]()}
         />
       </div>
       <MenuSeparator />
@@ -223,7 +226,11 @@ const FontMenuItems = ({ onSelect }: { onSelect: (font: string) => void }) => {
                 )}
               />
             ) : (
-              <div className={styles.notFound}>No results found.</div>
+              <div className={styles.notFound}>
+                {t[
+                  'com.affine.settings.editorSettings.general.font-family.custom.no-results'
+                ]()}
+              </div>
             )}
           </Scrollable.Viewport>
           <Scrollable.Scrollbar />
@@ -304,7 +311,10 @@ const CustomFontFamilySettings = () => {
         }}
       >
         <MenuTrigger className={styles.menuTrigger} style={{ fontFamily }}>
-          {settings.customFontFamily || 'Select a font'}
+          {settings.customFontFamily ||
+            t[
+              'com.affine.settings.editorSettings.general.font-family.custom.select'
+            ]()}
         </MenuTrigger>
       </Menu>
     </SettingRow>
@@ -674,6 +684,34 @@ const MiddleClickPasteSettings = () => {
   );
 };
 
+const TextDirectionShortcutSettings = () => {
+  const t = useI18n();
+  const editorSettingService = useService(EditorSettingService);
+  const settings = useLiveData(editorSettingService.editorSetting.settings$);
+  const onToggle = useCallback(
+    (checked: boolean) => {
+      editorSettingService.editorSetting.set('textDirectionShortcut', checked);
+    },
+    [editorSettingService.editorSetting]
+  );
+  return (
+    <SettingRow
+      name={t[
+        'com.affine.settings.editorSettings.general.text-direction-shortcut.title'
+      ]()}
+      desc={t[
+        'com.affine.settings.editorSettings.general.text-direction-shortcut.description'
+      ]()}
+    >
+      <Switch
+        data-testid="text-direction-shortcut-trigger"
+        checked={settings.textDirectionShortcut}
+        onChange={onToggle}
+      />
+    </SettingRow>
+  );
+};
+
 const DefaultCodeBlockLineNumberSettings = () => {
   const t = useI18n();
   const editorSettingService = useService(EditorSettingService);
@@ -716,6 +754,7 @@ export const General = () => {
       <NewDocDefaultModeSettings />
       <NewDocDateTitleSettings />
       <DefaultCodeBlockLineNumberSettings />
+      <TextDirectionShortcutSettings />
       {BUILD_CONFIG.isElectron && <SpellCheckSettings />}
       {environment.isLinux && <MiddleClickPasteSettings />}
     </SettingWrapper>

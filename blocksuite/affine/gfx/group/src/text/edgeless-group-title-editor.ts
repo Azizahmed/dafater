@@ -169,6 +169,7 @@ export class EdgelessGroupTitleEditor extends WithDisposable(
       boxShadow: 'var(--affine-active-shadow)',
     });
     return html`<rich-text
+      dir="auto"
       .yText=${this.group.title}
       .enableFormat=${false}
       .enableAutoScrollHorizontally=${false}

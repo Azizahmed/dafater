@@ -56,5 +56,5 @@ export const addGroup = css({
   fontSize: '12px',
   lineHeight: '20px',
   position: 'sticky',
-  left: `${LEFT_TOOL_BAR_WIDTH}px`,
+  insetInlineStart: `${LEFT_TOOL_BAR_WIDTH}px`,
 });

@@ -83,7 +83,7 @@ export class FrameCardTitleEditor extends WithDisposable(ShadowlessElement) {
       fontSize: 'var(--affine-font-sm)',
       lineHeight: '20px',
       position: 'absolute',
-      left: `${this.left}px`,
+      'inset-inline-start': `${this.left}px`,
       top: '0px',
       minWidth: '8px',
       background: 'var(--affine-background-primary-color)',

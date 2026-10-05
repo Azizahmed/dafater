@@ -68,7 +68,7 @@ export const clearLinkStyle = style({
 
 export const editTagWrapper = style({
   position: 'absolute',
-  right: '0',
+  insetInlineEnd: '0',
   width: '100%',
   height: '60px',
   display: 'none',

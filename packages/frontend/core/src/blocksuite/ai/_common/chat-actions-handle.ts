@@ -4,6 +4,7 @@ import {
   getCommonBoundWithRotation,
   type SerializedXYWH,
 } from '@blocksuite/affine/global/gfx';
+import { t } from '@blocksuite/affine/global/i18n';
 import { RefNodeSlotsProvider } from '@blocksuite/affine/inlines/reference';
 import {
   type DocMode,
@@ -196,12 +197,12 @@ export function promptDocTitle(host: EditorHost, autofill?: string) {
   if (!notification) return Promise.resolve(undefined);
 
   return notification.prompt({
-    title: 'Create linked doc',
-    message: 'Enter a title for the new doc.',
-    placeholder: 'Untitled',
+    title: t('Create linked doc'),
+    message: t('Enter a title for the new doc.'),
+    placeholder: t('Untitled'),
     autofill,
-    confirmText: 'Confirm',
-    cancelText: 'Cancel',
+    confirmText: t('Confirm'),
+    cancelText: t('Cancel'),
   });
 }
 
@@ -370,10 +371,11 @@ const SAVE_AS_BLOCK: ChatAction = {
       docModeService.setEditorMode('edgeless' as DocMode);
       // Notify user to switch to edgeless mode
       notificationService?.notify({
-        title: 'Save chat to a block',
+        title: t('Save chat to a block'),
         accent: 'info',
-        message:
-          'This feature is not available in the page editor. Switch to edgeless mode.',
+        message: t(
+          'This feature is not available in the page editor. Switch to edgeless mode.'
+        ),
         onClose: function (): void {},
       });
     }
@@ -428,7 +430,7 @@ const SAVE_AS_BLOCK: ChatAction = {
     } catch (err) {
       console.error(err);
       notificationService?.notify({
-        title: 'Failed to save chat to a block',
+        title: t('Failed to save chat to a block'),
         accent: 'error',
         onClose: function (): void {},
       });

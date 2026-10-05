@@ -1,5 +1,6 @@
 import type { ShapeToolOption } from '@blocksuite/affine-gfx-shape';
 import { ShapeType } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import {
   DiamondIcon,
   EllipseIcon,
@@ -30,35 +31,45 @@ export const ShapeComponentConfig: Config[] = [
     name: ShapeType.Rect,
     generalIcon: SquareIcon(),
     scribbledIcon: ScribbledSquareIcon,
-    tooltip: 'Square',
+    get tooltip() {
+      return t('Square');
+    },
     disabled: false,
   },
   {
     name: ShapeType.Ellipse,
     generalIcon: EllipseIcon(),
     scribbledIcon: ScribbledEllipseIcon,
-    tooltip: 'Ellipse',
+    get tooltip() {
+      return t('Ellipse');
+    },
     disabled: false,
   },
   {
     name: ShapeType.Diamond,
     generalIcon: DiamondIcon(),
     scribbledIcon: ScribbledDiamondIcon,
-    tooltip: 'Diamond',
+    get tooltip() {
+      return t('Diamond');
+    },
     disabled: false,
   },
   {
     name: ShapeType.Triangle,
     generalIcon: TriangleIcon(),
     scribbledIcon: ScribbledTriangleIcon,
-    tooltip: 'Triangle',
+    get tooltip() {
+      return t('Triangle');
+    },
     disabled: false,
   },
   {
     name: 'roundedRect',
     generalIcon: RoundedRectangleIcon(),
     scribbledIcon: ScribbledRoundedRectangleIcon,
-    tooltip: 'Rounded rectangle',
+    get tooltip() {
+      return t('Rounded rectangle');
+    },
     disabled: false,
   },
 ];

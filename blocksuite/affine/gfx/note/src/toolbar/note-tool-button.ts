@@ -3,6 +3,7 @@ import {
   type MenuPopper,
   QuickToolMixin,
 } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { PageIcon } from '@blocksuite/icons/lit';
 import { effect } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
@@ -93,7 +94,7 @@ export class EdgelessNoteToolButton extends QuickToolMixin(LitElement) {
           this._noteMenu
             ? ''
             : html`<affine-tooltip-content-with-shortcut
-                data-tip="${'Note'}"
+                data-tip="${t('Note')}"
                 data-shortcut="${'N'}"
               ></affine-tooltip-content-with-shortcut>`
         }
@@ -118,5 +119,5 @@ export class EdgelessNoteToolButton extends QuickToolMixin(LitElement) {
   accessor childType = 'text';
 
   @state()
-  accessor tip = 'Text';
+  accessor tip = t('Text');
 }

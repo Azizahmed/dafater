@@ -29,6 +29,12 @@ export const skipOnboarding = async (context: BrowserContext) => {
     window.localStorage.setItem('dismissAiOnboarding', 'true');
     window.localStorage.setItem('dismissAiOnboardingEdgeless', 'true');
     window.localStorage.setItem('dismissAiOnboardingLocal', 'true');
+    // Fresh installs start in Arabic (BUILD_CONFIG.defaultLanguage). These
+    // suites assert English UI strings, so they start in English unless a
+    // test already chose a language (the arabase suites opt into Arabic).
+    if (!window.localStorage.getItem('arabase:locale')) {
+      window.localStorage.setItem('arabase:locale', 'en');
+    }
   });
 };
 

@@ -27,7 +27,10 @@ const LanguageMenuContent = memo(function LanguageMenuContent({
             title={lang.name}
             lang={lang.key}
             onSelect={() => onChange(lang.key)}
-            suffix={lang.completeness + '%'}
+            // Only partial translations show their completeness.
+            suffix={
+              lang.completeness < 100 ? lang.completeness + '%' : undefined
+            }
             data-selected={selected}
             className={styles.menuItem}
           >

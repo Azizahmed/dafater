@@ -19,7 +19,8 @@ export const styles = css`
     left: 0;
     top: 0;
     box-sizing: border-box;
-    padding: 8px 4px 8px 8px;
+    padding-block: 8px;
+    padding-inline: 8px 4px;
     width: 280px;
     overflow-y: auto;
     font-family: ${unsafeCSS(baseTheme.fontSansFamily)};
@@ -41,7 +42,7 @@ export const styles = css`
     font-size: var(--affine-font-xs);
     font-weight: 500;
     line-height: var(--affine-line-height);
-    text-align: left;
+    text-align: start;
     color: var(
       --light-textColor-textSecondaryColor,
       var(--textColor-textSecondaryColor, #8e8d91)
@@ -78,6 +79,13 @@ export const styles = css`
   .slash-menu-item.ask-ai {
     color: var(--affine-brand-color);
   }
+  .slash-menu-item .sub-menu-arrow {
+    transform: rotate(-90deg);
+  }
+  :host(:dir(rtl)) .slash-menu-item .sub-menu-arrow {
+    transform: rotate(90deg);
+  }
+
   .slash-menu-item.github .github-icon {
     color: var(--affine-black);
   }
@@ -97,7 +105,7 @@ export const slashItemToolTipStyle = css`
   }
 
   .tooltip-caption {
-    padding-left: 4px;
+    padding-inline-start: 4px;
     color: var(
       --light-textColor-textSecondaryColor,
       var(--textColor-textSecondaryColor, #8e8d91)

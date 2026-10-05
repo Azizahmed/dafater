@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
 import { ShadowlessElement } from '@blocksuite/affine/std';
@@ -35,8 +36,8 @@ export class ToolFailedCard extends WithDisposable(ShadowlessElement) {
         font-size: 14px;
         font-weight: 500;
         line-height: 24px;
-        margin-left: 0px;
-        margin-right: auto;
+        margin-inline-start: 0px;
+        margin-inline-end: auto;
         color: ${unsafeCSSVarV2('button/error')};
         overflow: hidden;
         text-overflow: ellipsis;
@@ -46,7 +47,7 @@ export class ToolFailedCard extends WithDisposable(ShadowlessElement) {
   `;
 
   @property({ attribute: false })
-  accessor name: string = 'Tool calling failed';
+  accessor name: string = t('Tool calling failed');
 
   @property({ attribute: false })
   accessor icon: TemplateResult<1> = ToolIcon();

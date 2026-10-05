@@ -18,40 +18,17 @@ import {
   icoPath,
   platform,
   productName,
+  urlScheme,
 } from './scripts/make-env.js';
 
 const fromBuildIdentifier = utils.fromBuildIdentifier;
 
-const linuxMimeTypes = [`x-scheme-handler/${productName.toLowerCase()}`];
+const linuxMimeTypes = [`x-scheme-handler/${urlScheme}`];
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-const DEFAULT_ELECTRON_LOCALES_KEEP = new Set([
-  'en',
-  'en_US',
-  'en_GB',
-  'zh_CN',
-  'zh_TW',
-  'fr',
-  'es',
-  'es_419',
-  'pl',
-  'de',
-  'ru',
-  'ja',
-  'it',
-  'ca',
-  'da',
-  'hi',
-  'sv',
-  'ur',
-  'ar',
-  'uk',
-  'ko',
-  'pt_BR',
-  'fa',
-  'nb',
-]);
+// Chromium locales shipped with the app: Dafater's languages only.
+const DEFAULT_ELECTRON_LOCALES_KEEP = new Set(['en', 'en_US', 'en_GB', 'ar']);
 
 const getElectronLocalesKeep = () => {
   const raw = process.env.ELECTRON_LOCALES_KEEP?.trim();
@@ -170,7 +147,7 @@ const makers = [
       config: {
         format: 'ULMO',
         icon: icnsPath,
-        name: 'AFFiNE',
+        name: 'Dafater',
         'icon-size': 128,
         background: path.join(
           __dirname,
@@ -349,7 +326,7 @@ export default {
     protocols: [
       {
         name: productName,
-        schemes: [productName.toLowerCase()],
+        schemes: [urlScheme],
       },
     ],
     executableName: productName,
@@ -377,7 +354,7 @@ export default {
     asar: true,
     extendInfo: {
       NSAudioCaptureUsageDescription:
-        'Please allow access in order to capture audio from other apps by AFFiNE.',
+        'Please allow access in order to capture audio from other apps by Dafater.',
     },
   },
   makers,

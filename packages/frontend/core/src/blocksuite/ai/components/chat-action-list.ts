@@ -1,4 +1,5 @@
 import type { CopilotChatHistoryFragment } from '@affine/graphql';
+import { t } from '@blocksuite/affine/global/i18n';
 import type { ImageSelection } from '@blocksuite/affine/shared/selection';
 import type {
   BlockSelection,
@@ -152,7 +153,8 @@ export class ChatActionList extends LitElement {
                 );
                 if (success) {
                   this.notificationService.notify({
-                    title: action.toast,
+                    // Action titles/toasts are static code strings.
+                    title: t(action.toast),
                     accent: 'success',
                     onClose: function (): void {},
                   });
@@ -165,7 +167,7 @@ export class ChatActionList extends LitElement {
                   .toLowerCase()
                   .replaceAll(' ', '-')}"
               >
-                ${action.title}
+                ${t(action.title)}
               </div>
             </div>`;
           }

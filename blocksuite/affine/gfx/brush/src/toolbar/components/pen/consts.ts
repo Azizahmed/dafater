@@ -1,3 +1,5 @@
+import { t } from '@blocksuite/global/i18n';
+
 import {
   EdgelessBrushDarkIcon,
   EdgelessBrushLightIcon,
@@ -19,11 +21,15 @@ export const penIconMap = {
 
 export const penInfoMap: { [k in Pen]: { tip: string; shortcut: string } } = {
   brush: {
-    tip: 'Pen',
+    get tip() {
+      return t('Pen');
+    },
     shortcut: 'P',
   },
   highlighter: {
-    tip: 'Highlighter',
+    get tip() {
+      return t('Highlighter');
+    },
     shortcut: '⇧ P',
   },
 };

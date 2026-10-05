@@ -4,6 +4,7 @@ import type {
   KanbanSingleView,
   TableSingleView,
 } from '@blocksuite/data-view/view-presets';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import type { EditorHost } from '@blocksuite/std';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -38,7 +39,7 @@ export class BlockRenderer
     }
 
     database-datasource-block-renderer.empty rich-text::before {
-      content: 'Untitled';
+      content: attr(data-placeholder);
       position: absolute;
       color: var(--affine-text-disable-color);
       font-size: 15px;
@@ -130,6 +131,7 @@ export class BlockRenderer
         .embedChecker=${this.inlineManager.embedChecker}
         .markdownMatches=${this.inlineManager.markdownMatches}
         class="inline-editor"
+        data-placeholder="${t('Untitled')}"
       ></rich-text>
     `;
   }

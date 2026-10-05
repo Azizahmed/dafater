@@ -1,6 +1,7 @@
 import type { Color, ColorScheme, Palette } from '@blocksuite/affine-model';
 import { DefaultTheme, resolveColor } from '@blocksuite/affine-model';
 import type { ColorEvent } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { html, LitElement } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
@@ -87,8 +88,8 @@ export class EdgelessColorPickerButton extends WithDisposable(LitElement) {
         .contentPadding=${this.tabContentPadding}
         .button=${html`
           <editor-icon-button
-            aria-label=${this.label}
-            .tooltip=${this.tooltip || this.label}
+            aria-label=${t(this.label)}
+            .tooltip=${t(this.tooltip || this.label)}
           >
             ${when(
               this.isText,

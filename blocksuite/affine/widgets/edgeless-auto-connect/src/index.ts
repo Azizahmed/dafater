@@ -14,6 +14,7 @@ import {
 import { FeatureFlagService } from '@blocksuite/affine-shared/services';
 import { matchModels, stopPropagation } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
+import { t } from '@blocksuite/global/i18n';
 import {
   ArrowLeftSmallIcon,
   ArrowRightSmallIcon,
@@ -265,7 +266,7 @@ export class EdgelessAutoConnectWidget extends WidgetComponent<RootBlockModel> {
         return html`<div style=${style} class="edgeless-only-index-label">
           ${InvisibleIcon({ width: '20px', height: '20px' })}
           <affine-tooltip tip-position="bottom">
-            ${getIndexLabelTooltip(SmallDocIcon, 'Hidden on page')}
+            ${getIndexLabelTooltip(SmallDocIcon, t('Hidden on page'))}
           </affine-tooltip>
         </div>`;
       }
@@ -486,7 +487,7 @@ export class EdgelessAutoConnectWidget extends WidgetComponent<RootBlockModel> {
             >
               ${index}
               <affine-tooltip tip-position="bottom">
-                ${getIndexLabelTooltip(SmallDocIcon, 'Page mode index')}
+                ${getIndexLabelTooltip(SmallDocIcon, t('Page mode index'))}
               </affine-tooltip>
             </div>
           `);

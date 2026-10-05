@@ -36,8 +36,8 @@ export const breadcrumbIcon = style({
   color: cssVarV2.icon.primary,
 });
 export const breadcrumbSeparator = style({
-  marginLeft: 4,
-  marginRight: 8,
+  marginInlineStart: 4,
+  marginInlineEnd: 8,
 });
 
 export const headerActions = style({

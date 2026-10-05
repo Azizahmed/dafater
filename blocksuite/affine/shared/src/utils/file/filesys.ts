@@ -2,6 +2,7 @@
 // See https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/wicg-file-system-access/index.d.ts
 // See also https://caniuse.com/?search=showOpenFilePicker
 import { BlockSuiteError, ErrorCode } from '@blocksuite/global/exceptions';
+import { t } from '@blocksuite/global/i18n';
 
 interface OpenFilePickerOptions {
   types?:
@@ -268,7 +269,10 @@ export async function openFilesWith(
           `Unexpected acceptType "${acceptType}"`
         );
       const pickerOpts = {
-        types: fileType ? [fileType] : undefined,
+        // `description` is matched as a key above; only the shown text is translated.
+        types: fileType
+          ? [{ ...fileType, description: t(fileType.description ?? '') }]
+          : undefined,
         multiple,
       } satisfies OpenFilePickerOptions;
       // Show the file picker, optionally allowing multiple files.

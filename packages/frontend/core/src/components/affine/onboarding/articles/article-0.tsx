@@ -3,7 +3,6 @@ import type { OnboardingBlockOption } from '../types';
 import bookmark1png from './assets/article-0-bookmark-1.png';
 import bookmark2png from './assets/article-0-bookmark-2.png';
 import embed1png from './assets/article-0-embed-1.png';
-import { BlogLink } from './blog-link';
 
 export const article0: Array<OnboardingBlockOption> = [
   {
@@ -246,7 +245,6 @@ export const article0: Array<OnboardingBlockOption> = [
           work. Obviously if you attend one of these, you should stop. But what
           else can you do?
         </p>
-        <BlogLink />
       </>
     ),
     offset: { x: 1200, y: -1600 },

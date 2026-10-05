@@ -7,6 +7,7 @@ import { useI18n } from '@affine/i18n';
 import { useLiveData } from '@toeverything/infra';
 import { cssVarV2 } from '@toeverything/theme/v2';
 
+// Dafater: only the error message (no link to AFFiNE's upgrade docs)
 const rules = [
   {
     min: MIN_SUPPORTED_SERVER_VERSION,
@@ -21,19 +22,6 @@ const rules = [
         >
           {message}
         </p>
-        <a
-          href="https://docs.affine.pro/self-host-affine/install/upgrade"
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            color: cssVarV2.text.primary,
-            wordBreak: 'break-all',
-            fontSize: 12,
-            lineHeight: '16px',
-          }}
-        >
-          https://docs.affine.pro/self-host-affine/install/upgrade
-        </a>
       </div>
     ),
   },

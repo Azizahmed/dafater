@@ -4,6 +4,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import { EditPropsStore } from '@blocksuite/affine-shared/services';
+import { t } from '@blocksuite/global/i18n';
 import {
   CopyIcon,
   DoneIcon,
@@ -75,13 +76,13 @@ export class EmbedHtmlFullscreenToolbar extends LitElement {
         items: [
           () =>
             html` <div class="settings-header">
-              <span>Settings</span>
+              <span>${t('Settings')}</span>
             </div>`,
           menu.group({
             name: 'thing',
             items: [
               menu.toggleSwitch({
-                name: 'Hide toolbar',
+                name: t('Hide toolbar'),
                 on: this.autoHideToolbar,
                 onChange: on => {
                   this.autoHideToolbar = on;

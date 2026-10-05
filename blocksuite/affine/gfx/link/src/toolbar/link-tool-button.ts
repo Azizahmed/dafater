@@ -5,6 +5,7 @@ import { toggleEmbedCardCreateModal } from '@blocksuite/affine-components/embed-
 import { LinkIcon } from '@blocksuite/affine-components/icons';
 import { TelemetryProvider } from '@blocksuite/affine-shared/services';
 import { QuickToolMixin } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 import { css, html, LitElement } from 'lit';
 
@@ -28,8 +29,8 @@ export class EdgelessLinkToolButton extends QuickToolMixin(LitElement) {
       // fallback to create a bookmark block with input modal
       toggleEmbedCardCreateModal(
         this.edgeless.host,
-        'Links',
-        'The added link will be displayed as a card view.',
+        t('Links'),
+        t('The added link will be displayed as a card view.'),
         {
           mode: 'edgeless',
           onSave: url => {
@@ -83,7 +84,7 @@ export class EdgelessLinkToolButton extends QuickToolMixin(LitElement) {
     return html`<edgeless-tool-icon-button
       .iconContainerPadding="${6}"
       .tooltip="${html`<affine-tooltip-content-with-shortcut
-        data-tip="${'Link'}"
+        data-tip="${t('Link')}"
         data-shortcut="${'@'}"
       ></affine-tooltip-content-with-shortcut>`}"
       .tooltipOffset=${17}

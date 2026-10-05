@@ -33,7 +33,7 @@ export class EdgelessSlideMenu extends WithDisposable(LitElement) {
       position: relative;
       height: calc(var(--menu-height) + 1px);
       box-sizing: border-box;
-      padding-left: 10px;
+      padding-inline-start: 10px;
       scroll-snap-type: x mandatory;
     }
     .menu-container-scrollable {
@@ -41,7 +41,7 @@ export class EdgelessSlideMenu extends WithDisposable(LitElement) {
       overscroll-behavior: none;
       scrollbar-width: none;
       height: 100%;
-      padding-right: 10px;
+      padding-inline-end: 10px;
     }
     .slide-menu-content {
       display: flex;
@@ -94,14 +94,26 @@ export class EdgelessSlideMenu extends WithDisposable(LitElement) {
     }
   `;
 
-  private _handleSlideButtonClick(direction: 'left' | 'right') {
+  /** `scrollLeft` range: in RTL it goes from 0 (start) to negative values. */
+  private _scrollRange() {
     const totalWidth = this._slideMenuContent.clientWidth;
+    if (getComputedStyle(this._menuContainer).direction === 'rtl') {
+      return {
+        min: -(totalWidth - this._menuContainer.clientWidth),
+        max: 0,
+      };
+    }
+    return { min: 0, max: totalWidth };
+  }
+
+  private _handleSlideButtonClick(direction: 'left' | 'right') {
     const currentScrollLeft = this._menuContainer.scrollLeft;
     const menuWidth = this._menuContainer.clientWidth;
     const newLeft =
       currentScrollLeft + (direction === 'left' ? -menuWidth : menuWidth);
+    const { min, max } = this._scrollRange();
     this._menuContainer.scrollTo({
-      left: Math.max(0, Math.min(newLeft, totalWidth)),
+      left: Math.max(min, Math.min(newLeft, max)),
       behavior: 'smooth',
     });
   }
@@ -114,8 +126,10 @@ export class EdgelessSlideMenu extends WithDisposable(LitElement) {
     const scrollLeft = this._menuContainer.scrollLeft;
     const menuWidth = this._menuContainer.clientWidth;
 
-    const leftMin = 0;
-    const leftMax = this._slideMenuContent.clientWidth - menuWidth;
+    const rtl = getComputedStyle(this._menuContainer).direction === 'rtl';
+    const overflow = this._slideMenuContent.clientWidth - menuWidth;
+    const leftMin = rtl ? -overflow : 0;
+    const leftMax = rtl ? 0 : overflow;
     this.showPrevious = scrollLeft > leftMin;
     this.showNext = scrollLeft < leftMax;
   }

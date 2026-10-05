@@ -28,7 +28,7 @@ export const header = style({
   },
   selectors: {
     '&[data-show-switch=true]': {
-      paddingLeft: 8,
+      paddingInlineStart: 8,
     },
   },
 });
@@ -41,7 +41,9 @@ export const viewBodyContainer = style({
 });
 
 export const leftSidebarButton = style({
-  margin: '0 16px 0 0',
+  marginBlock: '0 0',
+  marginInlineStart: '0',
+  marginInlineEnd: '16px',
 });
 
 export const rightSidebarButton = style({
@@ -51,12 +53,12 @@ export const rightSidebarButton = style({
       opacity: 1,
       width: 32,
       maxWidth: 32,
-      marginLeft: 16,
+      marginInlineStart: 16,
     },
     '&[data-show=false]': {
       opacity: 0,
       maxWidth: 0,
-      marginLeft: 0,
+      marginInlineStart: 0,
       // prevent click event from being triggered
       pointerEvents: 'none',
     },

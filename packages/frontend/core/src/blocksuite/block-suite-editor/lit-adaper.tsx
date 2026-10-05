@@ -24,8 +24,9 @@ import { useInsidePeekView } from '@affine/core/modules/peek-view';
 import { WorkspaceService } from '@affine/core/modules/workspace';
 import { ServerFeature } from '@affine/graphql';
 import track from '@affine/track';
+import { bindTextDirection } from '@arabase/blocksuite';
 import type { DocTitle } from '@blocksuite/affine/fragments/doc-title';
-import type { DocMode } from '@blocksuite/affine/model';
+import type { DocMode, RootBlockModel } from '@blocksuite/affine/model';
 import type { Store } from '@blocksuite/affine/store';
 import {
   useFramework,
@@ -195,9 +196,20 @@ export const BlocksuiteDocEditor = forwardRef<
     [ref]
   );
 
+  const unbindTitleDirection = useRef<(() => void) | null>(null);
   const onTitleRef = useCallback(
     (el: DocTitle) => {
       titleRef.current = el;
+      // Bound in the ref callback (during commit, before paint) so the title
+      // never shows a frame in the wrong direction.
+      unbindTitleDirection.current?.();
+      unbindTitleDirection.current = null;
+      const root = page.root as RootBlockModel | null;
+      if (el && root) {
+        unbindTitleDirection.current = bindTextDirection(el, {
+          text$: root.props.title$,
+        });
+      }
       if (externalTitleRef) {
         if (typeof externalTitleRef === 'function') {
           externalTitleRef(el);
@@ -206,7 +218,7 @@ export const BlocksuiteDocEditor = forwardRef<
         }
       }
     },
-    [externalTitleRef]
+    [externalTitleRef, page]
   );
 
   const [specs, portals] = usePatchSpecs('page', shared);

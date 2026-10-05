@@ -98,9 +98,13 @@ export class Env implements AppEnv {
     Namespace.Production,
     Object.values(Namespace)
   );
-  DEPLOYMENT_TYPE = this.dev
-    ? DeploymentType.Affine
-    : DeploymentType.Selfhosted;
+  // Dafater always runs as its own self-hosted server, dev mode included.
+  // `DEPLOYMENT_TYPE=affine` keeps the upstream cloud behaviour for tests.
+  DEPLOYMENT_TYPE = readEnv(
+    'DEPLOYMENT_TYPE',
+    DeploymentType.Selfhosted,
+    Object.values(DeploymentType)
+  );
   FLAVOR = readEnv('SERVER_FLAVOR', Flavor.AllInOne, Object.values(Flavor));
   platform = readEnv('DEPLOYMENT_PLATFORM', Platform.Unknown);
   version = pkg.version;

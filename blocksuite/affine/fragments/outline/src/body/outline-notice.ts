@@ -1,4 +1,5 @@
 import { NoteDisplayMode } from '@blocksuite/affine-model';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { CloseIcon, SortIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
@@ -50,7 +51,9 @@ export class OutlineNotice extends SignalWatcher(
     return html`
       <div data-testid=${AFFINE_OUTLINE_NOTICE} class=${styles.outlineNotice}>
         <div class=${styles.outlineNoticeHeader}>
-          <span class=${styles.outlineNoticeLabel}>SOME CONTENTS HIDDEN</span>
+          <span class=${styles.outlineNoticeLabel}
+            >${t('SOME CONTENTS HIDDEN')}</span
+          >
           <span
             data-testid="outline-notice-close-button"
             class=${styles.outlineNoticeCloseButton}
@@ -62,7 +65,7 @@ export class OutlineNotice extends SignalWatcher(
         </div>
         <div class=${styles.outlineNoticeBody}>
           <div class="${styles.notice}">
-            Some contents are not visible on edgeless.
+            ${t('Some contents are not visible on edgeless.')}
           </div>
           <div
             data-testid="outline-notice-sort-button"
@@ -72,11 +75,11 @@ export class OutlineNotice extends SignalWatcher(
               this._visible$.value = false;
             }}
           >
-            <span class=${styles.buttonSpan}>Click here or</span>
+            <span class=${styles.buttonSpan}>${t('Click here or')}</span>
             <span class=${styles.buttonSpan}
               >${SortIcon({ width: '20px', height: '20px' })}</span
             >
-            <span class=${styles.buttonSpan}>to organize content.</span>
+            <span class=${styles.buttonSpan}>${t('to organize content.')}</span>
           </div>
         </div>
       </div>

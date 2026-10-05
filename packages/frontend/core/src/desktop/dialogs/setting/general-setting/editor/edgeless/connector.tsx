@@ -15,7 +15,6 @@ import {
   FontFamily,
   FontFamilyMap,
   FontStyle,
-  FontWeightMap,
   PointStyle,
   StrokeStyle,
   TextAlign,
@@ -27,7 +26,13 @@ import { useCallback, useMemo } from 'react';
 
 import { DropdownMenu } from '../menu';
 import { menuTrigger, settingWrapper } from '../style.css';
-import { sortedFontWeightEntries, usePalettes } from '../utils';
+import {
+  getFontStyleLabel,
+  getFontWeightLabel,
+  getPointStyleLabel,
+  sortedFontWeightEntries,
+  usePalettes,
+} from '../utils';
 import { Point } from './point';
 import { EdgelessSnapshot } from './snapshot';
 
@@ -165,22 +170,24 @@ export const ConnectorSettings = () => {
 
   const colorItems = useMemo(() => {
     const { stroke } = settings.connector;
-    return StrokeColorShortPalettes.map(({ key, value, resolvedValue }) => {
-      const handler = () => {
-        editorSetting.set('connector', { stroke: value });
-      };
-      const isSelected = isEqual(stroke, value);
-      return (
-        <MenuItem
-          key={key}
-          onSelect={handler}
-          selected={isSelected}
-          prefix={<Point color={resolvedValue} />}
-        >
-          {key}
-        </MenuItem>
-      );
-    });
+    return StrokeColorShortPalettes.map(
+      ({ key, label, value, resolvedValue }) => {
+        const handler = () => {
+          editorSetting.set('connector', { stroke: value });
+        };
+        const isSelected = isEqual(stroke, value);
+        return (
+          <MenuItem
+            key={key}
+            onSelect={handler}
+            selected={isSelected}
+            prefix={<Point color={resolvedValue} />}
+          >
+            {label}
+          </MenuItem>
+        );
+      }
+    );
   }, [editorSetting, settings, StrokeColorShortPalettes]);
 
   const startEndPointItems = useMemo(() => {
@@ -192,11 +199,11 @@ export const ConnectorSettings = () => {
       const isSelected = frontEndpointStyle === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getPointStyleLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const endEndPointItems = useMemo(() => {
     const { rearEndpointStyle } = settings.connector;
@@ -207,11 +214,11 @@ export const ConnectorSettings = () => {
       const isSelected = rearEndpointStyle === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getPointStyleLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const alignItems = useMemo<RadioItem[]>(
     () => [
@@ -284,11 +291,11 @@ export const ConnectorSettings = () => {
       const isSelected = fontStyle === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getFontStyleLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const fontWeightItems = useMemo(() => {
     const { fontWeight } = settings.connector.labelStyle;
@@ -303,11 +310,11 @@ export const ConnectorSettings = () => {
       const isSelected = fontWeight === value;
       return (
         <MenuItem key={name} onSelect={handler} selected={isSelected}>
-          {name}
+          {getFontWeightLabel(t, value)}
         </MenuItem>
       );
     });
-  }, [editorSetting, settings]);
+  }, [editorSetting, settings, t]);
 
   const fontSizeItems = useMemo(() => {
     const { fontSize } = settings.connector.labelStyle;
@@ -330,7 +337,7 @@ export const ConnectorSettings = () => {
 
   const textColorItems = useMemo(() => {
     const { color } = settings.connector.labelStyle;
-    return textColorPalettes.map(({ key, value, resolvedValue }) => {
+    return textColorPalettes.map(({ key, label, value, resolvedValue }) => {
       const handler = () => {
         editorSetting.set('connector', {
           labelStyle: {
@@ -346,7 +353,7 @@ export const ConnectorSettings = () => {
           selected={isSelected}
           prefix={<Point color={resolvedValue} />}
         >
-          {key}
+          {label}
         </MenuItem>
       );
     });
@@ -384,7 +391,7 @@ export const ConnectorSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={currentColor.resolvedValue} />}
               >
-                {currentColor.key}
+                {currentColor.label}
               </MenuTrigger>
             }
           />
@@ -455,7 +462,7 @@ export const ConnectorSettings = () => {
           items={startEndPointItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {String(settings.connector.frontEndpointStyle)}
+              {getPointStyleLabel(t, settings.connector.frontEndpointStyle)}
             </MenuTrigger>
           }
         />
@@ -470,7 +477,7 @@ export const ConnectorSettings = () => {
           items={endEndPointItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {String(settings.connector.rearEndpointStyle)}
+              {getPointStyleLabel(t, settings.connector.rearEndpointStyle)}
             </MenuTrigger>
           }
         />
@@ -489,7 +496,7 @@ export const ConnectorSettings = () => {
                 className={menuTrigger}
                 prefix={<Point color={textColor.resolvedValue} />}
               >
-                {textColor.key}
+                {textColor.label}
               </MenuTrigger>
             }
           />
@@ -535,7 +542,7 @@ export const ConnectorSettings = () => {
           items={fontStyleItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {settings.connector.labelStyle.fontStyle}
+              {getFontStyleLabel(t, settings.connector.labelStyle.fontStyle)}
             </MenuTrigger>
           }
         />
@@ -550,7 +557,7 @@ export const ConnectorSettings = () => {
           items={fontWeightItems}
           trigger={
             <MenuTrigger className={menuTrigger}>
-              {FontWeightMap[settings.connector.labelStyle.fontWeight]}
+              {getFontWeightLabel(t, settings.connector.labelStyle.fontWeight)}
             </MenuTrigger>
           }
         />

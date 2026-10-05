@@ -6,7 +6,7 @@ const bottom = 76;
 export const root = style({
   position: 'absolute',
   top,
-  right: 22,
+  insetInlineEnd: 22,
   maxHeight: `calc(100% - ${top}px - ${bottom}px)`,
   display: 'flex',
   '@container': {

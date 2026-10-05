@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/affine/global/i18n';
 import { WithDisposable } from '@blocksuite/affine/global/lit';
 import { ShadowlessElement } from '@blocksuite/affine/std';
 import { WebIcon } from '@blocksuite/icons/lit';
@@ -42,7 +43,9 @@ export class WebSearchTool extends WithDisposable(ShadowlessElement) {
   renderToolCall() {
     return html`
       <tool-call-card
-        .name=${`Searching the web for "${this.data.args.query}"`}
+        .name=${t('Searching the web for "{query}"', {
+          query: this.data.args.query,
+        })}
         .icon=${WebIcon()}
       ></tool-call-card>
     `;
@@ -68,7 +71,9 @@ export class WebSearchTool extends WithDisposable(ShadowlessElement) {
 
       return html`
         <tool-result-card
-          .name=${'The search is complete, and these webpages have been searched'}
+          .name=${t(
+            'The search is complete, and these webpages have been searched'
+          )}
           .icon=${WebIcon()}
           .footerIcons=${footerIcons}
           .results=${results}
@@ -79,7 +84,7 @@ export class WebSearchTool extends WithDisposable(ShadowlessElement) {
 
     return html`
       <tool-call-failed
-        .name=${'Web search failed'}
+        .name=${t('Web search failed')}
         .icon=${WebIcon()}
       ></tool-call-failed>
     `;

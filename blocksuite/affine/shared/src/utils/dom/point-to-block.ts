@@ -54,6 +54,22 @@ function isDatabase({ tagName }: Element) {
   return tagName === 'AFFINE-DATABASE';
 }
 
+function isRtl(element: Element) {
+  return getComputedStyle(element).direction === 'rtl';
+}
+
+/**
+ * Returns `true` if the block at the given row of the rect is right-to-left.
+ * Falls back to the direction of the container when there's no block.
+ */
+function isRtlAtRow(y: number, rect: Rect | DOMRect, container?: Element) {
+  const x = (rect.left + rect.right) / 2;
+  const block =
+    findBlockComponent(document.elementsFromPoint(x, y), container) ??
+    container;
+  return block ? isRtl(block) : false;
+}
+
 /**
  * Returns the closest block element by a point in the rect.
  *
@@ -105,12 +121,24 @@ export function getClosestBlockComponentByPoint(
     const rect = state.rect || container?.getBoundingClientRect();
     if (rect) {
       if (snapToEdge.x) {
-        point.x = Math.min(
-          Math.max(point.x, rect.left) +
-            BLOCK_CHILDREN_CONTAINER_PADDING_LEFT * scale -
-            1,
-          rect.right - BLOCK_CHILDREN_CONTAINER_PADDING_LEFT * scale - 1
-        );
+        // Snap the point into the content, shifted towards the inline-end
+        // side so that the inline-start gutter (where the drag handle lives)
+        // belongs to the block next to it. Mirrored for RTL blocks.
+        if (isRtlAtRow(point.y, rect, container)) {
+          point.x = Math.max(
+            Math.min(point.x, rect.right) -
+              BLOCK_CHILDREN_CONTAINER_PADDING_LEFT * scale +
+              1,
+            rect.left + BLOCK_CHILDREN_CONTAINER_PADDING_LEFT * scale + 1
+          );
+        } else {
+          point.x = Math.min(
+            Math.max(point.x, rect.left) +
+              BLOCK_CHILDREN_CONTAINER_PADDING_LEFT * scale -
+              1,
+            rect.right - BLOCK_CHILDREN_CONTAINER_PADDING_LEFT * scale - 1
+          );
+        }
       }
       if (snapToEdge.y) {
         // TODO handle scale
@@ -154,7 +182,13 @@ export function getClosestBlockComponentByPoint(
         ?.firstElementChild?.getBoundingClientRect();
 
       if (childBounds && childBounds.height) {
-        if (bounds.x < point.x && point.x <= childBounds.x) {
+        // The pointer is in the children indentation of the block, which is
+        // on the inline-start side (left for LTR, right for RTL).
+        if (
+          isRtl(element)
+            ? childBounds.right <= point.x && point.x < bounds.right
+            : bounds.x < point.x && point.x <= childBounds.x
+        ) {
           return element as BlockComponent;
         }
         childBounds = null;

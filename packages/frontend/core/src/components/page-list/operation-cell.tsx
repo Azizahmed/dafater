@@ -94,10 +94,10 @@ const PageOperationCellMenuItem = ({
 
   const onDisablePublicSharing = useCallback(() => {
     // TODO(@EYHN): implement disable public sharing
-    toast('Successfully disabled', {
+    toast(t['com.affine.share-menu.disable-publish-link.success'](), {
       portal: document.body,
     });
-  }, []);
+  }, [t]);
 
   const { openConfirmModal } = useConfirmModal();
 
@@ -308,7 +308,7 @@ export const TrashOperationCell = ({
         tooltip={t['com.affine.trashOperation.restoreIt']()}
         tooltipOptions={tooltipSideTop}
         data-testid="restore-page-button"
-        style={{ marginRight: '12px' }}
+        style={{ marginInlineEnd: '12px' }}
         onClick={handleRestorePage}
         size="20"
       >

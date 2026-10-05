@@ -16,18 +16,21 @@ export function registerAffineHelpCommands({
   workspaceDialogService: WorkspaceDialogService;
 }) {
   const unsubs: Array<() => void> = [];
-  unsubs.push(
-    registerAffineCommand({
-      id: 'affine:help-whats-new',
-      category: 'affine:help',
-      icon: <NewIcon />,
-      label: t['com.affine.cmdk.affine.whats-new'](),
-      run() {
-        track.$.cmdk.help.openChangelog();
-        urlService.openPopupWindow(BUILD_CONFIG.changelogUrl);
-      },
-    })
-  );
+  // Dafater: "what's new" only when the build has a changelog URL
+  if (BUILD_CONFIG.changelogUrl) {
+    unsubs.push(
+      registerAffineCommand({
+        id: 'affine:help-whats-new',
+        category: 'affine:help',
+        icon: <NewIcon />,
+        label: t['com.affine.cmdk.affine.whats-new'](),
+        run() {
+          track.$.cmdk.help.openChangelog();
+          urlService.openPopupWindow(BUILD_CONFIG.changelogUrl);
+        },
+      })
+    );
+  }
   unsubs.push(
     registerAffineCommand({
       id: 'affine:help-contact-us',

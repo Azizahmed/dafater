@@ -18,6 +18,7 @@ import {
   type Signal,
 } from '@blocksuite/affine-shared/utils';
 import { IS_MOBILE } from '@blocksuite/global/env';
+import { t } from '@blocksuite/global/i18n';
 import {
   type BlockStdScope,
   ConfigExtensionFactory,
@@ -69,7 +70,6 @@ export type LinkedDocContext = {
   close: () => void;
 };
 
-const DEFAULT_DOC_NAME = 'Untitled';
 const DISPLAY_NAME_LENGTH = 8;
 
 export function createLinkedDocMenuGroup(
@@ -86,10 +86,10 @@ export function createLinkedDocMenuGroup(
   const MAX_DOCS = 6;
 
   return {
-    name: 'Link to Doc',
+    name: t('Link to Doc'),
     items: filteredDocList.map(doc => ({
       key: doc.id,
-      name: doc.title || DEFAULT_DOC_NAME,
+      name: doc.title || t('Untitled'),
       icon:
         editorHost.std.get(DocModeProvider).getPrimaryMode(doc.id) ===
         'edgeless'
@@ -112,7 +112,9 @@ export function createLinkedDocMenuGroup(
       },
     })),
     maxDisplay: MAX_DOCS,
-    overflowText: `${filteredDocList.length - MAX_DOCS} more docs`,
+    overflowText: t('{count} more docs', {
+      count: filteredDocList.length - MAX_DOCS,
+    }),
   };
 }
 
@@ -123,7 +125,7 @@ export function createNewDocMenuGroup(
   inlineEditor: AffineInlineEditor
 ): LinkedMenuGroup {
   const doc = editorHost.store;
-  const docName = query || DEFAULT_DOC_NAME;
+  const docName = query || t('Untitled');
   const displayDocName =
     docName.slice(0, DISPLAY_NAME_LENGTH) +
     (docName.length > DISPLAY_NAME_LENGTH ? '..' : '');
@@ -131,7 +133,7 @@ export function createNewDocMenuGroup(
   const items: LinkedMenuItem[] = [
     {
       key: 'create',
-      name: `Create "${displayDocName}" doc`,
+      name: t('Create "{title}" doc', { title: displayDocName }),
       icon: NewDocIcon,
       action: () => {
         abort();
@@ -162,7 +164,7 @@ export function createNewDocMenuGroup(
   if (!IS_MOBILE) {
     items.push({
       key: 'import',
-      name: 'Import',
+      name: t('Import'),
       icon: ImportIcon,
       action: () => {
         abort();
@@ -174,7 +176,13 @@ export function createNewDocMenuGroup(
         ) => {
           toast(
             editorHost,
-            `Successfully imported ${options.importedCount} Doc${options.importedCount > 1 ? 's' : ''}.`
+            options.importedCount > 1
+              ? t('Successfully imported {count} Docs.', {
+                  count: options.importedCount,
+                })
+              : t('Successfully imported {count} Doc.', {
+                  count: options.importedCount,
+                })
           );
           for (const docId of docIds) {
             insertLinkedNode({
@@ -201,7 +209,7 @@ export function createNewDocMenuGroup(
   }
 
   return {
-    name: 'New Doc',
+    name: t('New Doc'),
     items,
   };
 }

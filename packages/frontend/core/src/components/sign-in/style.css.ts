@@ -92,3 +92,36 @@ export const authInput = style({
 export const signInButton = style({
   backgroundColor: cssVarV2.button.signinbutton.background,
 });
+
+// Dafater: note shown while the server has no users yet (the first account
+// becomes the server administrator)
+export const firstUserNote = style({
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: 8,
+  marginBlockEnd: 20,
+  paddingBlock: 10,
+  paddingInline: 12,
+  borderRadius: 8,
+  borderInlineStart: `3px solid ${cssVarV2('button/primary')}`,
+  backgroundColor: cssVarV2('layer/background/secondary'),
+  color: cssVarV2('text/primary'),
+  fontSize: cssVar('fontXs'),
+  lineHeight: '20px',
+  textAlign: 'start',
+});
+
+export const firstUserNoteIcon = style({
+  flexShrink: 0,
+  width: 20,
+  height: 20,
+  color: cssVarV2('button/primary'),
+});
+
+export const signUpHint = style({
+  marginBlockEnd: 16,
+  color: cssVarV2('text/secondary'),
+  fontSize: cssVar('fontXs'),
+  lineHeight: '20px',
+  textAlign: 'start',
+});

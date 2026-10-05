@@ -27,6 +27,7 @@ import {
   formatSize,
   openSingleFileWith,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import {
   AttachmentIcon,
   ResetIcon,
@@ -110,7 +111,7 @@ export class AttachmentBlockComponent extends CaptionedBlockComponent<Attachment
   copy = () => {
     const slice = Slice.fromModels(this.store, [this.model]);
     this.std.clipboard.copySlice(slice).catch(console.error);
-    toast(this.host, 'Copied to clipboard');
+    toast(this.host, t('Copied to clipboard'));
   };
 
   download = () => {
@@ -297,7 +298,7 @@ export class AttachmentBlockComponent extends CaptionedBlockComponent<Attachment
             }
           }}
         >
-          ${UpgradeIcon()} Upgrade
+          ${UpgradeIcon()} ${t('Upgrade')}
         </button>
       `
     );
@@ -338,7 +339,7 @@ export class AttachmentBlockComponent extends CaptionedBlockComponent<Attachment
           }
         }}
       >
-        ${ResetIcon()} ${label}
+        ${ResetIcon()} ${needUpload ? t('Retry') : t('Reload')}
       </button>
     `;
   };

@@ -6,6 +6,7 @@ import {
   ThemeProvider,
 } from '@blocksuite/affine-shared/services';
 import { getHostName } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { OpenInNewIcon } from '@blocksuite/icons/lit';
 import { isGfxBlockComponent, ShadowlessElement } from '@blocksuite/std';
@@ -56,10 +57,10 @@ export class BookmarkCard extends SignalWatcher(
     )?.[1];
 
     const titleText = this.loading
-      ? 'Loading...'
+      ? t('Loading...')
       : !title
         ? this.error
-          ? (domainName ?? 'Link card')
+          ? (domainName ?? t('Link card'))
           : ''
         : title;
 
@@ -77,7 +78,7 @@ export class BookmarkCard extends SignalWatcher(
       ? ''
       : !description
         ? this.error
-          ? 'Failed to retrieve link information.'
+          ? t('Failed to retrieve link information.')
           : url
         : (description ?? '');
 

@@ -2,6 +2,7 @@ import {
   EdgelessToolbarToolMixin,
   QuickToolMixin,
 } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import { PresentationIcon } from '@blocksuite/icons/lit';
 import { css, html, LitElement } from 'lit';
 
@@ -25,7 +26,7 @@ export class EdgelessPresentButton extends QuickToolMixin(
   override render() {
     return html`<edgeless-tool-icon-button
     class="edgeless-frame-navigator-button"
-    .tooltip=${'Present'}
+    .tooltip=${t('Present')}
     .tooltipOffset=${17}
     .iconContainerPadding=${6}
     .iconSize=${'24px'}

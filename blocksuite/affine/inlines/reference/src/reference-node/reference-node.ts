@@ -1,10 +1,7 @@
 import { whenHover } from '@blocksuite/affine-components/hover';
 import { Peekable } from '@blocksuite/affine-components/peek';
 import type { ReferenceInfo } from '@blocksuite/affine-model';
-import {
-  DEFAULT_DOC_NAME,
-  REFERENCE_NODE,
-} from '@blocksuite/affine-shared/consts';
+import { REFERENCE_NODE } from '@blocksuite/affine-shared/consts';
 import {
   DocDisplayMetaProvider,
   ToolbarRegistryIdentifier,
@@ -15,6 +12,7 @@ import {
   cloneReferenceInfo,
   referenceToNode,
 } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { LinkedPageIcon } from '@blocksuite/icons/lit';
 import type { BlockComponent, BlockStdScope } from '@blocksuite/std';
@@ -59,7 +57,7 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
     }
 
     .affine-reference-title {
-      margin-left: 4px;
+      margin-inline-start: 4px;
       border-bottom: 0.5px solid var(--affine-divider-color);
       transition: border 0.2s ease-out;
     }
@@ -69,7 +67,7 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
   `;
 
   get docTitle() {
-    return this.refMeta?.title ?? DEFAULT_DOC_NAME;
+    return this.refMeta?.title ?? t('Untitled');
   }
 
   private readonly _updateRefMeta = (doc: Store) => {

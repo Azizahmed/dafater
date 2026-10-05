@@ -21,11 +21,11 @@ export const copyLinkButtonStyle = style({
   flex: 1,
   padding: '4px 12px',
   height: '30px',
-  paddingRight: '6px',
+  paddingInlineEnd: '6px',
   borderRadius: '4px',
-  borderRight: 'none',
-  borderTopRightRadius: '0',
-  borderBottomRightRadius: '0',
+  borderInlineEnd: 'none',
+  borderStartEndRadius: '0',
+  borderEndEndRadius: '0',
   color: 'transparent',
   position: 'initial',
   selectors: {
@@ -39,10 +39,10 @@ export const copyLinkButtonStyle = style({
 });
 export const copyLinkLabelContainerStyle = style({
   width: '100%',
-  borderRight: 'none',
+  borderInlineEnd: 'none',
   borderRadius: '4px',
-  borderTopRightRadius: '0',
-  borderBottomRightRadius: '0',
+  borderStartEndRadius: '0',
+  borderEndEndRadius: '0',
   position: 'relative',
 });
 export const copyLinkLabelStyle = style({
@@ -63,7 +63,7 @@ export const copyLinkShortcutStyle = style({
   position: 'absolute',
   textAlign: 'end',
   top: '50%',
-  right: '52px',
+  insetInlineEnd: '52px',
   transform: 'translateY(-50%)',
   opacity: 0.5,
   lineHeight: '20px',
@@ -80,12 +80,14 @@ export const copyLinkShortcutStyle = style({
   },
 });
 export const copyLinkTriggerStyle = style({
-  padding: '4px 12px 4px 8px',
+  paddingBlock: '4px 4px',
+  paddingInlineStart: '8px',
+  paddingInlineEnd: '12px',
   borderRadius: '4px',
   height: '30px',
-  borderLeft: 'none',
-  borderTopLeftRadius: '0',
-  borderBottomLeftRadius: '0',
+  borderInlineStart: 'none',
+  borderStartStartRadius: '0',
+  borderEndStartRadius: '0',
   ':hover': {
     backgroundColor: cssVarV2('button/primary'),
     color: cssVarV2('button/pureWhiteText'),
@@ -93,7 +95,7 @@ export const copyLinkTriggerStyle = style({
   '::after': {
     content: '""',
     position: 'absolute',
-    left: '0',
+    insetInlineStart: '0',
     top: '0',
     height: '100%',
     width: '1px',

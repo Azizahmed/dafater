@@ -7,7 +7,6 @@ import { readShareLinkPreview } from './preview';
 import type { PendingShareItem, ShareLinkPreview } from './types';
 
 const LINK_PREVIEW_PATH = '/api/worker/link-preview';
-const OFFICIAL_ENDPOINT = `https://app.affine.pro${LINK_PREVIEW_PATH}`;
 export class SharePreviewRouteOwner {
   private endpoint: string | undefined;
   private server: Server | undefined;
@@ -38,8 +37,10 @@ export class SharePreviewRouteOwner {
   }
 
   selectWorkspace(workspace: WorkspaceMetadata | undefined, servers: Server[]) {
+    // Dafater: link previews never go to AFFiNE's official cloud; they are
+    // resolved only by the workspace's own Dafater server.
     if (this.item.previewRoute === 'official') {
-      this.setRoute(undefined, OFFICIAL_ENDPOINT, 'official');
+      this.setRoute(undefined, undefined, 'official');
       return;
     }
     if (!workspace || workspace.flavour === 'local') {
@@ -53,9 +54,11 @@ export class SharePreviewRouteOwner {
     const workspaceKey = `${workspace.flavour}:${workspace.id}`;
     const server = servers.find(server => server.id === workspace.flavour);
     const type = server?.config$.value?.type;
-    if (type === ServerDeploymentType.Affine) {
-      this.setRoute(undefined, OFFICIAL_ENDPOINT, workspaceKey);
-    } else if (server && type === ServerDeploymentType.Selfhosted) {
+    if (
+      server &&
+      (type === ServerDeploymentType.Selfhosted ||
+        type === ServerDeploymentType.Affine)
+    ) {
       this.setRoute(
         server,
         new URL(LINK_PREVIEW_PATH, server.baseUrl).toString(),

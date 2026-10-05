@@ -1,4 +1,5 @@
 import { LoadingIcon } from '@blocksuite/affine/components/icons';
+import { t } from '@blocksuite/affine/global/i18n';
 import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
@@ -34,7 +35,7 @@ export class ChatImage extends LitElement {
         'loading',
         () =>
           html`<image-placeholder
-            .text=${'Loading image'}
+            .text=${t('Loading image')}
             .icon=${LoadingIcon()}
           ></image-placeholder>`,
       ],
@@ -42,7 +43,7 @@ export class ChatImage extends LitElement {
         'error',
         () =>
           html`<image-placeholder
-            .text=${'Image Loading Failed'}
+            .text=${t('Image Loading Failed')}
             .icon=${ImageLoadingFailedIcon}
           ></image-placeholder>`,
       ],

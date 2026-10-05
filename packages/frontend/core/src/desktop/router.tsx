@@ -68,22 +68,19 @@ export const topLevelRoutes = [
         path: '/invite/:inviteId',
         lazy: () => import('./pages/invite'),
       },
-      {
-        path: '/upgrade-success',
-        lazy: () => import('./pages/upgrade-success'),
-      },
-      {
-        path: '/upgrade-success/team',
-        lazy: () => import('./pages/upgrade-success/team'),
-      },
-      {
-        path: '/upgrade-success/self-hosted-team',
-        lazy: () => import('./pages/upgrade-success/self-host-team'),
-      },
-      {
-        path: '/ai-upgrade-success',
-        lazy: () => import('./pages/ai-upgrade-success'),
-      },
+      // Dafater has no payments, plans or subscriptions: the upstream
+      // subscribe / upgrade pages redirect home.
+      ...[
+        '/upgrade-success',
+        '/upgrade-success/team',
+        '/upgrade-success/self-hosted-team',
+        '/ai-upgrade-success',
+        '/subscribe',
+        '/upgrade-to-team',
+      ].map(path => ({
+        path,
+        loader: () => redirect('/'),
+      })),
       {
         path: '/onboarding',
         lazy: () => import('./pages/onboarding'),
@@ -91,14 +88,6 @@ export const topLevelRoutes = [
       {
         path: '/redirect-proxy',
         lazy: () => import('./pages/redirect'),
-      },
-      {
-        path: '/subscribe',
-        lazy: () => import('./pages/subscribe'),
-      },
-      {
-        path: '/upgrade-to-team',
-        lazy: () => import('./pages/upgrade-to-team'),
       },
       {
         path: '/try-cloud',

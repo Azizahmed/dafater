@@ -4,6 +4,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import type { InsertToPosition } from '@blocksuite/affine-shared/utils';
+import { t } from '@blocksuite/global/i18n';
 import { AddCursorIcon } from '@blocksuite/icons/lit';
 import { signal } from '@preact/signals-core';
 import type { TemplateResult } from 'lit';
@@ -134,7 +135,7 @@ export class TableViewUILogic extends DataViewUILogicBase<
     return html` <div style="display:flex;">
       <div class="${addGroupStyle}" @click="${add}">
         <div class="${addGroupIconStyle}">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>${t('New Group')}</div>
       </div>
     </div>`;
   };
@@ -212,7 +213,7 @@ export class TableViewUI extends DataViewUIBase<TableViewUILogic> {
             ${
               this.logic.view.groupTrait.allHidden$.value
                 ? html`<div class="${groupsHiddenMessageStyle}">
-                    All groups are hidden
+                    ${t('All groups are hidden')}
                   </div>`
                 : this.renderTable()
             }

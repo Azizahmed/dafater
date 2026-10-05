@@ -290,7 +290,7 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
       id=${childrenId}
       class="affine-block-children-container"
       style=${styleMap({
-        paddingLeft: `${BLOCK_CHILDREN_CONTAINER_PADDING_LEFT}px`,
+        paddingInlineStart: `${BLOCK_CHILDREN_CONTAINER_PADDING_LEFT}px`,
         display: collapsed ? 'none' : undefined,
       })}
     >
@@ -303,7 +303,7 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
         .affine-paragraph-block-container[data-has-collapsed-siblings='false']
           affine-paragraph-heading-icon
           .heading-icon {
-          transform: translateX(-48px);
+          inset-inline-start: -48px;
         }
       </style>
       <div

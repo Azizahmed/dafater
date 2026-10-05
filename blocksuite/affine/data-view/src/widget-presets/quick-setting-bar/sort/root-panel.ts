@@ -5,6 +5,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import {
   ArrowDownSmallIcon,
@@ -100,11 +101,11 @@ export class SortRootView extends SignalWatcher(
               <data-view-component-button
                 style="color: var(--affine-error-color);border-color: color: var(--affine-error-color)"
                 @click="${deleteRule}"
-                .text="${html`This rule is invalid, click to delete`}"
+                .text="${t('This rule is invalid, click to delete')}"
               ></data-view-component-button>
             `;
           } else {
-            const descName = sort.desc ? 'Descending' : 'Ascending';
+            const descName = sort.desc ? t('Descending') : t('Ascending');
             const clickField = (event: MouseEvent) => {
               popMenu(
                 popupTargetFromElement(event.currentTarget as HTMLElement),
@@ -134,7 +135,7 @@ export class SortRootView extends SignalWatcher(
                   options: {
                     items: [false, true].map(desc => {
                       return menu.action({
-                        name: desc ? 'Descending' : 'Ascending',
+                        name: desc ? t('Descending') : t('Ascending'),
                         isSelected: desc === sort.desc,
                         select: () => {
                           changeRule({ ...sort, desc });
@@ -221,7 +222,7 @@ export const popSortRoot = (
           ></sort-root-view>`;
         },
         menu.action({
-          name: 'Add sort',
+          name: t('Add sort'),
           prefix: PlusIcon(),
           select: ele => {
             popCreateSort(popupTargetFromElement(ele), {
@@ -231,7 +232,7 @@ export const popSortRoot = (
           },
         }),
         menu.action({
-          name: 'Delete',
+          name: t('Delete'),
           class: { 'delete-item': true },
           prefix: DeleteIcon(),
           select: () => {

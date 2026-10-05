@@ -2,6 +2,7 @@ import { menu } from '@blocksuite/affine-components/context-menu';
 import { ConnectorMode } from '@blocksuite/affine-model';
 import { EditPropsStore } from '@blocksuite/affine-shared/services';
 import type { DenseMenuBuilder } from '@blocksuite/affine-widget-edgeless-toolbar';
+import { t } from '@blocksuite/global/i18n';
 import {
   ConnectorCIcon,
   ConnectorEIcon,
@@ -28,26 +29,26 @@ export const buildConnectorDenseMenu: DenseMenuBuilder = (edgeless, gfx) => {
 
   const iconSize = { width: '20', height: '20' };
   return menu.subMenu({
-    name: 'Connector',
+    name: t('Connector'),
     prefix: ConnectorCIcon(iconSize),
     select: createSelect(prevMode, false),
     isSelected,
     options: {
       items: [
         menu.action({
-          name: 'Curve',
+          name: t('Curve'),
           prefix: ConnectorCIcon(iconSize),
           select: createSelect(ConnectorMode.Curve),
           isSelected: isSelected && prevMode === ConnectorMode.Curve,
         }),
         menu.action({
-          name: 'Elbowed',
+          name: t('Elbowed'),
           prefix: ConnectorEIcon(iconSize),
           select: createSelect(ConnectorMode.Orthogonal),
           isSelected: isSelected && prevMode === ConnectorMode.Orthogonal,
         }),
         menu.action({
-          name: 'Straight',
+          name: t('Straight'),
           prefix: ConnectorLIcon(iconSize),
           select: createSelect(ConnectorMode.Straight),
           isSelected: isSelected && prevMode === ConnectorMode.Straight,

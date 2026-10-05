@@ -1,15 +1,16 @@
 import { menu } from '@blocksuite/affine-components/context-menu';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
+import { t } from '@blocksuite/global/i18n';
 import { CheckBoxCheckSolidIcon, CheckBoxUnIcon } from '@blocksuite/icons/lit';
 import { html } from 'lit';
 
-import { t } from '../../logical/type-presets.js';
+import { t as types } from '../../logical/type-presets.js';
 import { createLiteral } from './create.js';
 import type { LiteralItemsConfig } from './types.js';
 
 export const allLiteralConfig: LiteralItemsConfig[] = [
   createLiteral({
-    type: t.date.instance(),
+    type: types.date.instance(),
     getItems: (_type, value, onChange) => {
       return [
         () => {
@@ -26,7 +27,7 @@ export const allLiteralConfig: LiteralItemsConfig[] = [
     },
   }),
   createLiteral({
-    type: t.boolean.instance(),
+    type: types.boolean.instance(),
     getItems: (_type, _value, _onChange) => {
       return [
         // menu.action({
@@ -49,24 +50,24 @@ export const allLiteralConfig: LiteralItemsConfig[] = [
     },
   }),
   createLiteral({
-    type: t.string.instance(),
+    type: types.string.instance(),
     getItems: (_type, value, onChange) => {
       return [
         menu.input({
           initialValue: value.value ?? '',
           onChange: onChange,
-          placeholder: 'Type a value...',
+          placeholder: t('Type a value...'),
         }),
       ];
     },
   }),
   createLiteral({
-    type: t.number.instance(),
+    type: types.number.instance(),
     getItems: (_type, value, onChange) => {
       return [
         menu.input({
           initialValue: value.value?.toString(10) ?? '',
-          placeholder: 'Type a value...',
+          placeholder: t('Type a value...'),
           onChange: text => {
             const number = Number.parseFloat(text);
             if (Number.isNaN(number)) {
@@ -79,7 +80,7 @@ export const allLiteralConfig: LiteralItemsConfig[] = [
     },
   }),
   createLiteral({
-    type: t.array.instance(t.tag.instance()),
+    type: types.array.instance(types.tag.instance()),
     getItems: (type, value, onChange) => {
       const set = new Set(value.value);
       return [
@@ -121,7 +122,7 @@ export const allLiteralConfig: LiteralItemsConfig[] = [
     },
   }),
   createLiteral({
-    type: t.tag.instance(),
+    type: types.tag.instance(),
     getItems: (type, value, onChange) => {
       return [
         menu.group({

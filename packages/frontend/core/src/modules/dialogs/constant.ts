@@ -14,6 +14,9 @@ export type SettingTab =
   | 'editor'
   | 'account'
   | 'meetings'
+  // Dafater: server administration (admins of the signed-in server only)
+  | 'server:ai'
+  | 'server:google'
   | `workspace:${'preference' | 'properties' | 'members' | 'storage' | 'billing' | 'license' | 'integrations' | 'embedding' | 'byok' | 'search'}`;
 
 export type GLOBAL_DIALOG_SCHEMA = {

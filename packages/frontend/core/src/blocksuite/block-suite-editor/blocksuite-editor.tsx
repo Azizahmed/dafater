@@ -8,9 +8,9 @@ import {
   EditorSettingService,
   fontStyleOptions,
 } from '@affine/core/modules/editor-setting';
-import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { WorkspaceService } from '@affine/core/modules/workspace';
 import track from '@affine/track';
+import { directionShortcutEnabled$ } from '@arabase/blocksuite';
 import { appendParagraphCommand } from '@blocksuite/affine/blocks/paragraph';
 import type { DocTitle } from '@blocksuite/affine/fragments/doc-title';
 import { DisposableGroup } from '@blocksuite/affine/global/disposable';
@@ -72,16 +72,19 @@ const BlockSuiteEditorImpl = ({
   const docRef = useRef<PageEditor>(null);
   const docTitleRef = useRef<DocTitle>(null);
   const edgelessRef = useRef<EdgelessEditor>(null);
-  const featureFlags = useService(FeatureFlagService).flags;
-  const enableEditorRTL = useLiveData(featureFlags.enable_editor_rtl.$);
   const editorSetting = useService(EditorSettingService).editorSetting;
   const server = useService(ServerService).server;
 
-  const { enableMiddleClickPaste } = useLiveData(
+  const { enableMiddleClickPaste, textDirectionShortcut } = useLiveData(
     editorSetting.settings$.selector(s => ({
       enableMiddleClickPaste: s.enableMiddleClickPaste,
+      textDirectionShortcut: s.textDirectionShortcut,
     }))
   );
+
+  useEffect(() => {
+    directionShortcutEnabled$.value = textDirectionShortcut;
+  }, [textDirectionShortcut]);
 
   /**
    * mimic an AffineEditorContainer using proxy
@@ -246,7 +249,6 @@ const BlockSuiteEditorImpl = ({
     <div
       {...props}
       data-testid={`editor-${page.id}`}
-      dir={enableEditorRTL ? 'rtl' : 'ltr'}
       className={clsx(
         `editor-wrapper ${mode}-mode`,
         styles.docEditorRoot,

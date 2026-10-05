@@ -72,6 +72,6 @@ export const cloudSvgContainer = style({
   alignItems: 'center',
   position: 'absolute',
   bottom: '0',
-  right: '0',
+  insetInlineEnd: '0',
   pointerEvents: 'none',
 });

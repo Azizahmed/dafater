@@ -1,3 +1,4 @@
+import { t } from '@blocksuite/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import {
   PropTypes,
@@ -40,7 +41,7 @@ export class AffineKeyboardToolPanel extends SignalWatcher(
     );
 
     return html`<div class="keyboard-tool-panel-group">
-      <div class="keyboard-tool-panel-group-header">${group.name}</div>
+      <div class="keyboard-tool-panel-group-header">${t(group.name)}</div>
       <div class="keyboard-tool-panel-group-item-container">
         ${repeat(
           items,
@@ -60,7 +61,7 @@ export class AffineKeyboardToolPanel extends SignalWatcher(
       <button @click=${() => this._handleItemClick(item)}>
         ${this._renderIcon(item.icon)}
       </button>
-      <span>${item.name}</span>
+      <span>${item.label ?? t(item.name)}</span>
     </div>`;
   }
 

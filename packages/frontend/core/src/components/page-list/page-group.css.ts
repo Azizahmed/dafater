@@ -44,7 +44,9 @@ export const collapsibleContentInner = style({
 export const header = style({
   display: 'flex',
   alignItems: 'center',
-  padding: '0px 16px 0px 6px',
+  paddingBlock: '0px 0px',
+  paddingInlineStart: '6px',
+  paddingInlineEnd: '16px',
   height: '28px',
   contain: 'strict',
   background: cssVar('backgroundPrimaryColor'),

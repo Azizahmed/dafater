@@ -1,5 +1,6 @@
 import { renderTypstSvg } from '@affine/core/modules/code-block-preview-renderer/bridge';
 import { CodeBlockPreviewExtension } from '@blocksuite/affine/blocks/code';
+import { t } from '@blocksuite/affine/global/i18n';
 import { SignalWatcher, WithDisposable } from '@blocksuite/affine/global/lit';
 import type { CodeBlockModel } from '@blocksuite/affine/model';
 import { unsafeCSSVarV2 } from '@blocksuite/affine/shared/theme';
@@ -41,7 +42,7 @@ export class TypstPreview extends SignalWatcher(
 
     details.typst-error-details {
       margin-top: 8px;
-      text-align: left;
+      text-align: start;
       border: 1px dashed ${unsafeCSSVarV2('layer/insideBorder/border')};
       border-radius: 6px;
       padding: 8px;
@@ -110,7 +111,7 @@ export class TypstPreview extends SignalWatcher(
     .typst-controls {
       position: absolute;
       top: 8px;
-      right: 8px;
+      inset-inline-end: 8px;
       display: flex;
       gap: 4px;
       z-index: 10;
@@ -188,11 +189,12 @@ export class TypstPreview extends SignalWatcher(
   private get _errorMessageDetail() {
     return this.errorMessage
       ? html`<details class="typst-error-details">
-          <summary>Error details</summary>
+          <summary>${t('Error details')}</summary>
           <pre
             class="typst-error-text"
+            dir="auto"
             tabindex="0"
-            aria-label="Typst error message"
+            aria-label=${t('Typst error message')}
           >
 ${this.errorMessage}</pre>
           <div class="typst-copy-row">
@@ -208,19 +210,19 @@ ${this.errorMessage}</pre>
     const lower = this.errorMessage?.toLowerCase() ?? '';
 
     const friendlyMessage = lower.includes('no font could be found')
-      ? 'Failed to load fonts. Please check your network or try again.'
-      : 'Failed to render Typst. Please check your code.';
+      ? t('Failed to load fonts. Please check your network or try again.')
+      : t('Failed to render Typst. Please check your code.');
 
     return [friendlyMessage, this._errorMessageDetail];
   }
 
   private get _copyButtonLabel() {
     if (this.copyState === 'copied') {
-      return 'Copied';
+      return t('Copied');
     } else if (this.copyState === 'failed') {
-      return 'Copy failed';
+      return t('Copy failed');
     } else {
-      return 'Copy';
+      return t('Copy');
     }
   }
 
@@ -231,21 +233,21 @@ ${this.errorMessage}</pre>
             <button
               class="typst-control-button"
               @click=${this._zoomOut}
-              title="Zoom out"
+              title=${t('Zoom out')}
             >
               −
             </button>
             <button
               class="typst-control-button"
               @click=${this._resetView}
-              title="Reset view"
+              title=${t('Reset view')}
             >
               ⟳
             </button>
             <button
               class="typst-control-button"
               @click=${this._zoomIn}
-              title="Zoom in"
+              title=${t('Zoom in')}
             >
               +
             </button>
@@ -404,30 +406,32 @@ ${this.errorMessage}</pre>
           [
             'loading',
             () =>
-              html`<div class="typst-preview-loading">
-                Rendering Typst code...
+              html`<div class="typst-preview-loading" dir="auto">
+                ${t('Rendering Typst code...')}
               </div>`,
           ],
           [
             'error',
             () =>
-              html`<div class="typst-preview-error">
+              html`<div class="typst-preview-error" dir="auto">
                 ${this._errorMessageComponent}
               </div>`,
           ],
           [
             'syntax-error',
             () =>
-              html`<div class="typst-preview-error">
-                Typst code has errors: ${this.errorMessage ?? 'Unknown error.'}
+              html`<div class="typst-preview-error" dir="auto">
+                ${t('Typst code has errors: {message}', {
+                  message: this.errorMessage ?? t('Unknown error.'),
+                })}
                 ${this._errorMessageDetail}
               </div>`,
           ],
           [
             'fallback',
             () =>
-              html`<div class="typst-preview-fallback">
-                Enter Typst code to preview.
+              html`<div class="typst-preview-fallback" dir="auto">
+                ${t('Enter Typst code to preview.')}
               </div>`,
           ],
         ])}
