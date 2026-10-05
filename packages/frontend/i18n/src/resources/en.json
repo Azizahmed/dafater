@@ -2656,6 +2656,7 @@
   "com.affine.integration.mcp-server.reveal.claude-code": "Claude Code command",
   "com.affine.integration.mcp-server.action.copy-command": "Copy command",
   "com.affine.integration.mcp-server.capabilities.list": "List documents",
+  "com.affine.integration.mcp-server.local-workspace": "MCP clients connect through the Dafater server, so this workspace has to be synced first.",
   "com.affine.integration.mcp-server.rotate.title": "Rotate this credential?",
   "com.affine.integration.mcp-server.rotate.description": "A new token will be created immediately. The old token remains valid for up to 24 hours so you can update the MCP client.",
   "com.affine.integration.mcp-server.revoke.title": "Revoke “{{name}}”?",

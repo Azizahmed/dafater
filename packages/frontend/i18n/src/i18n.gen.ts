@@ -10708,6 +10708,10 @@ export function useAFFiNEI18N(): {
       */
     ["com.affine.integration.mcp-server.capabilities.list"](): string;
     /**
+      * `MCP clients connect through the Dafater server, so this workspace has to be synced first.`
+      */
+    ["com.affine.integration.mcp-server.local-workspace"](): string;
+    /**
       * `Rotate this credential?`
       */
     ["com.affine.integration.mcp-server.rotate.title"](): string;

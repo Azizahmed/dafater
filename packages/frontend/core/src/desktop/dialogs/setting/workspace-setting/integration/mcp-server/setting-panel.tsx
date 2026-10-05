@@ -18,6 +18,7 @@ import { useI18n } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { EnableCloudPanel } from '../../preference/enable-cloud';
 import { IntegrationSettingHeader } from '../setting';
 import { McpCredentialModal } from './credential-modal';
 import MCPIcon from './MCP.inline.svg';
@@ -31,6 +32,36 @@ type RevealedCredential = {
 const formatDate = (value: string) => new Date(value).toLocaleString();
 
 export const McpServerSettingPanel = () => {
+  const workspace = useService(WorkspaceService).workspace;
+  return workspace.flavour === 'local' ? (
+    <LocalWorkspaceMcpPanel />
+  ) : (
+    <CloudWorkspaceMcpPanel />
+  );
+};
+
+// MCP clients reach documents through the server, so a workspace that only
+// lives in this browser has to be synced first.
+const LocalWorkspaceMcpPanel = () => {
+  const t = useI18n();
+  return (
+    <div className={styles.stack}>
+      <IntegrationSettingHeader
+        icon={<img src={MCPIcon} />}
+        name={t['com.affine.integration.mcp-server.name']()}
+        desc={t['com.affine.integration.mcp-server.desc']()}
+      />
+      <section className={styles.panel}>
+        <div className={styles.description}>
+          {t['com.affine.integration.mcp-server.local-workspace']()}
+        </div>
+        <EnableCloudPanel />
+      </section>
+    </div>
+  );
+};
+
+const CloudWorkspaceMcpPanel = () => {
   const t = useI18n();
   const workspaceService = useService(WorkspaceService);
   const serverService = useService(ServerService);

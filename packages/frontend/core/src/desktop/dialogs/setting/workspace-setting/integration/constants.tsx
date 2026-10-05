@@ -41,9 +41,9 @@ const INTEGRATION_LIST = [
     desc: 'com.affine.integration.mcp-server.desc',
     icon: <img src={MCPIcon} />,
     setting: <McpServerSettingPanel />,
-    cloud: true,
     // Dafater: MCP clients bring their own model, so the card does not
-    // depend on the server's AI configuration
+    // depend on the server's AI configuration. Local workspaces still show
+    // it, with a prompt to enable sync.
   },
   // Dafater: no AFFiNE web-clipper card (it linked to AFFiNE's Chrome extension)
   {

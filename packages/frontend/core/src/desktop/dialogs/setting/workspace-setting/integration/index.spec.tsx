@@ -181,12 +181,12 @@ describe('IntegrationSetting', () => {
     ).not.toBeNull();
   });
 
-  test('hides MCP Server for local workspaces', () => {
+  test('shows MCP Server for local workspaces', () => {
     workspaceState.flavour = 'local';
     render(<IntegrationSetting />);
 
     expect(
-      screen.queryByText('com.affine.integration.mcp-server.name')
-    ).toBeNull();
+      screen.getByText('com.affine.integration.mcp-server.name')
+    ).not.toBeNull();
   });
 });

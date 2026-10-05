@@ -2867,6 +2867,7 @@
   "com.affine.integration.mcp-server.reveal.claude-code": "أمر Claude Code",
   "com.affine.integration.mcp-server.action.copy-command": "نسخ الأمر",
   "com.affine.integration.mcp-server.capabilities.list": "سرد المستندات",
+  "com.affine.integration.mcp-server.local-workspace": "يتصل عملاء MCP عبر خادم دفاتر، لذا فعّل مزامنة دفاتر لمساحة العمل هذه أولًا.",
   "com.affine.integration.mcp-server.rotate.title": "تدوير بيانات الاعتماد هذه؟",
   "com.affine.integration.mcp-server.rotate.description": "سيُنشأ رمز جديد فورًا، ويظل الرمز القديم صالحًا لمدة تصل إلى 24 ساعة لتتمكن من تحديث عميل MCP.",
   "com.affine.integration.mcp-server.revoke.title": "إلغاء «{{name}}»؟",
