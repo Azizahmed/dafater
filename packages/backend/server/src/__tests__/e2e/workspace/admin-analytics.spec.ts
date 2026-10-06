@@ -884,3 +884,56 @@ e2e(
     t.is(memberDenied.errors![0].extensions.name, 'DOC_ACTION_DENIED');
   }
 );
+
+// Dafater: no paid team plan, doc analytics follow the workspace roles only.
+e2e('Doc analytics work in workspaces without a team plan', async t => {
+  const owner = await app.signup();
+  const member = await app.create(Mockers.User);
+  const outsider = await app.create(Mockers.User);
+  const workspace = await app.create(Mockers.Workspace, {
+    owner: { id: owner.id },
+  });
+  await app.create(Mockers.WorkspaceUser, {
+    workspaceId: workspace.id,
+    userId: member.id,
+  });
+  const docId = await createPublicDoc({
+    workspaceId: workspace.id,
+    ownerId: owner.id,
+    title: 'free-analytics-doc',
+    updatedAt: new Date(),
+    publishedAt: new Date(),
+  });
+  await ensureAnalyticsTables(app.get(PrismaClient));
+
+  const analytics = (field: string) => `
+    query DocAnalytics($workspaceId: String!, $docId: String!) {
+      workspace(id: $workspaceId) {
+        doc(docId: $docId) {
+          ${field}
+        }
+      }
+    }
+  `;
+  const views = analytics('analytics { summary { totalViews } }');
+  const viewers = analytics(
+    'lastAccessedMembers(pagination: { first: 10, offset: 0 }) { edges { node { user { id } } } }'
+  );
+  const variables = { workspaceId: workspace.id, docId };
+
+  await app.login(owner);
+  const ownerViews = await gql(views, variables);
+  t.falsy(ownerViews.errors);
+  t.is(ownerViews.data!.workspace.doc.analytics.summary.totalViews, 0);
+  t.falsy((await gql(viewers, variables)).errors);
+
+  // members see the views, but not who viewed the doc
+  await app.login(member);
+  t.falsy((await gql(views, variables)).errors);
+  const memberViewers = await gql(viewers, variables);
+  t.is(memberViewers.errors?.[0].extensions.name, 'DOC_ACTION_DENIED');
+
+  await app.login(outsider);
+  const outsiderViews = await gql(views, variables);
+  t.truthy(outsiderViews.errors?.length);
+});

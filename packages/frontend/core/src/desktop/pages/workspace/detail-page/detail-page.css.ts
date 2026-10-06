@@ -50,11 +50,29 @@ export const affineDocViewport = style({
 export const pageModeViewportContentBox = style({});
 globalStyle(
   `${pageModeViewportContentBox} >:first-child:has(>[data-affine-editor-container])`,
-  { display: 'table !important', minWidth: '100%' }
+  // Dafater: fill the viewport (a table grows past its height with the
+  // content), so the blank gap pushes the starter bar of a new doc to the
+  // bottom instead of the middle of the screen.
+  { display: 'table !important', minWidth: '100%', height: '100%' }
+);
+globalStyle(
+  `${pageModeViewportContentBox} >:first-child > [data-affine-editor-container]`,
+  { minHeight: '100%' }
 );
 globalStyle(
   `${pageModeViewportContentBox} >:first-child:has(>[data-affine-editor-container].full-screen)`,
-  { display: 'block !important', width: '100%', minWidth: '100%' }
+  {
+    display: 'flex !important',
+    flexDirection: 'column',
+    width: '100%',
+    minWidth: '100%',
+    height: 'auto',
+    minHeight: '100%',
+  }
+);
+globalStyle(
+  `${pageModeViewportContentBox} >:first-child > [data-affine-editor-container].full-screen`,
+  { flex: '1 0 auto' }
 );
 globalStyle(
   `${pageModeViewportContentBox} >:first-child:has(>[data-editor-loading="true"]) > [data-editor-loading="true"]`,

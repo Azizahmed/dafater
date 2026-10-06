@@ -46,6 +46,7 @@ import {
   type DotToUnderline,
   mapPermissionsToGraphqlPermissions,
   PermissionAccess,
+  WorkspaceRole,
 } from '../../permission';
 import { toNativeExplicitDocGrantRole } from '../../permission/context';
 import { PublicUserType, WorkspaceUserType } from '../../user';
@@ -649,6 +650,38 @@ export class DocResolver {
     };
   }
 
+  /**
+   * Dafater: doc analytics are not a paid feature. The native policy only
+   * allows them with a commercial (Team) entitlement, which a self-hosted
+   * Dafater server never has, so its role rules are applied here without it:
+   * workspace members who can edit the doc see the views, and workspace
+   * owners and admins also see who viewed it.
+   */
+  private async assertAnalyticsAccess(
+    userId: string,
+    doc: DocType,
+    action: 'Doc.Analytics.Read' | 'Doc.Analytics.Viewers.Read'
+  ) {
+    const member = await this.models.workspaceUser.getActive(
+      doc.workspaceId,
+      userId
+    );
+    const allowed =
+      !!member &&
+      (action === 'Doc.Analytics.Read'
+        ? await this.ac.user(userId).doc(doc).can('Doc.Update')
+        : (member.type === WorkspaceRole.Owner ||
+            member.type === WorkspaceRole.Admin) &&
+          (await this.ac.user(userId).doc(doc).can('Doc.Read')));
+    if (!allowed) {
+      throw new DocActionDenied({
+        action,
+        docId: doc.docId,
+        spaceId: doc.workspaceId,
+      });
+    }
+  }
+
   @ResolveField(() => DocPageAnalytics, {
     description: 'Doc page analytics in a time window',
     complexity: 5,
@@ -659,7 +692,7 @@ export class DocResolver {
     @Args('input', { nullable: true, type: () => DocPageAnalyticsInput })
     input?: DocPageAnalyticsInput
   ): Promise<DocPageAnalytics> {
-    await this.ac.user(me.id).doc(doc).assert('Doc.Analytics.Read');
+    await this.assertAnalyticsAccess(me.id, doc, 'Doc.Analytics.Read');
 
     const analytics = await this.models.workspaceAnalytics.getDocPageAnalytics({
       workspaceId: doc.workspaceId,
@@ -692,7 +725,7 @@ export class DocResolver {
     @Args('includeTotal', { nullable: true, defaultValue: false })
     includeTotal?: boolean
   ): Promise<PaginatedDocMemberLastAccess> {
-    await this.ac.user(me.id).doc(doc).assert('Doc.Analytics.Viewers.Read');
+    await this.assertAnalyticsAccess(me.id, doc, 'Doc.Analytics.Viewers.Read');
 
     return this.models.workspaceAnalytics.paginateDocLastAccessedMembers({
       workspaceId: doc.workspaceId,
