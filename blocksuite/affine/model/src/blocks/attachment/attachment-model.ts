@@ -95,6 +95,7 @@ export const AttachmentBlockSchema = defineBlockSchema({
       'affine:edgeless-text',
       'affine:paragraph',
       'affine:list',
+      'affine:meeting-notes-section',
     ],
     children: ['@attachment-viewer'],
   },

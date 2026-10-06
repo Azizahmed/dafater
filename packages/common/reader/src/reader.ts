@@ -863,6 +863,24 @@ export async function readAllBlocksFromDoc({
       });
     } else if (bookmarkFlavours.has(flavour)) {
       blockDocuments.push({ ...commonBlockProps });
+    } else if (flavour === 'affine:meeting-notes') {
+      // Dafater: the meeting title and transcript are searchable; the notes
+      // and the summary are regular blocks indexed on their own
+      const transcript = block.get('prop:transcript') as
+        | { toJSON?: () => unknown }
+        | undefined;
+      const segments = transcript?.toJSON?.() ?? transcript;
+      blockDocuments.push({
+        ...commonBlockProps,
+        content: [
+          block.get('prop:title')?.toString() ?? '',
+          ...(Array.isArray(segments)
+            ? segments.map(segment =>
+                typeof segment?.text === 'string' ? segment.text : ''
+              )
+            : []),
+        ].filter(Boolean),
+      });
     }
   }
   // #endregion

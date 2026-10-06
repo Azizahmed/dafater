@@ -44,12 +44,51 @@ corepack yarn dev -p @affine/web            # التطبيق على :8080
 - للخوادم المحلية فعّل «السماح بالشبكة المحلية» من الإعدادات المتقدّمة.
 - استخدم «اختبار الاتصال»، ثم «حفظ»، وفعّل الذكاء الاصطناعي.
 
-لا تتوفّر مع المزوّد المخصّص ميزات توليد الصور وتفريغ التسجيلات الصوتية والبحث الدلالي.
+### التفريغ النصي (ملاحظات الاجتماعات بالذكاء الاصطناعي)
+
+في قسم «التفريغ النصي» من الصفحة نفسها:
+
+- **نموذج التفريغ النصي**، مثل `whisper-1` أو `gpt-4o-mini-transcribe` (OpenAI)،
+  أو `whisper-large-v3` (Groq). اتركه فارغًا لإيقاف التفريغ النصي.
+- **مزوّد مستقل للتفريغ النصي** (اختياري): عنوان أساسي ومفتاح خاصّان بالتفريغ، مثل
+  `https://api.groq.com/openai/v1`، أو `http://localhost:8000/v1` لخادم Whisper محلي
+  مثل Speaches أو faster-whisper. إن تُرك العنوان فارغًا استُخدم العنوان والمفتاح أعلاه.
+  يُترك المفتاح فارغًا للإبقاء على المفتاح المحفوظ ما دام العنوان لم يتغيّر.
+- «اختبار التفريغ النصي» يرسل ثانية صامتة إلى `‎/audio/transcriptions` ويعرض النتيجة.
+
+يحفظ الخادم هذه القيم داخل ملف تعريف المزوّد (`copilot.providers.profiles`، المعرّف
+`dafater-openai-compatible`) في الحقول `transcriptionModel` و`transcriptionBaseURL`
+و`transcriptionApiKey`، ولا تُعاد المفاتيح أبدًا في الواجهة البرمجية.
+
+واجهات ملاحظات الاجتماعات (لكل مستخدم مسجّل الدخول، ولا تحتاج مساحة عمل):
+
+- `GET /api/copilot/meeting-notes/capabilities` ← `{ "summary": bool, "transcription": bool }`
+- `POST /api/copilot/meeting-notes/transcribe?mimeType=audio/webm&language=ar&prompt=…`
+  مع بايتات الصوت في جسم الطلب (حتى 25 ميغابايت) ← `{ "text": "…" }`
+- `POST /api/copilot/meeting-notes/summarize` (JSON) ← `{ "title": "…", "markdown": "…" }`
+
+يتوفّر التفريغ النصي للتسجيلات بعد تحديد نموذج للتفريغ النصي، أما توليد الصور والبحث
+الدلالي فلا يتوفّران مع المزوّد المخصّص.
 
 ## الاختبار دون مفتاح حقيقي
 
 `node tools/dafater/mock-openai.mjs` يشغّل مزوّدًا تجريبيًا متوافقًا مع OpenAI على
-`http://localhost:18080/v1` (النموذج `mock-model`). الاختبارات الآلية:
+`http://localhost:18080/v1` (النموذج `mock-model`). يدعم أيضًا `‎/v1/audio/transcriptions`
+(يعيد جملًا عربية ثابتة بالتناوب، وجملًا إنجليزية مع `language=en`، ونصًا فارغًا لملف WAV
+صامت)، ويعيد ملخص اجتماع عربيًا بالصيغة المطلوبة عند طلب التلخيص. لتجربة ملاحظات الاجتماعات:
+اضبط النموذج `mock-model` والعنوان `http://127.0.0.1:18080/v1` مع «السماح بالشبكة المحلية»،
+ونموذج التفريغ النصي `whisper-1`، ثم «اختبار التفريغ النصي».
+
+اختبارات الخادم الخاصة بملاحظات الاجتماعات (على قاعدة بيانات الاختبار):
+
+```bash
+cd packages/backend/server
+NODE_OPTIONS="--import=$(realpath ../../../tools/cli/register.js)" \
+DATABASE_URL=postgres://dafater:dafater@localhost:55440/dafater_test \
+npx ava src/__tests__/copilot/meeting-notes.spec.ts src/__tests__/copilot/meeting-notes.e2e.ts
+```
+
+الاختبارات الآلية الأخرى:
 
 - `tests/affine-cloud/e2e/dafater-sign-up.spec.ts`: إنشاء الحسابات، وأول مسجّل يصبح المدير.
 - `tests/affine-cloud/e2e/dafater-admin-ai.spec.ts`: إعداد المزوّد، ثم محادثة.

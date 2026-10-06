@@ -1,10 +1,10 @@
-import type { IncomingMessage } from 'node:http';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 
 import type { RawBodyRequest } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
-import { raw } from 'express';
+import { json, raw } from 'express';
 import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 
 import {
@@ -37,8 +37,9 @@ export function configureBodyParsers(
   while (start < end && serverPath[start] === '/') start++;
   while (end > start && serverPath[end - 1] === '/') end--;
   const serverPrefix = serverPath.slice(start, end);
+  const prefix = serverPrefix ? `/${serverPrefix}` : '';
   app.use(
-    `${serverPrefix ? `/${serverPrefix}` : ''}/api/copilot/chat/:sessionId/attachments/:key`,
+    `${prefix}/api/copilot/chat/:sessionId/attachments/:key`,
     raw({
       limit: 20 * OneMB,
       type: () => true,
@@ -46,6 +47,31 @@ export function configureBodyParsers(
         req.rawBody = buffer;
       },
     })
+  );
+  // Dafater AI meeting notes: audio chunks of any content type (≤ 25 MB) and
+  // long transcripts for the summary.
+  app.use(
+    `${prefix}/api/copilot/meeting-notes/transcribe`,
+    raw({
+      limit: 25 * OneMB,
+      type: () => true,
+      verify: (req: RawBodyRequest<IncomingMessage>, _res, buffer) => {
+        req.rawBody = buffer;
+      },
+    })
+  );
+  // Nest skips its global JSON parser when a layer named `jsonParser` is
+  // already registered, so the route-scoped parser needs another name.
+  const meetingNotesJson = json({ limit: 4 * OneMB });
+  app.use(
+    `${prefix}/api/copilot/meeting-notes/summarize`,
+    function meetingNotesJsonParser(
+      req: IncomingMessage,
+      res: ServerResponse,
+      next: (error?: unknown) => void
+    ) {
+      meetingNotesJson(req, res, next);
+    }
   );
   app.useBodyParser('raw', { limit: 100 * OneMB });
 }

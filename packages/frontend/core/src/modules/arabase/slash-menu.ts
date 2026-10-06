@@ -133,6 +133,8 @@ const SLASH_MENU_KEYS: Record<string, string> = {
   'Make it shorter': 'ai.make-shorter',
   'Generate outline': 'ai.generate-outline',
   'Find actions': 'ai.find-actions',
+  'AI Meeting Notes': 'ai.meeting-notes',
+  'Transcribe and summarize a meeting with AI.': 'ai.meeting-notes.description',
   Arabic: 'ai.lang.arabic',
   English: 'ai.lang.english',
   'Brazilian Portuguese': 'ai.lang.brazilian-portuguese',

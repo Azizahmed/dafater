@@ -355,6 +355,8 @@ export default {
     extendInfo: {
       NSAudioCaptureUsageDescription:
         'Please allow access in order to capture audio from other apps by Dafater.',
+      NSMicrophoneUsageDescription:
+        'Dafater uses the microphone to transcribe your meetings into AI meeting notes.',
     },
   },
   makers,

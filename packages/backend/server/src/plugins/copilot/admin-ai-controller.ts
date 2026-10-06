@@ -9,10 +9,25 @@ import { BackendRuntimeProvider } from '../../core/backend-runtime';
 import { Admin } from '../../core/common';
 import { ServerService } from '../../core/config';
 import { Models } from '../../models';
-import type {
-  CopilotProviderProfile,
-  OpenAICompatibleProviderConfig,
-} from './config';
+import type { CopilotProviderProfile } from './config';
+import {
+  classifyFetchError,
+  DAFATER_AI_PROFILE_ID,
+  type DafaterProfileConfig,
+  describeHttpError,
+  errorMessage,
+  normalizeBaseUrl,
+  profileConfig,
+  readDafaterProfile,
+  resolveTranscriptionApiKey,
+  storedKeyForEndpoint,
+  type UpstreamErrorCode,
+} from './dafater-ai-profile';
+import {
+  silentWav,
+  transcribeAudio,
+  TranscriptionUpstreamError,
+} from './meeting-notes/transcription';
 import { CopilotProviderType } from './providers/types';
 
 /**
@@ -23,9 +38,9 @@ import { CopilotProviderType } from './providers/types';
  *
  * Plain REST instead of GraphQL so no client codegen is needed.
  */
-export const DAFATER_AI_PROFILE_ID = 'dafater-openai-compatible';
-const PROFILES_CONFIG_KEY = 'copilot.providers.profiles';
+export { DAFATER_AI_PROFILE_ID, normalizeBaseUrl };
 const TEST_TIMEOUT_MS = 15_000;
+const TRANSCRIPTION_TEST_TIMEOUT_MS = 30_000;
 const TEST_MAX_BYTES = 1024 * 1024;
 
 const AiDialect = z.enum(['chat_completions', 'responses']);
@@ -39,6 +54,12 @@ const AiConfigInput = z.object({
   dialect: AiDialect.optional(),
   allowPrivateNetwork: z.boolean().optional(),
   vision: z.boolean().optional(),
+  // speech-to-text for AI meeting notes: omitted = keep the stored value,
+  // '' = off (model) / same as the main base URL and key (base URL)
+  transcriptionModel: z.string().trim().max(512).optional(),
+  transcriptionBaseURL: z.string().trim().max(2048).optional(),
+  // empty or omitted = keep the stored key for the same endpoint
+  transcriptionApiKey: z.string().trim().max(4096).optional(),
 });
 type AiConfigInput = z.infer<typeof AiConfigInput>;
 
@@ -51,17 +72,15 @@ export interface AdminAiConfig {
   vision: boolean;
   /** The key itself is never returned. */
   hasApiKey: boolean;
+  /** '' = transcription (AI meeting notes) is off */
+  transcriptionModel: string;
+  /** '' = the main base URL (and its API key) */
+  transcriptionBaseURL: string;
+  /** a separate transcription key is stored (never returned) */
+  hasTranscriptionApiKey: boolean;
 }
 
-export type AdminAiTestErrorCode =
-  | 'private_network'
-  | 'blocked_url'
-  | 'timeout'
-  | 'unauthorized'
-  | 'not_found'
-  | 'http_error'
-  | 'network_error'
-  | 'invalid_response';
+export type AdminAiTestErrorCode = UpstreamErrorCode;
 
 export interface AdminAiTestResult {
   ok: boolean;
@@ -85,42 +104,6 @@ function parseInput(body: unknown, forTest = false): AiConfigInput {
     );
   }
   return parsed.data;
-}
-
-/** Same canonical form as the native `canonicalize_endpoint`. */
-export function normalizeBaseUrl(raw: string) {
-  let url: URL;
-  try {
-    url = new URL(raw.trim());
-  } catch {
-    throw new BadRequest('Base URL must be a valid http(s) URL.');
-  }
-  if (
-    !['http:', 'https:'].includes(url.protocol) ||
-    url.username ||
-    url.password
-  ) {
-    throw new BadRequest(
-      'Base URL must be an http(s) URL without credentials.'
-    );
-  }
-  url.search = '';
-  url.hash = '';
-  url.pathname = url.pathname.replace(/\/+$/, '') || '/';
-  return url.toString().replace(/\/+$/, '');
-}
-
-function sameEndpoint(left: unknown, right: string) {
-  if (typeof left !== 'string' || !left) return false;
-  try {
-    return normalizeBaseUrl(left) === right;
-  } catch {
-    return false;
-  }
-}
-
-function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : String(error);
 }
 
 @Admin()
@@ -149,15 +132,42 @@ export class AdminAiConfigController {
 
     let profiles: CopilotProviderProfile[] = [];
     if (input.baseURL && input.model) {
+      const stored = await this.storedConfig();
       const baseURL = normalizeBaseUrl(input.baseURL);
-      const apiKey = input.apiKey || (await this.storedApiKey(baseURL));
-      const config: OpenAICompatibleProviderConfig = {
+      const apiKey = input.apiKey || storedKeyForEndpoint(stored, baseURL);
+      // omitted transcription fields keep their stored values
+      const transcriptionModel = (
+        input.transcriptionModel ??
+        stored.transcriptionModel ??
+        ''
+      ).trim();
+      const rawTranscriptionBaseURL = (
+        input.transcriptionBaseURL ??
+        stored.transcriptionBaseURL ??
+        ''
+      ).trim();
+      const transcriptionBaseURL = rawTranscriptionBaseURL
+        ? normalizeBaseUrl(rawTranscriptionBaseURL)
+        : '';
+      const transcriptionApiKey = resolveTranscriptionApiKey({
+        transcriptionBaseURL,
+        transcriptionApiKey: input.transcriptionApiKey,
+        mainBaseURL: baseURL,
+        mainApiKey: apiKey,
+        stored,
+      });
+      const config: DafaterProfileConfig = {
         ...(apiKey ? { apiKey } : {}),
         baseURL,
         dialect: input.dialect ?? 'chat_completions',
         defaultModel: input.model,
         allowPrivateNetwork: input.allowPrivateNetwork ?? false,
         vision: input.vision ?? false,
+        // speech-to-text for AI meeting notes; the native runtime ignores
+        // these keys
+        ...(transcriptionModel ? { transcriptionModel } : {}),
+        ...(transcriptionBaseURL ? { transcriptionBaseURL } : {}),
+        ...(transcriptionApiKey ? { transcriptionApiKey } : {}),
       };
       profiles = [
         {
@@ -192,7 +202,8 @@ export class AdminAiConfigController {
       throw new BadRequest('Base URL and model are required.');
     }
     const baseURL = normalizeBaseUrl(input.baseURL);
-    const apiKey = input.apiKey || (await this.storedApiKey(baseURL));
+    const apiKey =
+      input.apiKey || storedKeyForEndpoint(await this.storedConfig(), baseURL);
     const dialect = input.dialect ?? 'chat_completions';
     const allowPrivateNetwork = input.allowPrivateNetwork ?? false;
 
@@ -231,23 +242,75 @@ export class AdminAiConfigController {
           : { error: result.error, errorCode: result.errorCode }),
       };
     } catch (error) {
-      const message = errorMessage(error);
-      const blocked =
-        /blocked_ip|blocked_hostname|private or reserved|private network/i.test(
-          message
-        );
-      const errorCode: AdminAiTestErrorCode = blocked
-        ? allowPrivateNetwork
-          ? 'blocked_url'
-          : 'private_network'
-        : /ssrf|invalid_url|disallowed_protocol|url_has_credentials/i.test(
-              message
-            )
-          ? 'blocked_url'
-          : /time(d)?[ _-]?out/i.test(message)
-            ? 'timeout'
-            : 'network_error';
-      return { ok: false, latencyMs: latencyMs(), error: message, errorCode };
+      return {
+        ok: false,
+        latencyMs: latencyMs(),
+        error: errorMessage(error),
+        errorCode: classifyFetchError(error, allowPrivateNetwork),
+      };
+    }
+  }
+
+  /**
+   * Sends one second of silence to `{base URL}/audio/transcriptions` with the
+   * transcription settings from the form (stored keys are reused only for the
+   * same endpoint).
+   */
+  @Post('/test-transcription')
+  @HttpCode(200)
+  async testTranscription(@Body() body: unknown): Promise<AdminAiTestResult> {
+    const input = parseInput(body, true);
+    const stored = await this.storedConfig();
+    const model = (input.transcriptionModel ?? '').trim();
+    if (!model) {
+      throw new BadRequest('Transcription model is required.');
+    }
+    const mainBaseURL = input.baseURL ? normalizeBaseUrl(input.baseURL) : '';
+    const transcriptionBaseURL = input.transcriptionBaseURL
+      ? normalizeBaseUrl(input.transcriptionBaseURL)
+      : '';
+    const baseURL = transcriptionBaseURL || mainBaseURL;
+    if (!baseURL) {
+      throw new BadRequest('Base URL is required.');
+    }
+    const mainApiKey =
+      input.apiKey ||
+      (mainBaseURL ? storedKeyForEndpoint(stored, mainBaseURL) : undefined);
+    const apiKey = transcriptionBaseURL
+      ? resolveTranscriptionApiKey({
+          transcriptionBaseURL,
+          transcriptionApiKey: input.transcriptionApiKey,
+          mainBaseURL,
+          mainApiKey,
+          stored,
+        })
+      : mainApiKey;
+    const allowPrivateNetwork = input.allowPrivateNetwork ?? false;
+
+    const started = performance.now();
+    const latencyMs = () => Math.round(performance.now() - started);
+    try {
+      const { text } = await transcribeAudio(
+        { model, baseURL, apiKey, allowPrivateNetwork },
+        silentWav(1),
+        { mimeType: 'audio/wav', timeoutMs: TRANSCRIPTION_TEST_TIMEOUT_MS }
+      );
+      return { ok: true, latencyMs: latencyMs(), sampleText: text };
+    } catch (error) {
+      if (error instanceof TranscriptionUpstreamError) {
+        return {
+          ok: false,
+          latencyMs: latencyMs(),
+          error: error.message,
+          errorCode: error.errorCode,
+        };
+      }
+      return {
+        ok: false,
+        latencyMs: latencyMs(),
+        error: errorMessage(error),
+        errorCode: classifyFetchError(error, allowPrivateNetwork),
+      };
     }
   }
 
@@ -303,21 +366,10 @@ export class AdminAiConfigController {
       // handled below
     }
     if (!response.ok) {
-      const detail =
-        (typeof json?.error?.message === 'string' && json.error.message) ||
-        (typeof json?.error === 'string' && json.error) ||
-        (typeof json?.message === 'string' && json.message) ||
-        text.slice(0, 300);
       return {
         ok: false,
         status: response.status,
-        error: `HTTP ${response.status}${detail ? `: ${detail}` : ''}`,
-        errorCode:
-          response.status === 401 || response.status === 403
-            ? 'unauthorized'
-            : response.status === 404
-              ? 'not_found'
-              : 'http_error',
+        ...describeHttpError(response.status, text),
       };
     }
     const sample =
@@ -346,46 +398,14 @@ export class AdminAiConfigController {
     return { ok: true, status: response.status, sampleText: sample.trim() };
   }
 
-  private async storedProfiles(): Promise<CopilotProviderProfile[]> {
+  private async storedConfig(): Promise<DafaterProfileConfig> {
     // internal read: the public admin config redacts this secret key
-    const row = await this.models.appConfig.get(PROFILES_CONFIG_KEY);
-    return Array.isArray(row?.value)
-      ? (row.value as unknown as CopilotProviderProfile[])
-      : [];
-  }
-
-  private async storedProfile() {
-    const profiles = await this.storedProfiles();
-    return (
-      profiles.find(profile => profile?.id === DAFATER_AI_PROFILE_ID) ??
-      profiles.find(
-        profile =>
-          profile?.type === CopilotProviderType.OpenAI &&
-          typeof profile.config?.baseURL === 'string'
-      )
-    );
-  }
-
-  /**
-   * The stored key is only reused for the same endpoint, so changing the base
-   * URL never sends the old provider's key to a new host.
-   */
-  private async storedApiKey(baseURL: string) {
-    const profile = await this.storedProfile();
-    const config = profile?.config as
-      | Partial<OpenAICompatibleProviderConfig>
-      | undefined;
-    return sameEndpoint(config?.baseURL, baseURL) &&
-      typeof config?.apiKey === 'string' &&
-      config.apiKey
-      ? config.apiKey
-      : undefined;
+    return profileConfig(await readDafaterProfile(this.models));
   }
 
   private async read(): Promise<AdminAiConfig> {
-    const profile = await this.storedProfile();
-    const config = (profile?.config ??
-      {}) as Partial<OpenAICompatibleProviderConfig>;
+    const profile = await readDafaterProfile(this.models);
+    const config = profileConfig(profile);
     return {
       enabled: this.runtime.copilotEnabled(),
       baseURL: typeof config.baseURL === 'string' ? config.baseURL : '',
@@ -398,6 +418,17 @@ export class AdminAiConfigController {
       allowPrivateNetwork: config.allowPrivateNetwork === true,
       vision: config.vision === true,
       hasApiKey: typeof config.apiKey === 'string' && config.apiKey.length > 0,
+      transcriptionModel:
+        typeof config.transcriptionModel === 'string'
+          ? config.transcriptionModel
+          : '',
+      transcriptionBaseURL:
+        typeof config.transcriptionBaseURL === 'string'
+          ? config.transcriptionBaseURL
+          : '',
+      hasTranscriptionApiKey:
+        typeof config.transcriptionApiKey === 'string' &&
+        config.transcriptionApiKey.length > 0,
     };
   }
 }

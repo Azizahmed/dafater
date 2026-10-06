@@ -180,19 +180,21 @@ same as before (`t('Bold')`, `t('Delete {count} rows', { count })`).
 Kept minimal, behaviour-identical for LTR documents, and upstreamable. Review
 these when merging upstream AFFiNE:
 
-| File                                                                                                    | Change                                                                      |
-| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `affine/model/src/consts/text.ts`, `blocks/{paragraph,list}/*-model.ts`                                 | Optional `textDirection` prop (like `textAlign`).                           |
-| `affine/blocks/paragraph/src/{styles,paragraph-block,heading-icon}.ts`                                  | Logical properties (quote bar, placeholder, children indent, heading icon). |
-| `affine/blocks/list/src/{styles,list-block}.ts`, `blocks/divider`, `blocks/callout`                     | Logical properties.                                                         |
-| `affine/components/src/toggle-button/toggle-button.ts`                                                  | Logical position; chevron mirrors in RTL.                                   |
-| `affine/fragments/doc-title/src/doc-title.ts`                                                           | Placeholder from `--affine-doc-title-placeholder`.                          |
-| `framework/std/src/inline/services/event.ts`                                                            | Arrow keys around inline embeds move visually in RTL.                       |
-| `affine/widgets/drag-handle/**`, `affine/shared/src/utils/{dnd/calc-drop-target,dom/point-to-block}.ts` | Drag handle, hover area and drop targets mirrored for RTL blocks.           |
-| `affine/widgets/slash-menu/src/utils.ts`                                                                | Item transform also applies to sub-menus.                                   |
-| `framework/global/src/i18n` (+ `affine/all` re-export)                                                  | `t()` / `setTranslator()`: the translation hook, identity when unset.       |
-| `affine/model/src/blocks/{table,database}/*-model.ts`                                                   | Optional `textDirection` prop.                                              |
-| Engine UI strings across `affine/**`                                                                    | Wrapped in `t('English')` at render time.                                   |
+| File                                                                                                    | Change                                                                                                                    |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `affine/model/src/consts/text.ts`, `blocks/{paragraph,list}/*-model.ts`                                 | Optional `textDirection` prop (like `textAlign`).                                                                         |
+| `affine/blocks/paragraph/src/{styles,paragraph-block,heading-icon}.ts`                                  | Logical properties (quote bar, placeholder, children indent, heading icon).                                               |
+| `affine/blocks/list/src/{styles,list-block}.ts`, `blocks/divider`, `blocks/callout`                     | Logical properties.                                                                                                       |
+| `affine/components/src/toggle-button/toggle-button.ts`                                                  | Logical position; chevron mirrors in RTL.                                                                                 |
+| `affine/fragments/doc-title/src/doc-title.ts`                                                           | Placeholder from `--affine-doc-title-placeholder`.                                                                        |
+| `framework/std/src/inline/services/event.ts`                                                            | Arrow keys around inline embeds move visually in RTL.                                                                     |
+| `affine/widgets/drag-handle/**`, `affine/shared/src/utils/{dnd/calc-drop-target,dom/point-to-block}.ts` | Drag handle, hover area and drop targets mirrored for RTL blocks.                                                         |
+| `affine/widgets/slash-menu/src/utils.ts`                                                                | Item transform also applies to sub-menus.                                                                                 |
+| `framework/global/src/i18n` (+ `affine/all` re-export)                                                  | `t()` / `setTranslator()`: the translation hook, identity when unset.                                                     |
+| `affine/model/src/blocks/{table,database}/*-model.ts`                                                   | Optional `textDirection` prop.                                                                                            |
+| Engine UI strings across `affine/**`                                                                    | Wrapped in `t('English')` at render time.                                                                                 |
+| `affine/shared/src/utils/model/get-content-block.ts`                                                    | `registerContentBoundary(flavour)`: Backspace / Delete never cross that container's edges. Nothing registered by default. |
+| `affine/model/src/blocks/{paragraph,list,code,callout,latex,bookmark,attachment}/*-model.ts`            | `affine:meeting-notes-section` (Dafater AI meeting notes) added to the allowed parents.                                   |
 
 ## Gotchas
 

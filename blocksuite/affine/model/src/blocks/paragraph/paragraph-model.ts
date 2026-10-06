@@ -52,6 +52,7 @@ export const ParagraphBlockSchema = defineBlockSchema({
       'affine:edgeless-text',
       'affine:callout',
       'affine:transcription',
+      'affine:meeting-notes-section',
     ],
   },
   toModel: () => new ParagraphBlockModel(),

@@ -1,4 +1,5 @@
 import type { ConfirmModalProps, ElementOrFactory } from '@affine/component';
+import { meetingNotesViewExtensions } from '@affine/core/blocksuite/ai/blocks/meeting-notes/view-extension';
 import {
   AffinePageReference,
   AffineSharedPageReference,
@@ -110,7 +111,9 @@ export class AffineEditorViewExtension extends ViewExtensionProvider<AffineEdito
         patchForAudioEmbedView(reactToLit),
       ])
       .register(patchDocUrlExtensions(framework))
-      .register(patchQuickSearchService(framework));
+      .register(patchQuickSearchService(framework))
+      // Dafater: AI meeting notes
+      .register(meetingNotesViewExtensions(framework, reactToLit));
 
     if (scope === 'doc') {
       const docService = framework.get(DocService);

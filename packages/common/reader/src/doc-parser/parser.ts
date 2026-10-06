@@ -13,6 +13,40 @@ import type {
   YBlocks,
 } from './types';
 
+type MeetingTranscriptSegment = { start: number; text: string };
+
+function readMeetingTranscript(yBlock: YBlock): MeetingTranscriptSegment[] {
+  const value = yBlock.get('prop:transcript') as unknown;
+  const list =
+    value && typeof (value as YArray<unknown>).toJSON === 'function'
+      ? (value as YArray<unknown>).toJSON()
+      : value;
+  if (!Array.isArray(list)) return [];
+  return list
+    .filter(
+      (item): item is MeetingTranscriptSegment =>
+        !!item &&
+        typeof item.text === 'string' &&
+        typeof item.start === 'number'
+    )
+    .sort((a, b) => a.start - b.start);
+}
+
+/** `start` is in ms. */
+function formatTranscriptTime(start: number) {
+  const total = Math.max(0, Math.floor(start / 1000));
+  const pad = (value: number) => String(value).padStart(2, '0');
+  const hours = Math.floor(total / 3600);
+  const minutes = pad(Math.floor((total % 3600) / 60));
+  return hours
+    ? `${hours}:${minutes}:${pad(total % 60)}`
+    : `${minutes}:${pad(total % 60)}`;
+}
+
+function syntheticBlock(id: string, content: string): ParsedBlock {
+  return { id, flavour: 'affine:paragraph', content, children: [] };
+}
+
 export const parseBlockToMd = (
   block: BaseParsedBlock,
   padding = ''
@@ -77,6 +111,8 @@ export function parseBlock(
   }
 
   let placeholder = false;
+  let extraChildren: { before: ParsedBlock[]; after: ParsedBlock[] } | null =
+    null;
 
   try {
     switch (flavour) {
@@ -385,6 +421,49 @@ export function parseBlock(
         });
         break;
       }
+      // Dafater: AI meeting notes. Their title, date and transcript are
+      // block props; the notes and the summary are child blocks. Extra lines
+      // are added as children (not content) so nothing gets indented.
+      case 'affine:meeting-notes': {
+        const title = (yBlock.get('prop:title') as string) || 'Meeting';
+        const date = Number(yBlock.get('prop:date') ?? 0);
+        const day = date
+          ? ` (${new Date(date).toISOString().slice(0, 10)})`
+          : '';
+        const transcript = readMeetingTranscript(yBlock);
+        extraChildren = {
+          before: [syntheticBlock(id, `### ${title}${day}\n`)],
+          after: transcript.length
+            ? [
+                syntheticBlock(
+                  id,
+                  '**Transcript**\n\n' +
+                    transcript
+                      .map(
+                        segment =>
+                          `[${formatTranscriptTime(segment.start)}] ${segment.text}`
+                      )
+                      .join('\n\n') +
+                    '\n'
+                ),
+              ]
+            : [],
+        };
+        break;
+      }
+      case 'affine:meeting-notes-section': {
+        const kind = yBlock.get('prop:kind');
+        extraChildren = {
+          before: [
+            syntheticBlock(
+              id,
+              kind === 'summary' ? '**AI summary**\n' : '**Notes**\n'
+            ),
+          ],
+          after: [],
+        };
+        break;
+      }
       default: {
         // console.warn("Unknown or unsupported flavour", flavour);
         placeholder = true;
@@ -409,6 +488,13 @@ export function parseBlock(
                 !(block.content === '' && block.children.length === 0)
             )
         : [];
+    if (extraChildren && result.children.length + extraChildren.after.length) {
+      result.children = [
+        ...extraChildren.before,
+        ...result.children,
+        ...extraChildren.after,
+      ];
+    }
   } catch (e) {
     console.warn('Error converting block to md', e);
   }

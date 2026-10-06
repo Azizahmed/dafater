@@ -5906,7 +5906,7 @@ export function useAFFiNEI18N(): {
       */
     ["com.affine.settings.server-ai.subtitle"](): string;
     /**
-      * `Image generation, audio transcription and semantic search are not available with a custom provider.`
+      * `Audio transcription for AI meeting notes works once you set a transcription model below (for example OpenAI Whisper or gpt-4o-transcribe, Groq, or a local Whisper server such as Speaches or faster-whisper). Image generation and semantic search are not available with a custom provider.`
       */
     ["com.affine.settings.server-ai.limitations"](): string;
     /**
@@ -6063,6 +6063,74 @@ export function useAFFiNEI18N(): {
       * `The reply isn't in the OpenAI-compatible format.`
       */
     ["com.affine.settings.server-ai.test.error.invalid-response"](): string;
+    /**
+      * `Transcription`
+      */
+    ["com.affine.settings.server-ai.transcription.title"](): string;
+    /**
+      * `Turns recorded speech into text for AI meeting notes. Works with any OpenAI-compatible transcription API: OpenAI (whisper-1, gpt-4o-mini-transcribe), Groq (whisper-large-v3) or a local Whisper server such as Speaches or faster-whisper.`
+      */
+    ["com.affine.settings.server-ai.transcription.desc"](): string;
+    /**
+      * `Transcription model`
+      */
+    ["com.affine.settings.server-ai.transcription.model.name"](): string;
+    /**
+      * `For example whisper-1, gpt-4o-mini-transcribe or whisper-large-v3. Leave it empty to turn off transcription in meeting notes.`
+      */
+    ["com.affine.settings.server-ai.transcription.model.desc"](): string;
+    /**
+      * `Separate transcription provider`
+      */
+    ["com.affine.settings.server-ai.transcription.separate"](): string;
+    /**
+      * `Transcription base URL`
+      */
+    ["com.affine.settings.server-ai.transcription.base-url.name"](): string;
+    /**
+      * `Leave it empty to use the base URL above. For example https://api.groq.com/openai/v1, or http://localhost:8000/v1 for a local Whisper server (turn on “Allow local network” under Advanced).`
+      */
+    ["com.affine.settings.server-ai.transcription.base-url.desc"](): string;
+    /**
+      * `Same as above`
+      */
+    ["com.affine.settings.server-ai.transcription.base-url.placeholder"](): string;
+    /**
+      * `Transcription API key`
+      */
+    ["com.affine.settings.server-ai.transcription.api-key.name"](): string;
+    /**
+      * `Used only with a separate base URL; otherwise the API key above is used. Leave it empty to keep the current key while the address stays the same.`
+      */
+    ["com.affine.settings.server-ai.transcription.api-key.desc"](): string;
+    /**
+      * `Test transcription`
+      */
+    ["com.affine.settings.server-ai.transcription.test"](): string;
+    /**
+      * `Enter the transcription model and a base URL first.`
+      */
+    ["com.affine.settings.server-ai.transcription.required"](): string;
+    /**
+      * `Transcription works ({{latency}} ms).`
+      */
+    ["com.affine.settings.server-ai.transcription.test.success"](options: {
+        readonly latency: string;
+    }): string;
+    /**
+      * `Heard: {{text}}`
+      */
+    ["com.affine.settings.server-ai.transcription.test.sample"](options: {
+        readonly text: string;
+    }): string;
+    /**
+      * `The provider didn't respond within 30 seconds.`
+      */
+    ["com.affine.settings.server-ai.transcription.test.error.timeout"](): string;
+    /**
+      * `The transcription API or the model wasn't found. Check the base URL and the model name; the provider must offer /audio/transcriptions.`
+      */
+    ["com.affine.settings.server-ai.transcription.test.error.not-found"](): string;
     /**
       * `Settings`
       */
@@ -11653,6 +11721,14 @@ export function useAFFiNEI18N(): {
       */
     ["com.affine.editor.slash-menu.ai.tone.humorous"](): string;
     /**
+      * `AI Meeting Notes`
+      */
+    ["com.affine.editor.slash-menu.ai.meeting-notes"](): string;
+    /**
+      * `Transcribe and summarize a meeting with AI.`
+      */
+    ["com.affine.editor.slash-menu.ai.meeting-notes.description"](): string;
+    /**
       * `Image could not be decoded`
       */
     ["com.affine.image.reduce.decode-failed"](): string;
@@ -12037,6 +12113,378 @@ export function useAFFiNEI18N(): {
       * `Calendar View`
       */
     ["com.affine.editor.slash-menu.database-calendar-view"](): string;
+    /**
+      * `Meeting`
+      */
+    ["com.affine.meeting-notes.title.placeholder"](): string;
+    /**
+      * `Meeting title`
+      */
+    ["com.affine.meeting-notes.title.label"](): string;
+    /**
+      * `Meeting date`
+      */
+    ["com.affine.meeting-notes.date.tooltip"](): string;
+    /**
+      * `Today`
+      */
+    ["com.affine.meeting-notes.date.today"](): string;
+    /**
+      * `Yesterday`
+      */
+    ["com.affine.meeting-notes.date.yesterday"](): string;
+    /**
+      * `Tomorrow`
+      */
+    ["com.affine.meeting-notes.date.tomorrow"](): string;
+    /**
+      * `Attendees`
+      */
+    ["com.affine.meeting-notes.attendees.label"](): string;
+    /**
+      * `Add a name, then press Enter`
+      */
+    ["com.affine.meeting-notes.attendees.placeholder"](): string;
+    /**
+      * `No attendees yet`
+      */
+    ["com.affine.meeting-notes.attendees.empty"](): string;
+    /**
+      * `Remove`
+      */
+    ["com.affine.meeting-notes.attendees.remove"](): string;
+    /**
+      * `Add me`
+      */
+    ["com.affine.meeting-notes.attendees.add-me"](): string;
+    /**
+      * `Summary`
+      */
+    ["com.affine.meeting-notes.tab.summary"](): string;
+    /**
+      * `Notes`
+      */
+    ["com.affine.meeting-notes.tab.notes"](): string;
+    /**
+      * `Transcript`
+      */
+    ["com.affine.meeting-notes.tab.transcript"](): string;
+    /**
+      * `Dafater AI will summarize the notes and transcript`
+      */
+    ["com.affine.meeting-notes.notes.placeholder"](): string;
+    /**
+      * `Start transcribing`
+      */
+    ["com.affine.meeting-notes.start"](): string;
+    /**
+      * `More ways to transcribe`
+      */
+    ["com.affine.meeting-notes.source.more"](): string;
+    /**
+      * `Transcribe from the microphone`
+      */
+    ["com.affine.meeting-notes.source.microphone"](): string;
+    /**
+      * `Microphone and tab audio`
+      */
+    ["com.affine.meeting-notes.source.tab"](): string;
+    /**
+      * `For online meetings in the browser: share the meeting tab with its audio.`
+      */
+    ["com.affine.meeting-notes.source.tab.description"](): string;
+    /**
+      * `Upload an audio file`
+      */
+    ["com.affine.meeting-notes.upload"](): string;
+    /**
+      * `Pause`
+      */
+    ["com.affine.meeting-notes.pause"](): string;
+    /**
+      * `Resume`
+      */
+    ["com.affine.meeting-notes.resume"](): string;
+    /**
+      * `Stop`
+      */
+    ["com.affine.meeting-notes.stop"](): string;
+    /**
+      * `Continue transcribing`
+      */
+    ["com.affine.meeting-notes.continue"](): string;
+    /**
+      * `Generate summary`
+      */
+    ["com.affine.meeting-notes.generate"](): string;
+    /**
+      * `Regenerate summary`
+      */
+    ["com.affine.meeting-notes.regenerate"](): string;
+    /**
+      * `Starting…`
+      */
+    ["com.affine.meeting-notes.status.starting"](): string;
+    /**
+      * `Finishing the transcript…`
+      */
+    ["com.affine.meeting-notes.status.finishing"](): string;
+    /**
+      * `Transcribing the file…`
+      */
+    ["com.affine.meeting-notes.status.importing"](): string;
+    /**
+      * `Summarizing…`
+      */
+    ["com.affine.meeting-notes.status.summarizing"](): string;
+    /**
+      * `Dafater AI is summarizing the notes and transcript…`
+      */
+    ["com.affine.meeting-notes.status.summarizing-long"](): string;
+    /**
+      * `Tips`
+      */
+    ["com.affine.meeting-notes.tips.tooltip"](): string;
+    /**
+      * `Tips for better meeting notes`
+      */
+    ["com.affine.meeting-notes.tips.title"](): string;
+    /**
+      * `Write the agenda in Notes before the meeting. Dafater AI uses it to organize the summary.`
+      */
+    ["com.affine.meeting-notes.tips.agenda"](): string;
+    /**
+      * `Keep the device close to the speakers and reduce background noise.`
+      */
+    ["com.affine.meeting-notes.tips.microphone"](): string;
+    /**
+      * `For an online meeting in the browser, choose “Microphone and tab audio” and share the meeting tab.`
+      */
+    ["com.affine.meeting-notes.tips.online"](): string;
+    /**
+      * `Set the spoken language in the settings for a more accurate transcript.`
+      */
+    ["com.affine.meeting-notes.tips.language"](): string;
+    /**
+      * `Settings`
+      */
+    ["com.affine.meeting-notes.settings.tooltip"](): string;
+    /**
+      * `Spoken language`
+      */
+    ["com.affine.meeting-notes.settings.language"](): string;
+    /**
+      * `Detect automatically`
+      */
+    ["com.affine.meeting-notes.settings.language.auto"](): string;
+    /**
+      * `Copy transcript`
+      */
+    ["com.affine.meeting-notes.copy-transcript"](): string;
+    /**
+      * `Delete transcript`
+      */
+    ["com.affine.meeting-notes.delete-transcript"](): string;
+    /**
+      * `Delete the transcript?`
+      */
+    ["com.affine.meeting-notes.delete-transcript.title"](): string;
+    /**
+      * `Your notes and the summary stay.`
+      */
+    ["com.affine.meeting-notes.delete-transcript.description"](): string;
+    /**
+      * `Delete`
+      */
+    ["com.affine.meeting-notes.delete-transcript.confirm"](): string;
+    /**
+      * `Copied to clipboard`
+      */
+    ["com.affine.meeting-notes.copied"](): string;
+    /**
+      * `Share this summary`
+      */
+    ["com.affine.meeting-notes.share.title"](): string;
+    /**
+      * `Copy link`
+      */
+    ["com.affine.meeting-notes.share.copy-link"](): string;
+    /**
+      * `Email`
+      */
+    ["com.affine.meeting-notes.share.email"](): string;
+    /**
+      * `Copy text`
+      */
+    ["com.affine.meeting-notes.share.copy-text"](): string;
+    /**
+      * `Close`
+      */
+    ["com.affine.meeting-notes.share.close"](): string;
+    /**
+      * `The transcript appears here as people speak.`
+      */
+    ["com.affine.meeting-notes.transcript.empty"](): string;
+    /**
+      * `Listening…`
+      */
+    ["com.affine.meeting-notes.transcript.listening"](): string;
+    /**
+      * `Transcribing…`
+      */
+    ["com.affine.meeting-notes.transcript.transcribing"](): string;
+    /**
+      * `Transcription paused`
+      */
+    ["com.affine.meeting-notes.transcript.paused"](): string;
+    /**
+      * `Some audio couldn't be transcribed. {{error}}`
+      */
+    ["com.affine.meeting-notes.transcript.failed"](options: {
+        readonly error: string;
+    }): string;
+    /**
+      * `Retry`
+      */
+    ["com.affine.meeting-notes.retry"](): string;
+    /**
+      * `Instructions:`
+      */
+    ["com.affine.meeting-notes.instructions.label"](): string;
+    /**
+      * `Auto`
+      */
+    ["com.affine.meeting-notes.instructions.auto"](): string;
+    /**
+      * `Brief`
+      */
+    ["com.affine.meeting-notes.instructions.brief"](): string;
+    /**
+      * `Detailed`
+      */
+    ["com.affine.meeting-notes.instructions.detailed"](): string;
+    /**
+      * `Action items only`
+      */
+    ["com.affine.meeting-notes.instructions.action-items"](): string;
+    /**
+      * `Lecture or class`
+      */
+    ["com.affine.meeting-notes.instructions.lecture"](): string;
+    /**
+      * `Interview`
+      */
+    ["com.affine.meeting-notes.instructions.interview"](): string;
+    /**
+      * `Daily standup`
+      */
+    ["com.affine.meeting-notes.instructions.standup"](): string;
+    /**
+      * `Custom…`
+      */
+    ["com.affine.meeting-notes.instructions.custom"](): string;
+    /**
+      * `Custom instructions`
+      */
+    ["com.affine.meeting-notes.instructions.custom.title"](): string;
+    /**
+      * `Tell Dafater AI how to write the summary.`
+      */
+    ["com.affine.meeting-notes.instructions.custom.description"](): string;
+    /**
+      * `For example: group the points by project and list the risks.`
+      */
+    ["com.affine.meeting-notes.instructions.custom.placeholder"](): string;
+    /**
+      * `Save`
+      */
+    ["com.affine.meeting-notes.instructions.custom.save"](): string;
+    /**
+      * `By starting, you confirm everyone being transcribed has given consent.`
+      */
+    ["com.affine.meeting-notes.consent.notice"](): string;
+    /**
+      * `This meeting is being transcribed and summarized with AI. If you don't agree, please say so now.`
+      */
+    ["com.affine.meeting-notes.consent.message"](): string;
+    /**
+      * `Read the consent notice aloud`
+      */
+    ["com.affine.meeting-notes.consent.speak"](): string;
+    /**
+      * `Copy the consent notice`
+      */
+    ["com.affine.meeting-notes.consent.copy"](): string;
+    /**
+      * `Was this summary helpful?`
+      */
+    ["com.affine.meeting-notes.feedback.question"](): string;
+    /**
+      * `Helpful`
+      */
+    ["com.affine.meeting-notes.feedback.up"](): string;
+    /**
+      * `Not helpful`
+      */
+    ["com.affine.meeting-notes.feedback.down"](): string;
+    /**
+      * `Thanks for your feedback`
+      */
+    ["com.affine.meeting-notes.feedback.thanks"](): string;
+    /**
+      * `Try other instructions, or regenerate the summary from the settings.`
+      */
+    ["com.affine.meeting-notes.feedback.down-hint"](): string;
+    /**
+      * `AI isn't set up on this server yet. Ask the server administrator to set it up.`
+      */
+    ["com.affine.meeting-notes.error.ai-off"](): string;
+    /**
+      * `Transcription needs a speech-to-text model. Ask the server administrator to add one in the AI settings.`
+      */
+    ["com.affine.meeting-notes.error.no-transcription"](): string;
+    /**
+      * `Recording audio isn't supported here.`
+      */
+    ["com.affine.meeting-notes.error.unsupported"](): string;
+    /**
+      * `Another meeting is being transcribed. Stop it first.`
+      */
+    ["com.affine.meeting-notes.error.busy"](): string;
+    /**
+      * `Dafater can't use the microphone. Allow microphone access in the browser or system settings.`
+      */
+    ["com.affine.meeting-notes.error.mic-denied"](): string;
+    /**
+      * `No microphone was found.`
+      */
+    ["com.affine.meeting-notes.error.no-mic"](): string;
+    /**
+      * `No tab audio was shared. In the share dialog, turn on “Share tab audio”.`
+      */
+    ["com.affine.meeting-notes.error.no-tab-audio"](): string;
+    /**
+      * `Couldn't start transcribing: {{error}}`
+      */
+    ["com.affine.meeting-notes.error.start"](options: {
+        readonly error: string;
+    }): string;
+    /**
+      * `Couldn't transcribe the file: {{error}}`
+      */
+    ["com.affine.meeting-notes.error.file"](options: {
+        readonly error: string;
+    }): string;
+    /**
+      * `The file is too large. Choose a file up to 500 MB.`
+      */
+    ["com.affine.meeting-notes.error.file-too-large"](): string;
+    /**
+      * `Couldn't create the summary: {{error}}`
+      */
+    ["com.affine.meeting-notes.error.summary"](options: {
+        readonly error: string;
+    }): string;
     /**
       * `An internal error occurred.`
       */

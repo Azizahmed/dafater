@@ -51,6 +51,7 @@ export const ListBlockSchema = defineBlockSchema({
       'affine:paragraph',
       'affine:edgeless-text',
       'affine:callout',
+      'affine:meeting-notes-section',
     ],
   },
   toModel: () => new ListBlockModel(),

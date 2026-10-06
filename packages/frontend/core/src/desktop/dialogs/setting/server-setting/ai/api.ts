@@ -15,6 +15,12 @@ export interface ServerAiConfig {
   vision: boolean;
   /** the key itself is never sent back */
   hasApiKey: boolean;
+  /** speech-to-text model for AI meeting notes; '' = transcription is off */
+  transcriptionModel: string;
+  /** '' = same as `baseURL` (and its API key) */
+  transcriptionBaseURL: string;
+  /** a separate transcription key is stored (never sent back) */
+  hasTranscriptionApiKey: boolean;
 }
 
 export interface ServerAiConfigInput {
@@ -26,6 +32,12 @@ export interface ServerAiConfigInput {
   dialect: ServerAiDialect;
   allowPrivateNetwork: boolean;
   vision: boolean;
+  /** '' turns transcription (AI meeting notes) off */
+  transcriptionModel: string;
+  /** '' = same as `baseURL` */
+  transcriptionBaseURL: string;
+  /** empty or omitted: keep the stored key (only used with a separate base URL) */
+  transcriptionApiKey?: string;
 }
 
 export type ServerAiTestErrorCode =
@@ -55,7 +67,12 @@ const json = (body: unknown) => ({
 
 function withoutEmptyKey(input: ServerAiConfigInput): ServerAiConfigInput {
   const apiKey = input.apiKey?.trim();
-  return { ...input, apiKey: apiKey ? apiKey : undefined };
+  const transcriptionApiKey = input.transcriptionApiKey?.trim();
+  return {
+    ...input,
+    apiKey: apiKey ? apiKey : undefined,
+    transcriptionApiKey: transcriptionApiKey ? transcriptionApiKey : undefined,
+  };
 }
 
 export async function getServerAiConfig(fetchService: FetchService) {
@@ -82,6 +99,20 @@ export async function testServerAiConfig(
     method: 'POST',
     // the server waits up to 15s for the provider
     timeout: 30_000,
+    ...json(withoutEmptyKey(input)),
+  });
+  return (await res.json()) as ServerAiTestResult;
+}
+
+/** Sends one second of silence to the transcription endpoint. */
+export async function testServerAiTranscription(
+  fetchService: FetchService,
+  input: ServerAiConfigInput
+) {
+  const res = await fetchService.fetch(`${ENDPOINT}/test-transcription`, {
+    method: 'POST',
+    // the server waits up to 30s for the provider
+    timeout: 45_000,
     ...json(withoutEmptyKey(input)),
   });
   return (await res.json()) as ServerAiTestResult;

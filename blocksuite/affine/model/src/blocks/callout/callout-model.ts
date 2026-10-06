@@ -35,6 +35,7 @@ export const CalloutBlockSchema = defineBlockSchema({
       'affine:list',
       'affine:edgeless-text',
       'affine:transcription',
+      'affine:meeting-notes-section',
     ],
     children: ['affine:paragraph', 'affine:list'],
   },

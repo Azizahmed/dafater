@@ -31,6 +31,8 @@ export type Flavour = BaseFlavour<
   | 'embed-youtube'
   | 'embed-linked-doc'
   | 'embed-synced-doc'
+  | 'meeting-notes'
+  | 'meeting-notes-section'
 >;
 
 export interface BaseParsedBlock {

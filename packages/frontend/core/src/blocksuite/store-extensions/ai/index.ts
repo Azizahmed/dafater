@@ -1,4 +1,8 @@
 import { AIChatBlockSchemaExtension } from '@affine/core/blocksuite/ai/blocks';
+import {
+  MeetingNotesBlockSchemaExtension,
+  MeetingNotesSectionSchemaExtension,
+} from '@affine/core/blocksuite/ai/blocks/meeting-notes/model';
 import { TranscriptionBlockSchemaExtension } from '@affine/core/blocksuite/ai/blocks/transcription-block/model';
 import {
   type StoreExtensionContext,
@@ -12,5 +16,7 @@ export class AIStoreExtension extends StoreExtensionProvider {
     super.setup(context);
     context.register(AIChatBlockSchemaExtension);
     context.register(TranscriptionBlockSchemaExtension);
+    context.register(MeetingNotesBlockSchemaExtension);
+    context.register(MeetingNotesSectionSchemaExtension);
   }
 }

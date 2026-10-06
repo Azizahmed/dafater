@@ -18,6 +18,7 @@ import { CopilotFeatureGuard, CopilotFeatureService } from './feature';
 import { WorkspaceMcpController } from './mcp/controller';
 import { McpCredentialService } from './mcp/credential';
 import { McpCredentialResolver } from './mcp/resolver';
+import { MeetingNotesController } from './meeting-notes/controller';
 import {
   COPILOT_API_PROVIDERS,
   COPILOT_FEATURE_PROVIDERS,
@@ -89,6 +90,7 @@ export class CopilotApiModule {}
     AdminAiConfigController,
     CopilotAttachmentController,
     CopilotController,
+    MeetingNotesController,
     WorkspaceMcpController,
   ],
 })

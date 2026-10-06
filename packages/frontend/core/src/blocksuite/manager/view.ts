@@ -262,6 +262,15 @@ class ViewProvider {
     this._manager.configure(ParagraphViewExtension, {
       getPlaceholder: model => {
         const type = model.props.type;
+        // Dafater: an empty meeting's notes say what they are for
+        const parent = model.store.getParent(model);
+        if (
+          type === 'text' &&
+          parent?.flavour === 'affine:meeting-notes-section' &&
+          parent.children.length === 1
+        ) {
+          return I18n.t('com.affine.meeting-notes.notes.placeholder');
+        }
         if (type.startsWith('h')) {
           return I18n.t('com.affine.editor.placeholder.heading', {
             level: type.slice(1),

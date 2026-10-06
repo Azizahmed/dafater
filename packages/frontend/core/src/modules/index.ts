@@ -41,6 +41,7 @@ import { configureIntegrationModule } from './integration';
 import { configureJournalModule } from './journal';
 import { configureLifecycleModule } from './lifecycle';
 import { configureMediaModule } from './media';
+import { configureMeetingNotesModule } from './meeting-notes';
 import { configureNavigationModule } from './navigation';
 import { configureNavigationPanelModule } from './navigation-panel';
 import { configureNotificationModule } from './notification';
@@ -126,6 +127,7 @@ export function configureCommonModules(framework: Framework) {
   configureTemplateDocModule(framework);
   configureBlobManagementModule(framework);
   configureMediaModule(framework);
+  configureMeetingNotesModule(framework);
   configureImportClipperModule(framework);
   configureNotificationModule(framework);
   configureIntegrationModule(framework);

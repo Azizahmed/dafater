@@ -89,3 +89,16 @@ export const error = style({
   color: cssVarV2('status/error'),
   fontSize: cssVar('fontSm'),
 });
+
+export const sectionDesc = style({
+  marginBottom: '8px',
+  fontSize: cssVar('fontXs'),
+  color: cssVarV2('text/secondary'),
+  lineHeight: '20px',
+});
+
+export const sectionActions = style({
+  display: 'flex',
+  justifyContent: 'flex-end',
+  marginTop: '16px',
+});

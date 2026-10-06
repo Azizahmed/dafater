@@ -5,6 +5,21 @@ import type { BlockModel } from '@blocksuite/store';
 import { DocModeProvider } from '../../services/doc-mode-service.js';
 import { matchModels } from './checker.js';
 
+const contentBoundaryFlavours = new Set<string>();
+
+/**
+ * Marks a container flavour as a content boundary: Backspace / Delete at the
+ * edges of its children never merge with, or move to, blocks outside it.
+ * Nothing is registered by default.
+ */
+export function registerContentBoundary(flavour: string) {
+  contentBoundaryFlavours.add(flavour);
+}
+
+function isContentBoundary(model: BlockModel) {
+  return contentBoundaryFlavours.has(model.flavour);
+}
+
 /**
  *
  * @example
@@ -56,6 +71,8 @@ export function getPrevContentBlock(
     ) {
       return null;
     }
+
+    if (isContentBoundary(parent)) return null;
 
     return parent;
   };
@@ -135,6 +152,7 @@ export function getNextContentBlock(
       return nextSibling;
     }
     currentBlock = doc.getParent(currentBlock);
+    if (currentBlock && isContentBoundary(currentBlock)) return null;
   }
   return null;
 }
