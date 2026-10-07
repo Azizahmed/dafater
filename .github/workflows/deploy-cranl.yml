@@ -79,6 +79,13 @@ jobs:
         with:
           name: server-native
           path: ./packages/backend/native
+      # The bundler statically resolves every arch binding; we only ship x64,
+      # so reuse it as a placeholder for the arm entries (never loaded on x64).
+      - name: Stub non-x64 native bindings
+        run: |
+          cd ./packages/backend/native
+          cp server-native.x64.node server-native.arm64.node
+          cp server-native.x64.node server-native.armv7.node
       - run: yarn workspace @affine/server build
       - uses: actions/upload-artifact@v4
         with:
