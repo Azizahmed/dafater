@@ -127,10 +127,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: docker/setup-buildx-action@v3
+      # Same image as upstream, but the start command also runs the self-host
+      # predeploy (private key + Prisma/data migrations) on every boot, since
+      # CranL has no separate migration job.
+      - name: Prepare CranL Dockerfile
+        run: |
+          cp .github/deployment/node/Dockerfile /tmp/Dockerfile.cranl
+          cat >> /tmp/Dockerfile.cranl <<'EOF'
+          CMD ["sh", "-c", "node ./scripts/upgrade-config.js && node ./scripts/self-host-predeploy.js && exec node ./dist/main.js"]
+          EOF
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: .github/deployment/node/Dockerfile
+          file: /tmp/Dockerfile.cranl
           platforms: linux/amd64
           push: true
           tags: |
