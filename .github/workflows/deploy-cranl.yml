@@ -1,0 +1,145 @@
+name: Deploy Dafater (GHCR -> CranL)
+
+on:
+  push:
+    branches: [canary]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cranl
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/azizahmed/dafater
+  BUILD_TYPE: stable
+
+jobs:
+  build-frontend:
+    name: Build ${{ matrix.app.pkg }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        app:
+          - { pkg: '@affine/web', name: web, path: packages/frontend/apps/web/dist }
+          - { pkg: '@affine/admin', name: admin, path: packages/frontend/admin/dist }
+          - { pkg: '@affine/mobile', name: mobile, path: packages/frontend/apps/mobile/dist }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+        with:
+          electron-install: false
+      - name: Build
+        run: yarn affine ${{ matrix.app.pkg }} build
+        env:
+          NODE_OPTIONS: --max-old-space-size=6144
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app.name }}
+          path: ${{ matrix.app.path }}
+          if-no-files-found: error
+          retention-days: 1
+
+  build-server-native:
+    name: Build server-native (x64)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+        with:
+          electron-install: false
+          extra-flags: workspaces focus @affine/server-native
+      - uses: ./.github/actions/build-rust
+        with:
+          target: x86_64-unknown-linux-gnu
+          package: '@affine/server-native'
+      - run: mv ./packages/backend/native/server-native.node ./packages/backend/native/server-native.x64.node
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-native
+          path: ./packages/backend/native/server-native.x64.node
+          if-no-files-found: error
+          retention-days: 1
+
+  build-server:
+    name: Build server
+    runs-on: ubuntu-latest
+    needs: build-server-native
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+        with:
+          electron-install: false
+          extra-flags: workspaces focus @affine/server @types/affine__env
+      - uses: actions/download-artifact@v4
+        with:
+          name: server-native
+          path: ./packages/backend/native
+      - run: yarn workspace @affine/server build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-dist
+          path: ./packages/backend/server/dist
+          if-no-files-found: error
+          retention-days: 1
+
+  build-image:
+    name: Build & push image
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-server]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - uses: actions/download-artifact@v4
+        with: { name: server-dist, path: ./packages/backend/server/dist }
+      - uses: actions/download-artifact@v4
+        with: { name: web, path: ./packages/frontend/apps/web/dist }
+      - uses: actions/download-artifact@v4
+        with: { name: admin, path: ./packages/frontend/admin/dist }
+      - uses: actions/download-artifact@v4
+        with: { name: mobile, path: ./packages/frontend/apps/mobile/dist }
+      - name: Install production deps
+        run: |
+          corepack enable || true
+          yarn config set --json supportedArchitectures.cpu '["x64"]'
+          yarn config set --json supportedArchitectures.libc '["glibc"]'
+          yarn workspaces focus @affine/server --production
+        env:
+          HUSKY: '0'
+      - run: yarn workspace @affine/server prisma generate
+      - run: mv ./node_modules ./packages/backend/server
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .github/deployment/node/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+
+  redeploy:
+    name: Redeploy on CranL
+    runs-on: ubuntu-latest
+    needs: build-image
+    if: ${{ vars.CRANL_APP_ID != '' }}
+    steps:
+      - name: Trigger CranL deployment
+        env:
+          CRANL_API_KEY: ${{ secrets.CRANL_API_KEY }}
+          CRANL_APP_ID: ${{ vars.CRANL_APP_ID }}
+        run: |
+          curl -fsSL https://cranl.com/install.sh | sh
+          cranl apps deploy "$CRANL_APP_ID" || echo "::warning::CranL redeploy failed; redeploy manually from the dashboard"
