@@ -47,6 +47,14 @@ jobs:
   build-server-native:
     name: Build server-native (x64)
     runs-on: ubuntu-22.04
+    env:
+      # Self-hosted servers refuse to boot without an embedded license public
+      # key. This is Dafater's own key (not AFFiNE's); it is public by design.
+      AFFINE_PRO_PUBLIC_KEY: |-
+        -----BEGIN PUBLIC KEY-----
+        MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEZmGf2dZHk0WnT0cKrJmlL8G1ol8f
+        LbmWajbbQRUQaOUs6ZRJbtajnQDozL9yw1/9/i9whz2XI4c1HdhDxPIE/g==
+        -----END PUBLIC KEY-----
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
