@@ -20,6 +20,11 @@ export const root = style({
       },
     },
   },
+  selectors: {
+    '&[data-variant="minimal"][data-expanded="false"]': {
+      paddingBottom: 0,
+    },
+  },
 });
 
 export const tableHeader = style({
@@ -34,6 +39,59 @@ export const tableHeader = style({
   '@media': {
     print: {
       display: 'none',
+    },
+  },
+});
+
+export const minimalHeader = style({
+  position: 'relative',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: 24,
+  margin: '4px 0 8px',
+  '::before': {
+    content: '""',
+    position: 'absolute',
+    insetInline: 0,
+    top: '50%',
+    borderTop: `0.5px solid ${cssVarV2('layer/insideBorder/border')}`,
+  },
+  '@media': {
+    print: {
+      display: 'none',
+    },
+  },
+});
+
+export const minimalHeaderToggle = style({
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: 20,
+  padding: '0 10px',
+  fontSize: 16,
+  color: cssVarV2('icon/secondary'),
+  background: cssVarV2('layer/background/primary'),
+  border: `0.5px solid ${cssVarV2('layer/insideBorder/border')}`,
+  borderRadius: 999,
+  cursor: 'pointer',
+  opacity: 0.6,
+  transition: 'opacity 0.2s ease-in-out, color 0.2s ease-in-out',
+  selectors: {
+    '&:hover, &:focus-visible, &[aria-expanded="true"]': {
+      opacity: 1,
+      color: cssVarV2('icon/primary'),
+    },
+  },
+});
+
+export const minimalHeaderIcon = style({
+  transition: 'transform 0.2s ease-in-out',
+  selectors: {
+    '&[data-open="true"]': {
+      transform: 'rotate(180deg)',
     },
   },
 });

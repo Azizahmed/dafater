@@ -35,7 +35,11 @@ const PageRadioItem: RadioItem = {
   className: switchItem,
 };
 
-export const EditorModeSwitch = () => {
+/**
+ * Page / edgeless switching for the current editor, including the
+ * `Alt+S` command while the view is active.
+ */
+export const useEditorModeSwitch = () => {
   const t = useI18n();
   const editor = useService(EditorService).editor;
   const trash = useLiveData(editor.doc.trash$);
@@ -88,6 +92,12 @@ export const EditorModeSwitch = () => {
       run: () => onModeChange(currentMode === 'edgeless' ? 'page' : 'edgeless'),
     });
   }, [currentMode, isActiveView, onModeChange, t, trash]);
+
+  return { currentMode, trash, onModeChange, shouldHide };
+};
+
+export const EditorModeSwitch = () => {
+  const { currentMode, onModeChange, shouldHide } = useEditorModeSwitch();
 
   return (
     <PureEditorModeSwitch

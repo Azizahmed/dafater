@@ -10,6 +10,7 @@ import { CommentSidebar } from '@affine/core/components/comment/sidebar';
 import { useGuard } from '@affine/core/components/guard';
 import { useAppSettingHelper } from '@affine/core/components/hooks/affine/use-app-setting-helper';
 import { useEnableAI } from '@affine/core/components/hooks/affine/use-enable-ai';
+import { useEnableMinimalInterface } from '@affine/core/components/hooks/affine/use-minimal-interface';
 import { useRegisterBlocksuiteEditorCommands } from '@affine/core/components/hooks/affine/use-register-blocksuite-editor-commands';
 import { useActiveBlocksuiteEditor } from '@affine/core/components/hooks/use-block-suite-editor';
 import { PageDetailEditor } from '@affine/core/components/page-detail-editor';
@@ -66,6 +67,7 @@ import { PageNotFound } from '../../404';
 import * as styles from './detail-page.css';
 import { DetailPageHeader } from './detail-page-header';
 import { DetailPageWrapper } from './detail-page-wrapper';
+import { MinimalDocHeader } from './minimal/minimal-header';
 import { EditorAdapterPanel } from './tabs/adapter';
 import { EditorAnalyticsPanel } from './tabs/analytics';
 import { EditorChatPanel } from './tabs/chat';
@@ -112,6 +114,7 @@ const DetailPageImpl = memo(function DetailPageImpl() {
   const [_, setActiveBlockSuiteEditor] = useActiveBlocksuiteEditor();
 
   const enableAI = useEnableAI();
+  const minimal = useEnableMinimalInterface();
 
   const featureFlagService = useService(FeatureFlagService);
   const enableAdapterPanel = useLiveData(
@@ -298,6 +301,7 @@ const DetailPageImpl = memo(function DetailPageImpl() {
   );
 
   const [hasScrollTop, setHasScrollTop] = useState(false);
+  const [titleScrolledOut, setTitleScrolledOut] = useState(false);
 
   const openOutlinePanel = useCallback(() => {
     workbench.openSidebar();
@@ -307,10 +311,20 @@ const DetailPageImpl = memo(function DetailPageImpl() {
   const scrollViewportRef = useRef<HTMLDivElement | null>(null);
 
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop;
+    const viewport = e.currentTarget;
+    const scrollTop = viewport.scrollTop;
 
     const hasScrollTop = scrollTop > 0;
     setHasScrollTop(hasScrollTop);
+
+    // the minimal top bar takes over the title once it leaves the viewport
+    const title = viewport.querySelector('.doc-title-container');
+    setTitleScrolledOut(
+      title
+        ? title.getBoundingClientRect().bottom <=
+            viewport.getBoundingClientRect().top
+        : hasScrollTop
+    );
   }, []);
 
   const [dragging, setDragging] = useState(false);
@@ -322,11 +336,19 @@ const DetailPageImpl = memo(function DetailPageImpl() {
   return (
     <FrameworkScope scope={editor.scope}>
       <ViewHeader>
-        <DetailPageHeader
-          page={doc.blockSuiteDoc}
-          workspace={workspace}
-          onDragging={setDragging}
-        />
+        {minimal ? (
+          <MinimalDocHeader
+            page={doc.blockSuiteDoc}
+            workspace={workspace}
+            titleScrolledOut={titleScrolledOut}
+          />
+        ) : (
+          <DetailPageHeader
+            page={doc.blockSuiteDoc}
+            workspace={workspace}
+            onDragging={setDragging}
+          />
+        )}
       </ViewHeader>
       <ViewBody>
         <div
@@ -359,7 +381,7 @@ const DetailPageImpl = memo(function DetailPageImpl() {
             </Scrollable.Root>
             <EditorOutlineViewer
               editor={editorContainer?.host ?? null}
-              show={mode === 'page' && !isSideBarOpen}
+              show={mode === 'page' && !isSideBarOpen && !minimal}
               openOutlinePanel={openOutlinePanel}
             />
           </AffineErrorBoundary>

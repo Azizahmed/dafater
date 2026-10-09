@@ -1,5 +1,6 @@
 import { IconButton } from '@affine/component';
 import { AffineErrorBoundary } from '@affine/core/components/affine/affine-error-boundary';
+import { useIsMinimalDocLayout } from '@affine/core/components/hooks/affine/use-minimal-interface';
 import { useI18n } from '@affine/i18n';
 import { RightSidebarIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
@@ -55,7 +56,10 @@ export const RouteContainer = () => {
     workbench.toggleSidebar();
   }, [workbench]);
 
-  const showSwitch = !BUILD_CONFIG.isElectron && viewPosition.isFirst;
+  // the minimal doc interface reaches both sidebars from its own top bar
+  const minimalDocLayout = useIsMinimalDocLayout();
+  const showSwitch =
+    !BUILD_CONFIG.isElectron && viewPosition.isFirst && !minimalDocLayout;
 
   return (
     <div className={styles.root}>
@@ -73,13 +77,15 @@ export const RouteContainer = () => {
           viewId={view.id}
           className={styles.viewHeaderContainer}
         />
-        {!BUILD_CONFIG.isElectron && viewPosition.isLast && (
-          <ToggleButton
-            show={!sidebarOpen}
-            className={styles.rightSidebarButton}
-            onToggle={handleToggleSidebar}
-          />
-        )}
+        {!BUILD_CONFIG.isElectron &&
+          viewPosition.isLast &&
+          !minimalDocLayout && (
+            <ToggleButton
+              show={!sidebarOpen}
+              className={styles.rightSidebarButton}
+              onToggle={handleToggleSidebar}
+            />
+          )}
       </div>
 
       <AffineErrorBoundary>

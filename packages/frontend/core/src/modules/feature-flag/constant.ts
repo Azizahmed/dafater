@@ -262,6 +262,15 @@ export const AFFINE_FLAGS = {
     configurable: isCanaryBuild,
     defaultState: false,
   },
+  enable_minimal_interface: {
+    category: 'affine',
+    displayName:
+      'com.affine.settings.workspace.experimental-features.enable-minimal-interface.name',
+    description:
+      'com.affine.settings.workspace.experimental-features.enable-minimal-interface.description',
+    configurable: !isMobile,
+    defaultState: !isMobile,
+  },
   enable_view_analytics_panel: {
     category: 'affine',
     displayName:

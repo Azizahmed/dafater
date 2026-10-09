@@ -56,6 +56,11 @@ export type DefaultOpenProperty =
 
 export interface WorkspacePropertiesTableProps {
   className?: string;
+  /**
+   * `minimal` replaces the "Info" header with a plain divider holding a small
+   * toggle, used by the minimal doc interface between the title and the body
+   */
+  variant?: 'default' | 'minimal';
   defaultOpenProperty?: DefaultOpenProperty;
   onPropertyAdded?: (property: DocCustomPropertyInfo) => void;
   onPropertyChange?: (property: DocCustomPropertyInfo, value: unknown) => void;
@@ -110,6 +115,33 @@ export const WorkspacePropertiesTableHeader = ({
 
       <div className={styles.tableHeaderDivider} />
     </Collapsible.Trigger>
+  );
+};
+
+// ────────────────── ⌄ ──────────────────
+const WorkspacePropertiesTableMinimalHeader = ({ open }: { open: boolean }) => {
+  const t = useI18n();
+  const handleToggle = useCallback(() => {
+    track.doc.inlineDocInfo.$.toggle();
+  }, []);
+  return (
+    <div className={styles.minimalHeader}>
+      <Collapsible.Trigger asChild>
+        <button
+          type="button"
+          className={styles.minimalHeaderToggle}
+          onClick={handleToggle}
+          aria-label={t['com.affine.page-properties.page-info']()}
+          aria-expanded={open}
+          data-testid="page-info-collapse"
+        >
+          <ToggleDownIcon
+            className={styles.minimalHeaderIcon}
+            data-open={open}
+          />
+        </button>
+      </Collapsible.Trigger>
+    </div>
   );
 };
 
@@ -423,6 +455,7 @@ const WorkspacePropertiesTableInner = ({
   onPropertyInfoChange,
   onDatabasePropertyChange,
   className,
+  variant = 'default',
 }: WorkspacePropertiesTableProps) => {
   const [expanded, setExpanded] = useState(!!defaultOpenProperty);
   const defaultOpen = useMemo(() => {
@@ -437,13 +470,21 @@ const WorkspacePropertiesTableInner = ({
       : [];
   }, [defaultOpenProperty]);
   return (
-    <div className={clsx(styles.root, className)}>
+    <div
+      className={clsx(styles.root, className)}
+      data-variant={variant}
+      data-expanded={expanded}
+    >
       <Collapsible.Root open={expanded} onOpenChange={setExpanded}>
-        <WorkspacePropertiesTableHeader
-          style={{ width: '100%' }}
-          open={expanded}
-          onOpenChange={setExpanded}
-        />
+        {variant === 'minimal' ? (
+          <WorkspacePropertiesTableMinimalHeader open={expanded} />
+        ) : (
+          <WorkspacePropertiesTableHeader
+            style={{ width: '100%' }}
+            open={expanded}
+            onOpenChange={setExpanded}
+          />
+        )}
         <Collapsible.Content>
           <DocIntegrationPropertiesTable
             divider={<div className={styles.tableHeaderDivider} />}

@@ -114,11 +114,11 @@ const AIChatButton = () => {
 };
 
 /**
- * This is for the whole affine app sidebar.
- * This component wraps the app sidebar in `@affine/component` with logic and data.
- *
+ * The navigation of the app sidebar: workspace switcher, search, entries and
+ * the navigation panels. Also rendered by the minimal interface's workspace
+ * dropdown.
  */
-export const RootAppSidebar = memo((): ReactElement => {
+export const RootAppSidebarContent = (): ReactElement => {
   const { workbenchService, cMDKQuickSearchService, authService } = useServices(
     {
       WorkbenchService,
@@ -185,7 +185,7 @@ export const RootAppSidebar = memo((): ReactElement => {
   }, [workspaceDialogService, handleOpenDocs]);
 
   return (
-    <AppSidebar>
+    <>
       <SidebarContainer>
         <div className={workspaceAndUserWrapper}>
           <div className={workspaceWrapper}>
@@ -253,6 +253,19 @@ export const RootAppSidebar = memo((): ReactElement => {
           <UpdaterButton />
         ) : null}
       </SidebarContainer>
+    </>
+  );
+};
+
+/**
+ * This is for the whole affine app sidebar.
+ * This component wraps the app sidebar in `@affine/component` with logic and data.
+ *
+ */
+export const RootAppSidebar = memo((): ReactElement => {
+  return (
+    <AppSidebar>
+      <RootAppSidebarContent />
     </AppSidebar>
   );
 });

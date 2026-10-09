@@ -1,4 +1,5 @@
 import { useAppSettingHelper } from '@affine/core/components/hooks/affine/use-app-setting-helper';
+import { useIsMinimalDocLayout } from '@affine/core/components/hooks/affine/use-minimal-interface';
 import { RootAppSidebar } from '@affine/core/components/root-app-sidebar';
 import { AppSidebarService } from '@affine/core/modules/app-sidebar';
 import {
@@ -61,6 +62,8 @@ const DesktopLayout = ({
 }: PropsWithChildren<{ fallback?: boolean }>) => {
   const workspaceService = useServiceOptional(WorkspaceService);
   const isInWorkspace = !!workspaceService;
+  // the minimal doc interface moves the navigation into its top bar
+  const hideSidebar = useIsMinimalDocLayout();
   return (
     <div className={styles.desktopAppViewContainer}>
       <div className={styles.desktopTabsHeader}>
@@ -77,9 +80,9 @@ const DesktopLayout = ({
         {fallback ? (
           <AppSidebarFallback />
         ) : (
-          isInWorkspace && <RootAppSidebar />
+          isInWorkspace && !hideSidebar && <RootAppSidebar />
         )}
-        <MainContainer>{children}</MainContainer>
+        <MainContainer sidebarHidden={hideSidebar}>{children}</MainContainer>
       </div>
     </div>
   );
@@ -91,11 +94,17 @@ const BrowserLayout = ({
 }: PropsWithChildren<{ fallback?: boolean }>) => {
   const workspaceService = useServiceOptional(WorkspaceService);
   const isInWorkspace = !!workspaceService;
+  // the minimal doc interface moves the navigation into its top bar
+  const hideSidebar = useIsMinimalDocLayout();
 
   return (
     <div className={styles.browserAppViewContainer}>
-      {fallback ? <AppSidebarFallback /> : isInWorkspace && <RootAppSidebar />}
-      <MainContainer>{children}</MainContainer>
+      {fallback ? (
+        <AppSidebarFallback />
+      ) : (
+        isInWorkspace && !hideSidebar && <RootAppSidebar />
+      )}
+      <MainContainer sidebarHidden={hideSidebar}>{children}</MainContainer>
     </div>
   );
 };
@@ -104,8 +113,13 @@ const LayoutComponent = BUILD_CONFIG.isElectron ? DesktopLayout : BrowserLayout;
 
 const MainContainer = forwardRef<
   HTMLDivElement,
-  PropsWithChildren<HTMLAttributes<HTMLDivElement>>
->(function MainContainer({ className, children, ...props }, ref): ReactElement {
+  PropsWithChildren<
+    HTMLAttributes<HTMLDivElement> & { sidebarHidden?: boolean }
+  >
+>(function MainContainer(
+  { className, children, sidebarHidden, ...props },
+  ref
+): ReactElement {
   const workspaceService = useServiceOptional(WorkspaceService);
   const isInWorkspace = !!workspaceService;
   const { appSettings } = useAppSettingHelper();
@@ -119,7 +133,7 @@ const MainContainer = forwardRef<
       data-is-desktop={BUILD_CONFIG.isElectron}
       data-transparent={false}
       data-client-border={appSettings.clientBorder}
-      data-side-bar-open={open && isInWorkspace}
+      data-side-bar-open={open && isInWorkspace && !sidebarHidden}
       data-testid="main-container"
       ref={ref}
     >

@@ -11,6 +11,7 @@ import {
 } from '@affine/core/blocksuite/editors';
 import { getViewManager } from '@affine/core/blocksuite/manager/view';
 import { useEnableAI } from '@affine/core/components/hooks/affine/use-enable-ai';
+import { useEnableMinimalInterface } from '@affine/core/components/hooks/affine/use-minimal-interface';
 import { ServerService } from '@affine/core/modules/cloud';
 import type { DocCustomPropertyInfo } from '@affine/core/modules/db';
 import type {
@@ -233,6 +234,10 @@ export const BlocksuiteDocEditor = forwardRef<
     editorSettingService.editorSetting.settings$.selector(s => s.displayDocInfo)
   );
 
+  // only the title and the body: doc info folds into the divider under the
+  // title, and links / starter actions move to the top bar
+  const minimal = useEnableMinimalInterface();
+
   const onPropertyChange = useCallback((property: DocCustomPropertyInfo) => {
     track.doc.inlineDocInfo.property.editProperty({
       type: property.type,
@@ -279,6 +284,7 @@ export const BlocksuiteDocEditor = forwardRef<
         {!shared && displayDocInfo ? (
           <div className={styles.docPropertiesTableContainer}>
             <WorkspacePropertiesTable
+              variant={minimal ? 'minimal' : 'default'}
               className={styles.docPropertiesTable}
               onDatabasePropertyChange={onDatabasePropertyChange}
               onPropertyChange={onPropertyChange}
@@ -299,10 +305,10 @@ export const BlocksuiteDocEditor = forwardRef<
           data-testid="page-editor-blank"
           onClick={onClickBlank}
         ></div>
-        {!readonly && !BUILD_CONFIG.isMobileEdition && (
+        {!readonly && !BUILD_CONFIG.isMobileEdition && !minimal && (
           <StarterBar doc={page} />
         )}
-        {!shared && displayBiDirectionalLink ? (
+        {!shared && displayBiDirectionalLink && !minimal ? (
           <BiDirectionalLinkPanel />
         ) : null}
       </div>

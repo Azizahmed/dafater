@@ -2,6 +2,7 @@ import { notify, toast, useConfirmModal } from '@affine/component';
 import {
   Menu,
   MenuItem,
+  type MenuProps,
   MenuSeparator,
   MenuSub,
 } from '@affine/component/ui/menu';
@@ -38,7 +39,12 @@ import {
   TocIcon,
 } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
-import { useCallback, useState } from 'react';
+import {
+  type ReactElement,
+  type ReactNode,
+  useCallback,
+  useState,
+} from 'react';
 
 import { HeaderDropDownButton } from '../../../components/pure/header-drop-down-button';
 import { useFavorite } from '../favorite';
@@ -52,12 +58,27 @@ type PageMenuProps = {
   containerWidth: number;
 };
 
+type PageMenuButtonProps = PageMenuProps & {
+  /** replaces the default `...` button */
+  trigger?: ReactElement;
+  /** rendered above the doc options */
+  header?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  contentOptions?: MenuProps['contentOptions'];
+};
+
 export const PageHeaderMenuButton = ({
   rename,
   page,
   isJournal,
   containerWidth,
-}: PageMenuProps) => {
+  trigger,
+  header,
+  open,
+  onOpenChange,
+  contentOptions,
+}: PageMenuButtonProps) => {
   const workspace = useService(WorkspaceService).workspace;
   const editorService = useService(EditorService);
   const isInTrash = useLiveData(
@@ -67,11 +88,15 @@ export const PageHeaderMenuButton = ({
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [openHistoryTipsModal, setOpenHistoryTipsModal] = useState(false);
 
-  const handleMenuOpenChange = useCallback((open: boolean) => {
-    if (open) {
-      track.$.header.docOptions.open();
-    }
-  }, []);
+  const handleMenuOpenChange = useCallback(
+    (open: boolean) => {
+      if (open) {
+        track.$.header.docOptions.open();
+      }
+      onOpenChange?.(open);
+    },
+    [onOpenChange]
+  );
 
   const openHistoryModal = useCallback(() => {
     track.$.header.history.open();
@@ -89,22 +114,27 @@ export const PageHeaderMenuButton = ({
     <>
       <Menu
         items={
-          <PageHeaderMenuItem
-            page={page}
-            containerWidth={containerWidth}
-            rename={rename}
-            isJournal={isJournal}
-            openHistoryModal={openHistoryModal}
-          />
+          <>
+            {header}
+            <PageHeaderMenuItem
+              page={page}
+              containerWidth={containerWidth}
+              rename={rename}
+              isJournal={isJournal}
+              openHistoryModal={openHistoryModal}
+            />
+          </>
         }
         contentOptions={{
           align: 'center',
+          ...contentOptions,
         }}
         rootOptions={{
+          open,
           onOpenChange: handleMenuOpenChange,
         }}
       >
-        <HeaderDropDownButton />
+        {trigger ?? <HeaderDropDownButton />}
       </Menu>
       {workspace.flavour !== 'local' ? (
         <PageHistoryModal

@@ -7960,6 +7960,34 @@ export function useAFFiNEI18N(): {
       */
     ["com.affine.settings.workspace.experimental-features.enable-adapter-panel.description"](): string;
     /**
+      * `Minimal interface`
+      */
+    ["com.affine.settings.workspace.experimental-features.enable-minimal-interface.name"](): string;
+    /**
+      * `A distraction-free doc page: one top bar with the workspace, the doc title and settings, and nothing on the page but the title and the body.`
+      */
+    ["com.affine.settings.workspace.experimental-features.enable-minimal-interface.description"](): string;
+    /**
+      * `Table of contents`
+      */
+    ["com.affine.minimal-interface.table-of-contents"](): string;
+    /**
+      * `No headings yet`
+      */
+    ["com.affine.minimal-interface.no-headings"](): string;
+    /**
+      * `No links`
+      */
+    ["com.affine.minimal-interface.no-links"](): string;
+    /**
+      * `All settings`
+      */
+    ["com.affine.minimal-interface.all-settings"](): string;
+    /**
+      * `Switch to classic interface`
+      */
+    ["com.affine.minimal-interface.switch-to-classic"](): string;
+    /**
       * `Send detailed object information to AI`
       */
     ["com.affine.settings.workspace.experimental-features.enable-ai-send-detailed-object.name"](): string;
