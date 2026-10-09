@@ -18,6 +18,7 @@ import type {
   DatabaseRow,
   DatabaseValueCell,
 } from '@affine/core/modules/doc-info/types';
+import { EditorService } from '@affine/core/modules/editor';
 import { EditorSettingService } from '@affine/core/modules/editor-setting';
 import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { JournalService } from '@affine/core/modules/journal';
@@ -33,6 +34,7 @@ import {
   useFramework,
   useLiveData,
   useService,
+  useServiceOptional,
   useServices,
 } from '@toeverything/infra';
 import type React from 'react';
@@ -43,6 +45,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 
 import {
@@ -238,6 +241,32 @@ export const BlocksuiteDocEditor = forwardRef<
   // title, and links / starter actions move to the top bar
   const minimal = useEnableMinimalInterface();
 
+  // once the title is written and the caret leaves it, the title moves up
+  // into the top bar and the body starts right at the content
+  const editor = useServiceOptional(EditorService)?.editor;
+  const titleInTopBar = useLiveData(editor?.titleInTopBar$);
+  const docTitle = useLiveData(editor?.doc.title$);
+  const titleAreaRef = useRef<HTMLDivElement>(null);
+  const [titleFocused, setTitleFocused] = useState(false);
+  const syncTitleFocus = useCallback(() => {
+    // read after the focus settled; a window blur keeps activeElement
+    requestAnimationFrame(() => {
+      const area = titleAreaRef.current;
+      setTitleFocused(!!area?.contains(document.activeElement));
+    });
+  }, []);
+  const titleLifted =
+    minimal &&
+    !isJournal &&
+    !!titleInTopBar &&
+    !!docTitle?.trim() &&
+    !titleFocused;
+  useEffect(() => {
+    if (!editor) return;
+    editor.titleLifted$.next(titleLifted);
+    return () => editor.titleLifted$.next(false);
+  }, [editor, titleLifted]);
+
   const onPropertyChange = useCallback((property: DocCustomPropertyInfo) => {
     track.doc.inlineDocInfo.property.editProperty({
       type: property.type,
@@ -273,27 +302,35 @@ export const BlocksuiteDocEditor = forwardRef<
   return (
     <>
       <div className={styles.affineDocViewport}>
-        {!BUILD_CONFIG.isMobileEdition ? (
-          <DocIconPicker docId={page.id} readonly={readonly || shared} />
-        ) : null}
-        {!isJournal ? (
-          <LitDocTitle doc={page} ref={onTitleRef} />
-        ) : (
-          <BlocksuiteEditorJournalDocTitle page={page} />
-        )}
-        {!shared && displayDocInfo ? (
-          <div className={styles.docPropertiesTableContainer}>
-            <WorkspacePropertiesTable
-              variant={minimal ? 'minimal' : 'default'}
-              className={styles.docPropertiesTable}
-              onDatabasePropertyChange={onDatabasePropertyChange}
-              onPropertyChange={onPropertyChange}
-              onPropertyAdded={onPropertyAdded}
-              onPropertyInfoChange={onPropertyInfoChange}
-              defaultOpenProperty={defaultOpenProperty}
-            />
-          </div>
-        ) : null}
+        <div
+          ref={titleAreaRef}
+          className={styles.docTitleArea}
+          data-lifted={titleLifted}
+          onFocus={syncTitleFocus}
+          onBlur={syncTitleFocus}
+        >
+          {!BUILD_CONFIG.isMobileEdition ? (
+            <DocIconPicker docId={page.id} readonly={readonly || shared} />
+          ) : null}
+          {!isJournal ? (
+            <LitDocTitle doc={page} ref={onTitleRef} />
+          ) : (
+            <BlocksuiteEditorJournalDocTitle page={page} />
+          )}
+          {!shared && displayDocInfo ? (
+            <div className={styles.docPropertiesTableContainer}>
+              <WorkspacePropertiesTable
+                variant={minimal ? 'minimal' : 'default'}
+                className={styles.docPropertiesTable}
+                onDatabasePropertyChange={onDatabasePropertyChange}
+                onPropertyChange={onPropertyChange}
+                onPropertyAdded={onPropertyAdded}
+                onPropertyInfoChange={onPropertyInfoChange}
+                defaultOpenProperty={defaultOpenProperty}
+              />
+            </div>
+          ) : null}
+        </div>
         <LitDocEditor
           className={styles.docContainer}
           ref={onDocRef}

@@ -2,6 +2,7 @@ import { MenuItem, MenuSeparator, MenuSub } from '@affine/component';
 import { PageHeaderMenuButton } from '@affine/core/blocksuite/block-suite-header/menu';
 import { useGuard } from '@affine/core/components/guard';
 import { useAsyncCallback } from '@affine/core/components/hooks/affine-async-hooks';
+import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
 import { DocService, DocsService } from '@affine/core/modules/doc';
 import { DocDisplayMetaService } from '@affine/core/modules/doc-display-meta';
 import { DocLinksService } from '@affine/core/modules/doc-link';
@@ -17,7 +18,11 @@ import {
 } from '@blocksuite/affine/model';
 import { matchModels } from '@blocksuite/affine/shared/utils';
 import type { Store } from '@blocksuite/affine/store';
-import { LinkedPageIcon, LinkIcon } from '@blocksuite/icons/rc';
+import {
+  InformationIcon,
+  LinkedPageIcon,
+  LinkIcon,
+} from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import clsx from 'clsx';
 import {
@@ -241,6 +246,9 @@ const DocLinks = () => {
 
   return (
     <>
+      <div className={styles.sectionTitle}>
+        {t['com.affine.minimal-interface.related-links']()}
+      </div>
       <LinkedDocsSub
         icon={<LinkedPageIcon />}
         label={t['com.affine.page-properties.backlinks']()}
@@ -255,10 +263,29 @@ const DocLinks = () => {
   );
 };
 
+// the doc's info and properties, which the minimal page body no longer shows
+const DocPageSettings = ({ docId }: { docId: string }) => {
+  const t = useI18n();
+  const workspaceDialogService = useService(WorkspaceDialogService);
+  const openInfo = useCallback(() => {
+    track.$.header.pageInfo.open();
+    workspaceDialogService.open('doc-info', { docId });
+  }, [docId, workspaceDialogService]);
+  return (
+    <MenuItem
+      prefixIcon={<InformationIcon />}
+      onSelect={openInfo}
+      data-testid="minimal-header-page-settings"
+    >
+      {t['com.affine.minimal-interface.page-settings']()}
+    </MenuItem>
+  );
+};
+
 /**
  * Top bar, center: the doc title, shown once the page title scrolled away.
- * Pressing it drops down everything about the doc: rename, table of
- * contents, links and the doc options.
+ * Pressing it drops down everything about the doc: rename, page settings,
+ * table of contents, related links and the doc options.
  */
 export const MinimalDocTitleMenu = ({
   page,
@@ -316,7 +343,13 @@ export const MinimalDocTitleMenu = ({
       header={
         <>
           {isJournal ? null : <DocRenameInput inputRef={renameInputRef} />}
-          {mode === 'page' ? <DocOutline /> : null}
+          <DocPageSettings docId={page.id} />
+          {mode === 'page' ? (
+            <>
+              <MenuSeparator />
+              <DocOutline />
+            </>
+          ) : null}
           <MenuSeparator />
           <DocLinks />
           <MenuSeparator />

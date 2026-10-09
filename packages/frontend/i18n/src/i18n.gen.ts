@@ -7984,9 +7984,45 @@ export function useAFFiNEI18N(): {
       */
     ["com.affine.minimal-interface.all-settings"](): string;
     /**
-      * `Switch to classic interface`
+      * `Page settings`
       */
-    ["com.affine.minimal-interface.switch-to-classic"](): string;
+    ["com.affine.minimal-interface.page-settings"](): string;
+    /**
+      * `Related links`
+      */
+    ["com.affine.minimal-interface.related-links"](): string;
+    /**
+      * `AI`
+      */
+    ["com.affine.minimal-interface.panel.chat"](): string;
+    /**
+      * `Properties`
+      */
+    ["com.affine.minimal-interface.panel.properties"](): string;
+    /**
+      * `Calendar`
+      */
+    ["com.affine.minimal-interface.panel.journal"](): string;
+    /**
+      * `Table of contents`
+      */
+    ["com.affine.minimal-interface.panel.outline"](): string;
+    /**
+      * `All frames`
+      */
+    ["com.affine.minimal-interface.panel.frame"](): string;
+    /**
+      * `Markdown`
+      */
+    ["com.affine.minimal-interface.panel.adapter"](): string;
+    /**
+      * `Comments`
+      */
+    ["com.affine.minimal-interface.panel.comment"](): string;
+    /**
+      * `Analytics`
+      */
+    ["com.affine.minimal-interface.panel.analytics"](): string;
     /**
       * `Send detailed object information to AI`
       */

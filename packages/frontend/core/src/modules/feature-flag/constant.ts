@@ -268,7 +268,9 @@ export const AFFINE_FLAGS = {
       'com.affine.settings.workspace.experimental-features.enable-minimal-interface.name',
     description:
       'com.affine.settings.workspace.experimental-features.enable-minimal-interface.description',
-    configurable: !isMobile,
+    // the only doc interface on desktop: not switchable, and an earlier
+    // stored "classic" choice is ignored
+    configurable: false,
     defaultState: !isMobile,
   },
   enable_view_analytics_panel: {

@@ -2,29 +2,86 @@ import { Menu, MenuItem, MenuSeparator, MenuSub } from '@affine/component';
 import { useEditorModeSwitch } from '@affine/core/blocksuite/block-suite-mode-switch';
 import { useEnableCloud } from '@affine/core/components/hooks/affine/use-enable-cloud';
 import { WorkspaceDialogService } from '@affine/core/modules/dialogs';
-import { FeatureFlagService } from '@affine/core/modules/feature-flag';
 import { ShareMenuContent } from '@affine/core/modules/share-menu';
-import { WorkbenchService } from '@affine/core/modules/workbench';
+import { ViewService, WorkbenchService } from '@affine/core/modules/workbench';
 import type { Workspace } from '@affine/core/modules/workspace';
 import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
 import type { DocMode } from '@blocksuite/affine/model';
 import type { Store } from '@blocksuite/affine/store';
 import {
+  AiIcon,
+  ChartPanelIcon,
   CloseIcon,
+  CommentIcon,
   EdgelessIcon,
-  LayoutIcon,
+  ExportIcon,
+  FrameIcon,
   PageIcon,
-  RightSidebarIcon,
+  PropertyIcon,
   SettingsIcon,
   ShareIcon,
+  TocIcon,
+  TodayIcon,
 } from '@blocksuite/icons/rc';
 import { useLiveData, useService } from '@toeverything/infra';
 import clsx from 'clsx';
-import { useCallback, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useRef, useState } from 'react';
 
 import * as styles from './minimal-header.css';
 import { useHoverDismiss } from './use-hover-dismiss';
+
+/**
+ * The side panel tabs, in the order the classic side panel shows them.
+ * Only the tabs the doc page registered (AI enabled, cloud workspace, ...)
+ * are listed.
+ */
+const SIDE_PANEL_TABS: {
+  id: string;
+  icon: ReactNode;
+  label: (t: ReturnType<typeof useI18n>) => string;
+}[] = [
+  {
+    id: 'chat',
+    icon: <AiIcon />,
+    label: t => t['com.affine.minimal-interface.panel.chat'](),
+  },
+  {
+    id: 'properties',
+    icon: <PropertyIcon />,
+    label: t => t['com.affine.minimal-interface.panel.properties'](),
+  },
+  {
+    id: 'journal',
+    icon: <TodayIcon />,
+    label: t => t['com.affine.minimal-interface.panel.journal'](),
+  },
+  {
+    id: 'outline',
+    icon: <TocIcon />,
+    label: t => t['com.affine.minimal-interface.panel.outline'](),
+  },
+  {
+    id: 'frame',
+    icon: <FrameIcon />,
+    label: t => t['com.affine.minimal-interface.panel.frame'](),
+  },
+  {
+    id: 'adapter',
+    icon: <ExportIcon />,
+    label: t => t['com.affine.minimal-interface.panel.adapter'](),
+  },
+  {
+    id: 'comment',
+    icon: <CommentIcon />,
+    label: t => t['com.affine.minimal-interface.panel.comment'](),
+  },
+  {
+    id: 'analytics',
+    icon: <ChartPanelIcon />,
+    label: t => t['com.affine.minimal-interface.panel.analytics'](),
+  },
+];
 
 /**
  * Page / edgeless as a pill with a sliding thumb.
@@ -86,7 +143,8 @@ const ModeSegmented = ({
 
 /**
  * Top bar, right: one word, "Settings". Pressing it drops down sharing,
- * switching between page and edgeless, the side panel and the app settings.
+ * every side panel tab (AI, properties, calendar, table of contents, frames,
+ * markdown, comments, analytics), page / edgeless and the app settings.
  */
 export const MinimalSettingsMenu = ({
   page,
@@ -98,7 +156,7 @@ export const MinimalSettingsMenu = ({
   const t = useI18n();
   const workbench = useService(WorkbenchService).workbench;
   const workspaceDialogService = useService(WorkspaceDialogService);
-  const featureFlagService = useService(FeatureFlagService);
+  const view = useService(ViewService).view;
   const confirmEnableCloud = useEnableCloud();
 
   const {
@@ -107,6 +165,11 @@ export const MinimalSettingsMenu = ({
     onModeChange,
   } = useEditorModeSwitch();
   const sidebarOpen = useLiveData(workbench.sidebarOpen$);
+  const registeredTabs = useLiveData(view.sidebarTabs$);
+  const activeTab = useLiveData(view.activeSidebarTab$);
+  const panelTabs = SIDE_PANEL_TABS.filter(tab =>
+    registeredTabs.some(registered => registered.id === tab.id)
+  );
   const isSharedMode = workspace.openOptions.isSharedMode;
 
   const [open, setOpen] = useState(false);
@@ -124,9 +187,18 @@ export const MinimalSettingsMenu = ({
     workspaceDialogService.open('setting', { activeTab: 'appearance' });
   }, [workspaceDialogService]);
 
-  const switchToClassic = useCallback(() => {
-    featureFlagService.flags.enable_minimal_interface.set(false);
-  }, [featureFlagService]);
+  // pressing the open tab again closes the side panel
+  const togglePanelTab = useCallback(
+    (id: string) => {
+      if (sidebarOpen && activeTab?.id === id) {
+        workbench.closeSidebar();
+        return;
+      }
+      view.activeSidebarTab(id);
+      workbench.openSidebar();
+    },
+    [activeTab, sidebarOpen, view, workbench]
+  );
 
   return (
     <Menu
@@ -181,32 +253,34 @@ export const MinimalSettingsMenu = ({
               <MenuSeparator />
             </>
           ) : null}
+          {panelTabs.map(tab => (
+            <MenuItem
+              key={tab.id}
+              prefixIcon={tab.icon}
+              selected={sidebarOpen && activeTab?.id === tab.id}
+              onSelect={() => togglePanelTab(tab.id)}
+              data-testid={`minimal-header-panel-${tab.id}`}
+            >
+              {tab.label(t)}
+            </MenuItem>
+          ))}
+          {panelTabs.length > 0 ? <MenuSeparator /> : null}
           <ModeSegmented
             mode={mode}
             disabled={!!isInTrash}
             onChange={onModeChange}
           />
-          <MenuSeparator />
-          <MenuItem
-            prefixIcon={<RightSidebarIcon />}
-            onSelect={() => workbench.toggleSidebar()}
-          >
-            {sidebarOpen
-              ? t['com.affine.workbench.sidebar.close']()
-              : t['com.affine.workbench.sidebar.open']()}
-          </MenuItem>
           {!isSharedMode ? (
-            <MenuItem prefixIcon={<SettingsIcon />} onSelect={openAllSettings}>
-              {t['com.affine.minimal-interface.all-settings']()}
-            </MenuItem>
+            <>
+              <MenuSeparator />
+              <MenuItem
+                prefixIcon={<SettingsIcon />}
+                onSelect={openAllSettings}
+              >
+                {t['com.affine.minimal-interface.all-settings']()}
+              </MenuItem>
+            </>
           ) : null}
-          <MenuItem
-            prefixIcon={<LayoutIcon />}
-            onSelect={switchToClassic}
-            data-testid="minimal-header-switch-to-classic"
-          >
-            {t['com.affine.minimal-interface.switch-to-classic']()}
-          </MenuItem>
         </>
       }
     >

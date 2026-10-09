@@ -6,6 +6,7 @@ import { ViewIcon, ViewTitle } from '@affine/core/modules/workbench';
 import type { Workspace } from '@affine/core/modules/workspace';
 import type { Store } from '@blocksuite/affine/store';
 import { useLiveData, useService } from '@toeverything/infra';
+import { useEffect } from 'react';
 
 import { MinimalDocTitleMenu } from './doc-title-menu';
 import * as styles from './minimal-header.css';
@@ -35,7 +36,15 @@ export const MinimalDocHeader = ({
   const title = useLiveData(docDisplayMetaService.title$(page.id));
   const journalService = useService(JournalService);
   const isJournal = !!useLiveData(journalService.journalDate$(page.id));
-  const mode = useLiveData(useService(EditorService).editor.mode$);
+  const editor = useService(EditorService).editor;
+  const mode = useLiveData(editor.mode$);
+  const titleLifted = useLiveData(editor.titleLifted$);
+
+  // this bar shows the title, so the page body may hand it over
+  useEffect(() => {
+    editor.titleInTopBar$.next(true);
+    return () => editor.titleInTopBar$.next(false);
+  }, [editor]);
 
   return (
     <div className={styles.header} data-testid="header">
@@ -49,7 +58,7 @@ export const MinimalDocHeader = ({
           page={page}
           isJournal={isJournal}
           // edgeless has no page title to scroll past
-          visible={titleScrolledOut || mode === 'edgeless'}
+          visible={titleScrolledOut || titleLifted || mode === 'edgeless'}
         />
       </div>
       <div className={styles.right}>

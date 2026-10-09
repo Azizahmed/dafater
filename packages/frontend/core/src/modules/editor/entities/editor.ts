@@ -41,6 +41,10 @@ export class Editor extends Entity {
   readonly defaultOpenProperty$ = new LiveData<DefaultOpenProperty | undefined>(
     undefined
   );
+  /** a top bar (the minimal doc header) can show the doc title */
+  readonly titleInTopBar$ = new LiveData<boolean>(false);
+  /** the written title left the page body and lives in the top bar */
+  readonly titleLifted$ = new LiveData<boolean>(false);
   workbenchView: WorkbenchView | null = null;
   scrollPosition: {
     page: number | null;

@@ -72,6 +72,17 @@ export const pageReferenceIcon = style({
   transform: 'translate(2px, -1px)',
 });
 
+// icon, title and doc info; a layout-neutral box, hidden once the minimal
+// top bar took the title over
+export const docTitleArea = style({
+  display: 'contents',
+  selectors: {
+    '&[data-lifted="true"]': {
+      display: 'none',
+    },
+  },
+});
+
 export const docPropertiesTableContainer = style({
   display: 'flex',
   width: '100%',
